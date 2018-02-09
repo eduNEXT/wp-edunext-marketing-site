@@ -104,6 +104,10 @@ class WP_eduNEXT_Marketig_Site {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
 
+		// Load shortcodes
+		wp_register_script( 'edunext_enroll_button', esc_url( $this->assets_url ) . 'js/edunextEnrollButton' . $this->script_suffix . '.js' , array( 'jquery' ), $this->_version );
+		add_shortcode( 'edunext_enroll_button', array( $this, 'edunext_enroll_button' ) );
+
 		// Load API for generic admin functions
 		if ( is_admin() ) {
 			$this->admin = new WP_eduNEXT_Marketig_Site_Admin_API();
@@ -191,6 +195,32 @@ class WP_eduNEXT_Marketig_Site {
 		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
 		wp_enqueue_script( $this->_token . '-admin' );
 	} // End admin_enqueue_scripts ()
+
+	/**
+	 * Load shortcodes.
+	 * @access  public
+	 * @since   1.0.0
+	 * @return  void
+	 */
+	public function edunext_enroll_button ( $atts ) {
+
+		// TODO: move this function to its own class under lib/..
+
+		// Attributes
+		$atts = shortcode_atts(
+			array(
+				'course_id' => '',
+			),
+			$atts,
+			'edunext_enroll_button'
+		);
+
+		// [edunext_enroll_button course_id="course-v1:edX+Demo+demo_course"]
+
+		wp_enqueue_script( 'edunext_enroll_button' );
+
+		return "<h1>this is the content of my shotcode " . $atts['course_id'] . "</h1>";
+	} // End edunext_enroll_button ()
 
 	/**
 	 * Load plugin localisation
