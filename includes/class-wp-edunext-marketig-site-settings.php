@@ -2,10 +2,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WP-eduNEXT-Marketig-Site_Settings {
+class WP_eduNEXT_Marketig_Site_Settings {
 
 	/**
-	 * The single instance of WP-eduNEXT-Marketig-Site_Settings.
+	 * The single instance of WP_eduNEXT_Marketig_Site_Settings.
 	 * @var 	object
 	 * @access  private
 	 * @since 	1.0.0
@@ -278,7 +278,7 @@ class WP-eduNEXT-Marketig-Site_Settings {
 
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-			$html .= '<h2>' . __( 'Plugin Settings' , 'wp-edunext-marketig-site' ) . '</h2>' . "\n";
+			$html .= '<h2>' . __( 'Wp eduNEXT Marketing Site Settings' , 'wp-edunext-marketig-site' ) . '</h2>' . "\n";
 
 			$tab = '';
 			if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
@@ -339,14 +339,14 @@ class WP-eduNEXT-Marketig-Site_Settings {
 	}
 
 	/**
-	 * Main WP-eduNEXT-Marketig-Site_Settings Instance
+	 * Main WP_eduNEXT_Marketig_Site_Settings Instance
 	 *
-	 * Ensures only one instance of WP-eduNEXT-Marketig-Site_Settings is loaded or can be loaded.
+	 * Ensures only one instance of WP_eduNEXT_Marketig_Site_Settings is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @see WP-eduNEXT-Marketig-Site()
-	 * @return Main WP-eduNEXT-Marketig-Site_Settings instance
+	 * @see WP_eduNEXT_Marketig_Site()
+	 * @return Main WP_eduNEXT_Marketig_Site_Settings instance
 	 */
 	public static function instance ( $parent ) {
 		if ( is_null( self::$_instance ) ) {

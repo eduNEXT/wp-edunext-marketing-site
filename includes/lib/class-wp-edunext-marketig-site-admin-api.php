@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WP-eduNEXT-Marketig-Site_Admin_API {
+class WP_eduNEXT_Marketig_Site_Admin_API {
 
 	/**
 	 * Constructor function

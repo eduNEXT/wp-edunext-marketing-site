@@ -1,8 +1,8 @@
-# Copyright (C) 2014 WP-eduNEXT-Marketig-Site
-# This file is distributed under the same license as the WP-eduNEXT-Marketig-Site package.
+# Copyright (C) 2014 WP_eduNEXT_Marketig_Site
+# This file is distributed under the same license as the WP_eduNEXT_Marketig_Site package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP-eduNEXT-Marketig-Site 1.0\n"
+"Project-Id-Version: WP_eduNEXT_Marketig_Site 1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WordPress-Plugin-Template\n"
 "POT-Creation-Date: 2014-04-07 11:28:06+00:00\n"
 "MIME-Version: 1.0\n"
@@ -391,17 +391,5 @@ msgstr ""
 msgid "Cheatin&#8217; huh?"
 msgstr ""
 #. Plugin Name of the plugin/theme
-msgid "WP-eduNEXT-Marketig-Site"
-msgstr ""
-
-#. Plugin URI of the plugin/theme
-msgid "http://www.hughlashbrooke.com/"
-msgstr ""
-
-#. Author of the plugin/theme
-msgid "Hugh Lashbrooke"
-msgstr ""
-
-#. Author URI of the plugin/theme
-msgid "http://www.hughlashbrooke.com/"
+msgid "WP_eduNEXT_Marketig_Site"
 msgstr ""

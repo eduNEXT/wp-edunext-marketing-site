@@ -1,11 +1,11 @@
 <?php
 /*
- * Plugin Name: WP-eduNEXT-Marketig-Site
+ * Plugin Name: WP_eduNEXT_Marketig_Site
  * Version: 1.0
- * Plugin URI: http://www.hughlashbrooke.com/
- * Description: This is your starter template for your next WordPress plugin.
- * Author: Hugh Lashbrooke
- * Author URI: http://www.hughlashbrooke.com/
+ * Plugin URI: https://www.edunext.co/
+ * Description: This is your easy integration to open edX marketing sites
+ * Author: Felipe Montoya
+ * Author URI: https://www.edunext.co/
  * Requires at least: 4.0
  * Tested up to: 4.0
  *
@@ -13,7 +13,7 @@
  * Domain Path: /lang/
  *
  * @package WordPress
- * @author Hugh Lashbrooke
+ * @author Felipe Montoya
  * @since 1.0.0
  */
 
@@ -29,19 +29,19 @@ require_once( 'includes/lib/class-wp-edunext-marketig-site-post-type.php' );
 require_once( 'includes/lib/class-wp-edunext-marketig-site-taxonomy.php' );
 
 /**
- * Returns the main instance of WP-eduNEXT-Marketig-Site to prevent the need to use globals.
+ * Returns the main instance of WP_eduNEXT_Marketig_Site to prevent the need to use globals.
  *
  * @since  1.0.0
- * @return object WP-eduNEXT-Marketig-Site
+ * @return object WP_eduNEXT_Marketig_Site
  */
-function WP-eduNEXT-Marketig-Site () {
-	$instance = WP-eduNEXT-Marketig-Site::instance( __FILE__, '1.0.0' );
+function WP_eduNEXT_Marketig_Site () {
+	$instance = WP_eduNEXT_Marketig_Site::instance( __FILE__, '1.0.0' );
 
 	if ( is_null( $instance->settings ) ) {
-		$instance->settings = WP-eduNEXT-Marketig-Site_Settings::instance( $instance );
+		$instance->settings = WP_eduNEXT_Marketig_Site_Settings::instance( $instance );
 	}
 
 	return $instance;
 }
 
-WP-eduNEXT-Marketig-Site();
+WP_eduNEXT_Marketig_Site();

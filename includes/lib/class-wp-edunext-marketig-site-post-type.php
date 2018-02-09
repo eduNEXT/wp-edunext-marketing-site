@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WP-eduNEXT-Marketig-Site_Post_Type {
+class WP_eduNEXT_Marketig_Site_Post_Type {
 
 	/**
 	 * The name for the custom post type.

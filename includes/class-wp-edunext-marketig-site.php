@@ -2,10 +2,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WP-eduNEXT-Marketig-Site {
+class WP_eduNEXT_Marketig_Site {
 
 	/**
-	 * The single instance of WP-eduNEXT-Marketig-Site.
+	 * The single instance of WP_eduNEXT_Marketig_Site.
 	 * @var 	object
 	 * @access  private
 	 * @since 	1.0.0
@@ -106,7 +106,7 @@ class WP-eduNEXT-Marketig-Site {
 
 		// Load API for generic admin functions
 		if ( is_admin() ) {
-			$this->admin = new WP-eduNEXT-Marketig-Site_Admin_API();
+			$this->admin = new WP_eduNEXT_Marketig_Site_Admin_API();
 		}
 
 		// Handle localisation
@@ -126,7 +126,7 @@ class WP-eduNEXT-Marketig-Site {
 
 		if ( ! $post_type || ! $plural || ! $single ) return;
 
-		$post_type = new WP-eduNEXT-Marketig-Site_Post_Type( $post_type, $plural, $single, $description, $options );
+		$post_type = new WP_eduNEXT_Marketig_Site_Post_Type( $post_type, $plural, $single, $description, $options );
 
 		return $post_type;
 	}
@@ -143,7 +143,7 @@ class WP-eduNEXT-Marketig-Site {
 
 		if ( ! $taxonomy || ! $plural || ! $single ) return;
 
-		$taxonomy = new WP-eduNEXT-Marketig-Site_Taxonomy( $taxonomy, $plural, $single, $post_types, $taxonomy_args );
+		$taxonomy = new WP_eduNEXT_Marketig_Site_Taxonomy( $taxonomy, $plural, $single, $post_types, $taxonomy_args );
 
 		return $taxonomy;
 	}
@@ -218,14 +218,14 @@ class WP-eduNEXT-Marketig-Site {
 	} // End load_plugin_textdomain ()
 
 	/**
-	 * Main WP-eduNEXT-Marketig-Site Instance
+	 * Main WP_eduNEXT_Marketig_Site Instance
 	 *
-	 * Ensures only one instance of WP-eduNEXT-Marketig-Site is loaded or can be loaded.
+	 * Ensures only one instance of WP_eduNEXT_Marketig_Site is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @see WP-eduNEXT-Marketig-Site()
-	 * @return Main WP-eduNEXT-Marketig-Site instance
+	 * @see WP_eduNEXT_Marketig_Site()
+	 * @return Main WP_eduNEXT_Marketig_Site instance
 	 */
 	public static function instance ( $file = '', $version = '1.0.0' ) {
 		if ( is_null( self::$_instance ) ) {

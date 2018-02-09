@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WP-eduNEXT-Marketig-Site_Taxonomy {
+class WP_eduNEXT_Marketig_Site_Taxonomy {
 
 	/**
 	 * The name for the taxonomy.
