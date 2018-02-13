@@ -230,7 +230,7 @@ class WP_eduNEXT_Marketig_Site {
 
 		$course_id = $atts['course_id'];
 
-		return "<div class=\"enroll-button-js\" data-course-id=\"${course_id}\"><span>" . $atts['course_id'] . "</span></div>";
+		return "<div class=\"ednx-enroll-button-js\" data-course-id=\"${course_id}\"><span>" . $course_id . "</span></div>";
 
 	} // End edunext_enroll_button ()
 

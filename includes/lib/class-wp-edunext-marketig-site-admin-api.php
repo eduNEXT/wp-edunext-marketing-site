@@ -168,7 +168,7 @@ class WP_eduNEXT_Marketig_Site_Admin_API {
 			    </div>
 			    <?php
 			break;
-			
+
 			case 'editor':
 				wp_editor($data, $option_name, array(
 					'textarea_name' => $option_name

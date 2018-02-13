@@ -67,7 +67,7 @@ class WP_eduNEXT_Marketig_Site_Settings {
 	 * @return void
 	 */
 	public function add_menu_item () {
-		$page = add_options_page( __( 'Plugin Settings', 'wp-edunext-marketig-site' ) , __( 'Plugin Settings', 'wp-edunext-marketig-site' ) , 'manage_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
+		$page = add_options_page( __( 'eduNEXT Marketing Site', 'wp-edunext-marketig-site' ) , __( 'eduNEXT Marketing Site', 'wp-edunext-marketig-site' ) , 'manage_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
 	}
 
@@ -107,113 +107,264 @@ class WP_eduNEXT_Marketig_Site_Settings {
 	 */
 	private function settings_fields () {
 
-		$settings['standard'] = array(
-			'title'					=> __( 'Standard', 'wp-edunext-marketig-site' ),
+		$settings['general'] = array(
+			'title'					=> __( 'General settings', 'wp-edunext-marketig-site' ),
 			'description'			=> __( 'These are fairly standard form input fields.', 'wp-edunext-marketig-site' ),
 			'fields'				=> array(
 				array(
-					'id' 			=> 'text_field',
-					'label'			=> __( 'Some Text' , 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'This is a standard text field.', 'wp-edunext-marketig-site' ),
+					'id' 			=> 'lms_base_url',
+					'label'			=> __( 'Base domain for the eduNEXT domain' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'The url where your courses are located.', 'wp-edunext-marketig-site' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text', 'wp-edunext-marketig-site' )
+					'placeholder'	=> __( 'https://mylms.edunext.io', 'wp-edunext-marketig-site' )
 				),
 				array(
-					'id' 			=> 'password_field',
-					'label'			=> __( 'A Password' , 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'This is a standard password field.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'password',
+					'id' 			=> 'enrollment_api_location',
+					'label'			=> __( 'Base domain for the eduNEXT domain' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketig-site' ),
+					'type'			=> 'text',
+					'default'		=> '/api/enrollment/v1/',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+
+				array(
+					'id' 			=> 'button_class_generic',
+					'label'			=> __( 'CSS classes for the buttons ' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'You can override the specific buttons in the next tab' ),
+					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text', 'wp-edunext-marketig-site' )
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
 				),
 				array(
-					'id' 			=> 'secret_text_field',
-					'label'			=> __( 'Some Secret Text' , 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'This is a secret text field - any data saved here will not be displayed after the page has reloaded, but it will be saved.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'text_secret',
+					'id' 			=> 'container_class_generic',
+					'label'			=> __( 'CSS classes for the container of the buttons' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'You can override the specific buttons in the next tab' ),
+					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text', 'wp-edunext-marketig-site' )
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
 				),
 				array(
-					'id' 			=> 'text_block',
-					'label'			=> __( 'A Text Block' , 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'This is a standard text area.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'textarea',
+					'id' 			=> 'color_class_generic',
+					'label'			=> __( 'CSS classes for the color of the buttons' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'You can override the specific buttons in the next tab' ),
+					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( 'Placeholder text for this textarea', 'wp-edunext-marketig-site' )
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				)
+
+			)
+		);
+
+		$settings['enrollment'] = array(
+			'title'					=> __( 'Enrollment buttons', 'wp-edunext-marketig-site' ),
+			'description'			=> __( 'These settings modify the shortcodes for enrollment buttons.', 'wp-edunext-marketig-site' ),
+			'fields'				=> array(
+				// Button Enroll
+				array(
+					'id' 			=> 'label_enroll',
+					'label'			=> __( 'Text for the button to enroll' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'It will be showed when the user is not yet registered but can register directly.', 'wp-edunext-marketig-site' ),
+					'type'			=> 'text',
+					'default'		=> 'Enroll',
+					'placeholder'	=> __( 'Enroll', 'wp-edunext-marketig-site' )
 				),
 				array(
-					'id' 			=> 'single_checkbox',
-					'label'			=> __( 'An Option', 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'A standard checkbox - if you save this option as checked then it will store the option as \'on\', otherwise it will be an empty string.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'checkbox',
-					'default'		=> ''
+					'id' 			=> 'button_class_enroll',
+					'label'			=> __( 'CSS classes for the enroll button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
 				),
 				array(
-					'id' 			=> 'select_box',
-					'label'			=> __( 'A Select Box', 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'A standard select box.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'select',
-					'options'		=> array( 'drupal' => 'Drupal', 'joomla' => 'Joomla', 'wordpress' => 'WordPress' ),
-					'default'		=> 'wordpress'
+					'id' 			=> 'container_class_enroll',
+					'label'			=> __( 'CSS classes for the container to the enroll button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
 				),
 				array(
-					'id' 			=> 'radio_buttons',
-					'label'			=> __( 'Some Options', 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'A standard set of radio buttons.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'radio',
-					'options'		=> array( 'superman' => 'Superman', 'batman' => 'Batman', 'ironman' => 'Iron Man' ),
-					'default'		=> 'batman'
+					'id' 			=> 'color_class_enroll',
+					'label'			=> __( 'CSS classes for the color of the enroll button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
 				),
 				array(
-					'id' 			=> 'multiple_checkboxes',
-					'label'			=> __( 'Some Items', 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'You can select multiple items and they will be stored as an array.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'checkbox_multi',
-					'options'		=> array( 'square' => 'Square', 'circle' => 'Circle', 'rectangle' => 'Rectangle', 'triangle' => 'Triangle' ),
-					'default'		=> array( 'circle', 'triangle' )
+					'id' 			=> 'separator_enroll',
+					'label'			=> '-------------------------------------',
+					'description'	=> '',
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> '',
+				),
+
+				// Button Go To Course
+				array(
+					'id' 			=> 'label_go_to_course',
+					'label'			=> __( 'Text for the go to the course button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'It will be showed when the user is already registered and can access the course content inmediatly.', 'wp-edunext-marketig-site' ),
+					'type'			=> 'text',
+					'default'		=> 'Go to the course',
+					'placeholder'	=> __( 'Go to the course', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'button_class_go_to_course',
+					'label'			=> __( 'CSS classes for the go to the course button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'container_class_go_to_course',
+					'label'			=> __( 'CSS classes for the container of the go to the course button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'color_class_go_to_course',
+					'label'			=> __( 'CSS classes for the color in the go to the course button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'separator_go_to_course',
+					'label'			=> '-------------------------------------',
+					'description'	=> '',
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> '',
+				),
+
+				// Button Course Has Not started
+				array(
+					'id' 			=> 'label_course_has_not_started',
+					'label'			=> __( 'Text for when the course has not started yet' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'It will be showed when the user is already registered but the course has not started yet.', 'wp-edunext-marketig-site' ),
+					'type'			=> 'text',
+					'default'		=> 'The course has not yet started',
+					'placeholder'	=> __( 'The course has not yet started', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'button_class_course_has_not_started',
+					'label'			=> __( 'CSS classes for when the course has not started yet' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'container_class_course_has_not_started',
+					'label'			=> __( 'CSS classes for the container when the course has not started yet' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'color_class_course_has_not_started',
+					'label'			=> __( 'CSS classes for the color when the course has not started yet' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'separator_course_has_not_started',
+					'label'			=> '-------------------------------------',
+					'description'	=> '',
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> '',
+				),
+
+
+				// Button Invitation Only
+				array(
+					'id' 			=> 'label_invitation_only',
+					'label'			=> __( 'Text for the Invitation only button' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'It will be showed when the course is private and can be accessed only by invitation.', 'wp-edunext-marketig-site' ),
+					'type'			=> 'text',
+					'default'		=> 'Invitation only',
+					'placeholder'	=> __( 'Invitation only', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'button_class_invitation_only',
+					'label'			=> __( 'CSS classes for when the course is invitation only' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'container_class_invitation_only',
+					'label'			=> __( 'CSS classes for the container when the course is invitation only' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'color_class_invitation_only',
+					'label'			=> __( 'CSS classes for the color when the course is invitation only' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'separator_invitation_only',
+					'label'			=> '-------------------------------------',
+					'description'	=> '',
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> '',
+				),
+
+				// Button Enrollment Closed
+				array(
+					'id' 			=> 'label_enrollment_closed',
+					'label'			=> __( 'Text for when the enrollment has ended' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( 'It will be showed when the enrollment end date has already passed.', 'wp-edunext-marketig-site' ),
+					'type'			=> 'text',
+					'default'		=> 'Registration is closed',
+					'placeholder'	=> __( 'Registration is closed', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'button_class_enrollment_closed',
+					'label'			=> __( 'CSS classes for when the enrollment has ended' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'container_class_enrollment_closed',
+					'label'			=> __( 'CSS classes for the container when the enrollment has ended' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
+				),
+				array(
+					'id' 			=> 'color_class_enrollment_closed',
+					'label'			=> __( 'CSS classes for the color when the enrollment has ended' , 'wp-edunext-marketig-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> __( '', 'wp-edunext-marketig-site' )
 				)
 			)
 		);
 
-		$settings['extra'] = array(
-			'title'					=> __( 'Extra', 'wp-edunext-marketig-site' ),
-			'description'			=> __( 'These are some extra input fields that maybe aren\'t as common as the others.', 'wp-edunext-marketig-site' ),
-			'fields'				=> array(
-				array(
-					'id' 			=> 'number_field',
-					'label'			=> __( 'A Number' , 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'This is a standard number field - if this field contains anything other than numbers then the form will not be submitted.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'number',
-					'default'		=> '',
-					'placeholder'	=> __( '42', 'wp-edunext-marketig-site' )
-				),
-				array(
-					'id' 			=> 'colour_picker',
-					'label'			=> __( 'Pick a colour', 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'This uses WordPress\' built-in colour picker - the option is stored as the colour\'s hex code.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'color',
-					'default'		=> '#21759B'
-				),
-				array(
-					'id' 			=> 'an_image',
-					'label'			=> __( 'An Image' , 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'This will upload an image to your media library and store the attachment ID in the option field. Once you have uploaded an imge the thumbnail will display above these buttons.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'image',
-					'default'		=> '',
-					'placeholder'	=> ''
-				),
-				array(
-					'id' 			=> 'multi_select_box',
-					'label'			=> __( 'A Multi-Select Box', 'wp-edunext-marketig-site' ),
-					'description'	=> __( 'A standard multi-select box - the saved data is stored as an array.', 'wp-edunext-marketig-site' ),
-					'type'			=> 'select_multi',
-					'options'		=> array( 'linux' => 'Linux', 'mac' => 'Mac', 'windows' => 'Windows' ),
-					'default'		=> array( 'linux' )
-				)
-			)
-		);
 
 		$settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );
 
