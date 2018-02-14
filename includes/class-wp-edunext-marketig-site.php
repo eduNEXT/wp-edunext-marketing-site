@@ -218,19 +218,56 @@ class WP_eduNEXT_Marketig_Site {
 		// How to use: [edunext_enroll_button course_id="course-v1:edX+Demo+demo_course"]
 
 		// Attributes
+		STATIC $unique_id = 1;
+		$short_id ='EdnxEnrollButton' . $unique_id++;
+
 		$atts = shortcode_atts(
 			array(
 				'course_id' => '',
+				// ----------
+				'button_class_generic' => get_option('wpt_button_class_generic'),
+				'container_class_generic' => get_option('wpt_container_class_generic'),
+				'color_class_generic' => get_option('wpt_color_class_generic'),
+				// ----------
+				'label_enroll' => get_option('wpt_label_enroll', 'Enroll'),
+				'button_class_enroll' => get_option('wpt_button_class_enroll'),
+				'container_class_enroll' => get_option('wpt_container_class_enroll'),
+				'color_class_enroll' => get_option('wpt_color_class_enroll'),
+				// ----------
+				'label_go_to_course' => get_option('wpt_label_go_to_course', 'Go to the course'),
+				'button_class_go_to_course' => get_option('wpt_button_class_go_to_course'),
+				'container_class_go_to_course' => get_option('wpt_container_class_go_to_course'),
+				'color_class_go_to_course' => get_option('wpt_color_class_go_to_course'),
+				// ----------
+				'label_course_has_not_started' => get_option('wpt_label_course_has_not_started', 'The course has not yet started'),
+				'button_class_course_has_not_started' => get_option('wpt_button_class_course_has_not_started'),
+				'container_class_course_has_not_started' => get_option('wpt_container_class_course_has_not_started'),
+				'color_class_course_has_not_started' => get_option('wpt_color_class_course_has_not_started'),
+				// ----------
+				'label_invitation_only' => get_option('wpt_label_invitation_only', 'Invitation only'),
+				'button_class_invitation_only' => get_option('wpt_button_class_invitation_only'),
+				'container_class_invitation_only' => get_option('wpt_container_class_invitation_only'),
+				'color_class_invitation_only' => get_option('wpt_color_class_invitation_only'),
+				// ----------
+				'label_enrollment_closed' => get_option('wpt_label_enrollment_closed', 'Registration is closed'),
+				'button_class_enrollment_closed' => get_option('wpt_button_class_enrollment_closed'),
+				'container_class_enrollment_closed' => get_option('wpt_container_class_enrollment_closed'),
+				'color_class_enrollment_closed' => get_option('wpt_color_class_enrollment_closed'),
 			),
 			$atts,
 			'edunext_enroll_button'
 		);
 
 		wp_enqueue_script( 'edunext_enroll_button' );
+		wp_localize_script( 'edunext_enroll_button', $short_id, $atts );
+		wp_localize_script( 'edunext_enroll_button', 'ENEXT_SRV', array(
+				'lms_base_url' => get_option('wpt_lms_base_url'),
+				'enrollment_api_location' => get_option('wpt_enrollment_api_location')
+		));
 
 		$course_id = $atts['course_id'];
 
-		return "<div class=\"ednx-enroll-button-js\" data-course-id=\"${course_id}\"><span>" . $course_id . "</span></div>";
+		return "<div class=\"ednx-enroll-button-js\" data-course-id=\"${course_id}\" data-settings=\"${short_id}\"><span>" . $course_id . "</span></div>";
 
 	} // End edunext_enroll_button ()
 
