@@ -82,7 +82,7 @@ class WP_eduNEXT_Marketig_Site {
 	 * @since   1.0.0
 	 * @return  void
 	 */
-	public function __construct ( $file = '', $version = '1.0.0' ) {
+	public function __construct ( $file = '', $version = '1.0.1' ) {
 		$this->_version = $version;
 		$this->_token = 'wp-edunext-marketig-site';
 
@@ -306,7 +306,7 @@ class WP_eduNEXT_Marketig_Site {
 	 * @see WP_eduNEXT_Marketig_Site()
 	 * @return Main WP_eduNEXT_Marketig_Site instance
 	 */
-	public static function instance ( $file = '', $version = '1.0.0' ) {
+	public static function instance ( $file = '', $version = '1.0.1' ) {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
 		}
