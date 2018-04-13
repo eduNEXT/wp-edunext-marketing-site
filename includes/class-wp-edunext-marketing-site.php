@@ -108,12 +108,12 @@ class WP_eduNEXT_Marketing_Site {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enroll_integration_scripts' ), 10 );
 		add_shortcode( 'edunext_enroll_button', array( $this, 'edunext_enroll_button' ) );
 
+		// Add meta box for menus
+		$this->menu = new WP_eduNEXT_Marketing_Site_Menu();
+
 		// Load API for generic admin functions
 		if ( is_admin() ) {
 			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
-
-			// Add meta box for menus
-			$this->menu = new WP_eduNEXT_Marketing_Site_Menu();
 		}
 
 		// Handle localisation
