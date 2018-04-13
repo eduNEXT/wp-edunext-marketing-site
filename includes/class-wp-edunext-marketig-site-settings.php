@@ -109,7 +109,7 @@ class WP_eduNEXT_Marketig_Site_Settings {
 
 		$settings['general'] = array(
 			'title'					=> __( 'General settings', 'wp-edunext-marketig-site' ),
-			'description'			=> __( 'These are fairly standard form input fields.', 'wp-edunext-marketig-site' ),
+			'description'			=> __( 'Basic settings to get your marketing site integrated.', 'wp-edunext-marketig-site' ),
 			'fields'				=> array(
 				array(
 					'id' 			=> 'lms_base_url',
