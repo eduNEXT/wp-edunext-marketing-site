@@ -2,10 +2,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WP_eduNEXT_Marketig_Site {
+class WP_eduNEXT_Marketing_Site {
 
 	/**
-	 * The single instance of WP_eduNEXT_Marketig_Site.
+	 * The single instance of WP_eduNEXT_Marketing_Site.
 	 * @var 	object
 	 * @access  private
 	 * @since 	1.0.0
@@ -84,7 +84,7 @@ class WP_eduNEXT_Marketig_Site {
 	 */
 	public function __construct ( $file = '', $version = '1.0.1' ) {
 		$this->_version = $version;
-		$this->_token = 'wp-edunext-marketig-site';
+		$this->_token = 'wp-edunext-marketing-site';
 
 		// Load plugin environment variables
 		$this->file = $file;
@@ -110,7 +110,10 @@ class WP_eduNEXT_Marketig_Site {
 
 		// Load API for generic admin functions
 		if ( is_admin() ) {
-			$this->admin = new WP_eduNEXT_Marketig_Site_Admin_API();
+			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
+
+			// Add meta box for menus
+			$this->menu = new WP_eduNEXT_Marketing_Site_Menu();
 		}
 
 		// Handle localisation
@@ -130,7 +133,7 @@ class WP_eduNEXT_Marketig_Site {
 
 		if ( ! $post_type || ! $plural || ! $single ) return;
 
-		$post_type = new WP_eduNEXT_Marketig_Site_Post_Type( $post_type, $plural, $single, $description, $options );
+		$post_type = new WP_eduNEXT_Marketing_Site_Post_Type( $post_type, $plural, $single, $description, $options );
 
 		return $post_type;
 	}
@@ -147,7 +150,7 @@ class WP_eduNEXT_Marketig_Site {
 
 		if ( ! $taxonomy || ! $plural || ! $single ) return;
 
-		$taxonomy = new WP_eduNEXT_Marketig_Site_Taxonomy( $taxonomy, $plural, $single, $post_types, $taxonomy_args );
+		$taxonomy = new WP_eduNEXT_Marketing_Site_Taxonomy( $taxonomy, $plural, $single, $post_types, $taxonomy_args );
 
 		return $taxonomy;
 	}
@@ -278,7 +281,7 @@ class WP_eduNEXT_Marketig_Site {
 	 * @return  void
 	 */
 	public function load_localisation () {
-		load_plugin_textdomain( 'wp-edunext-marketig-site', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
+		load_plugin_textdomain( 'wp-edunext-marketing-site', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
 	} // End load_localisation ()
 
 	/**
@@ -288,7 +291,7 @@ class WP_eduNEXT_Marketig_Site {
 	 * @return  void
 	 */
 	public function load_plugin_textdomain () {
-	    $domain = 'wp-edunext-marketig-site';
+	    $domain = 'wp-edunext-marketing-site';
 
 	    $locale = apply_filters( 'plugin_locale', get_locale(), $domain );
 
@@ -297,14 +300,14 @@ class WP_eduNEXT_Marketig_Site {
 	} // End load_plugin_textdomain ()
 
 	/**
-	 * Main WP_eduNEXT_Marketig_Site Instance
+	 * Main WP_eduNEXT_Marketing_Site Instance
 	 *
-	 * Ensures only one instance of WP_eduNEXT_Marketig_Site is loaded or can be loaded.
+	 * Ensures only one instance of WP_eduNEXT_Marketing_Site is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @see WP_eduNEXT_Marketig_Site()
-	 * @return Main WP_eduNEXT_Marketig_Site instance
+	 * @see WP_eduNEXT_Marketing_Site()
+	 * @return Main WP_eduNEXT_Marketing_Site instance
 	 */
 	public static function instance ( $file = '', $version = '1.0.1' ) {
 		if ( is_null( self::$_instance ) ) {

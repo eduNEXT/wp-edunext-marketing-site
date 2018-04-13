@@ -1,4 +1,4 @@
-=== WP_eduNEXT_Marketig_Site ===
+=== WP_eduNEXT_Marketing_Site ===
 Contributors: eduNEXT, hlashbrooke
 Tags: wordpress, plugin, template
 Requires at least: 3.9
@@ -15,7 +15,7 @@ This is where you can give a much longer description of your plugin that you can
 
 == Installation ==
 
-Installing "WP_eduNEXT_Marketig_Site" can be done either by searching for "WP_eduNEXT_Marketig_Site" via the "Plugins > Add New" screen in your WordPress dashboard, or by using the following steps:
+Installing "WP_eduNEXT_Marketing_Site" can be done either by searching for "WP_eduNEXT_Marketing_Site" via the "Plugins > Add New" screen in your WordPress dashboard, or by using the following steps:
 
 1. Download the plugin via WordPress.org
 1. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard

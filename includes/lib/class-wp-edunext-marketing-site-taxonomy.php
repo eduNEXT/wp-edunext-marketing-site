@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WP_eduNEXT_Marketig_Site_Taxonomy {
+class WP_eduNEXT_Marketing_Site_Taxonomy {
 
 	/**
 	 * The name for the taxonomy.
@@ -72,20 +72,20 @@ class WP_eduNEXT_Marketig_Site_Taxonomy {
             'name' => $this->plural,
             'singular_name' => $this->single,
             'menu_name' => $this->plural,
-            'all_items' => sprintf( __( 'All %s' , 'wp-edunext-marketig-site' ), $this->plural ),
-            'edit_item' => sprintf( __( 'Edit %s' , 'wp-edunext-marketig-site' ), $this->single ),
-            'view_item' => sprintf( __( 'View %s' , 'wp-edunext-marketig-site' ), $this->single ),
-            'update_item' => sprintf( __( 'Update %s' , 'wp-edunext-marketig-site' ), $this->single ),
-            'add_new_item' => sprintf( __( 'Add New %s' , 'wp-edunext-marketig-site' ), $this->single ),
-            'new_item_name' => sprintf( __( 'New %s Name' , 'wp-edunext-marketig-site' ), $this->single ),
-            'parent_item' => sprintf( __( 'Parent %s' , 'wp-edunext-marketig-site' ), $this->single ),
-            'parent_item_colon' => sprintf( __( 'Parent %s:' , 'wp-edunext-marketig-site' ), $this->single ),
-            'search_items' =>  sprintf( __( 'Search %s' , 'wp-edunext-marketig-site' ), $this->plural ),
-            'popular_items' =>  sprintf( __( 'Popular %s' , 'wp-edunext-marketig-site' ), $this->plural ),
-            'separate_items_with_commas' =>  sprintf( __( 'Separate %s with commas' , 'wp-edunext-marketig-site' ), $this->plural ),
-            'add_or_remove_items' =>  sprintf( __( 'Add or remove %s' , 'wp-edunext-marketig-site' ), $this->plural ),
-            'choose_from_most_used' =>  sprintf( __( 'Choose from the most used %s' , 'wp-edunext-marketig-site' ), $this->plural ),
-            'not_found' =>  sprintf( __( 'No %s found' , 'wp-edunext-marketig-site' ), $this->plural ),
+            'all_items' => sprintf( __( 'All %s' , 'wp-edunext-marketing-site' ), $this->plural ),
+            'edit_item' => sprintf( __( 'Edit %s' , 'wp-edunext-marketing-site' ), $this->single ),
+            'view_item' => sprintf( __( 'View %s' , 'wp-edunext-marketing-site' ), $this->single ),
+            'update_item' => sprintf( __( 'Update %s' , 'wp-edunext-marketing-site' ), $this->single ),
+            'add_new_item' => sprintf( __( 'Add New %s' , 'wp-edunext-marketing-site' ), $this->single ),
+            'new_item_name' => sprintf( __( 'New %s Name' , 'wp-edunext-marketing-site' ), $this->single ),
+            'parent_item' => sprintf( __( 'Parent %s' , 'wp-edunext-marketing-site' ), $this->single ),
+            'parent_item_colon' => sprintf( __( 'Parent %s:' , 'wp-edunext-marketing-site' ), $this->single ),
+            'search_items' =>  sprintf( __( 'Search %s' , 'wp-edunext-marketing-site' ), $this->plural ),
+            'popular_items' =>  sprintf( __( 'Popular %s' , 'wp-edunext-marketing-site' ), $this->plural ),
+            'separate_items_with_commas' =>  sprintf( __( 'Separate %s with commas' , 'wp-edunext-marketing-site' ), $this->plural ),
+            'add_or_remove_items' =>  sprintf( __( 'Add or remove %s' , 'wp-edunext-marketing-site' ), $this->plural ),
+            'choose_from_most_used' =>  sprintf( __( 'Choose from the most used %s' , 'wp-edunext-marketing-site' ), $this->plural ),
+            'not_found' =>  sprintf( __( 'No %s found' , 'wp-edunext-marketing-site' ), $this->plural ),
         );
 
         $args = array(
