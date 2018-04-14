@@ -29,6 +29,7 @@ require_once( 'includes/lib/class-wp-edunext-marketing-site-post-type.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-taxonomy.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-menu.php' );
 
+
 /**
  * Returns the main instance of WP_eduNEXT_Marketing_Site to prevent the need to use globals.
  *

@@ -25,6 +25,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 		public $button_types;
 
+
 		/**
 		 * Constructor function.
 		 * @access  public
@@ -35,18 +36,55 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				add_action( 'admin_head-nav-menus.php', array( $this, 'edunext_add_menu_metabox' ), 10 );
 				add_filter( 'nav_menu_link_attributes', array( $this, 'edunext_nav_menu_filter'), 10, 3 );
 
+				add_filter( 'wp_setup_nav_menu_item', array( $this, 'edunext_menu_set_types'), 10, 3 );
+				add_filter( 'wp_get_nav_menu_items', array( $this, 'edunext_filter_invalid_items'), 10, 3 );
+
 				$this->button_types = array(
-						"login_or_menu"  => __('Login/Username', 'wp-edunext-marketing-site'),
-						"login"          => __('Login Btn', 'wp-edunext-marketing-site'),
-						"register"       => __('Register Btn', 'wp-edunext-marketing-site'),
-						"menu"           => __('User Menu', 'wp-edunext-marketing-site'),
-						"resume"         => __('Resume your last course', 'wp-edunext-marketing-site'),
-						"dashboard"      => __('Dashboard', 'wp-edunext-marketing-site'),
-						"profile"        => __('Profile', 'wp-edunext-marketing-site'),
-						"account"        => __('Account', 'wp-edunext-marketing-site'),
-						"signout"        => __('Sign Out', 'wp-edunext-marketing-site'),
+						"login_or_menu_openedx"  => __('Login/User Menu', 'wp-edunext-marketing-site'),
+						"login_or_dash_openedx"  => __('Login/Dashboard', 'wp-edunext-marketing-site'),
+						"register_openedx"       => __('Register Btn', 'wp-edunext-marketing-site'),
+						"menu_openedx"           => __('User Menu', 'wp-edunext-marketing-site'),
+						"resume_openedx"         => __('Resume your last course', 'wp-edunext-marketing-site'),
+						"dashboard_openedx"      => __('Dashboard', 'wp-edunext-marketing-site'),
+						"profile_openedx"        => __('Profile', 'wp-edunext-marketing-site'),
+						"account_openedx"        => __('Account', 'wp-edunext-marketing-site'),
+						"signout_openedx"        => __('Sign Out', 'wp-edunext-marketing-site'),
 				);
 
+		}
+
+
+		/**
+		 * Modify the items to hold more descriptive types and labels
+		 * @return object              WP_Menu_Item
+		 */
+		public function edunext_menu_set_types($menu_item) {
+
+				if ( in_array( "open-edx-link", $menu_item->classes ) ) {
+						$menu_item->type_label = __('Open edX Link', 'wp-edunext-marketing-site');
+						$menu_item->type = "wp-edunext-marketing-site";
+						foreach ($this->button_types as $key => $value) {
+								if (in_array( $key, $menu_item->classes) ) {
+										$menu_item->object = $key;
+								}
+						}
+				}
+
+				return $menu_item;
+		}
+
+
+		/**
+		 * Work on the final list of menu items
+		 * @return array
+		 */
+		function edunext_filter_invalid_items ($items, $menu, $args) {
+				foreach ($items as $item) {
+						if ( $item->type == "wp-edunext-marketing-site" ) {
+								// TODO: Filter the items
+						}
+				}
+				return $items;
 		}
 
 
@@ -83,15 +121,15 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				$walker = new Walker_Nav_Menu_Checklist(array());
 
 				?>
-				<div id="login-links" class="loginlinksdiv">
-					<div id="tabs-panel-login-links-all" class="tabs-panel tabs-panel-view-all tabs-panel-active">
-						<ul id="login-linkschecklist" class="list:login-links categorychecklist form-no-clear">
+				<div id="openedx-links" class="loginlinksdiv">
+					<div id="tabs-panel-openedx-links-all" class="tabs-panel tabs-panel-view-all tabs-panel-active">
+						<ul id="openedx-linkschecklist" class="list:openedx-links categorychecklist form-no-clear">
 							<?php echo walk_nav_menu_tree(array_map('wp_setup_nav_menu_item', $elems_obj), 0, (object) array('walker' => $walker)); ?>
 						</ul>
 					</div>
 					<p class="button-controls">
 						<span class="add-to-menu">
-							<input type="submit"<?php disabled($nav_menu_selected_id, 0); ?> class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e('Add to Menu', 'wp-edunext-marketing-site'); ?>" name="add-login-links-menu-item" id="submit-login-links" />
+							<input type="submit"<?php disabled($nav_menu_selected_id, 0); ?> class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e('Add to Menu', 'wp-edunext-marketing-site'); ?>" name="add-openedx-links-menu-item" id="submit-openedx-links" />
 							<span class="spinner"></span>
 						</span>
 					</p>
@@ -106,7 +144,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		public function edunext_nav_menu_filter( $atts, $item, $args ) {
 
 				// If the link is not one of ours, then just leave
-				if ( in_array( "open-edx-link", $item->classes ) ) {
+
+				if ( $item->type = "wp-edunext-marketing-site" ) {
 
 						// Read the cookie to see if we go to login or to dashboard
 						$is_logged_in_cookie = "edxloggedin";  // TODO, read from the vars
@@ -137,10 +176,12 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		}
 
 		public function handle_login_or_menu ( $atts, $item, $args, $data ) {
+
 				return $atts;
 		}
 
 		public function handle_menu ( $atts, $item, $args, $data ) {
+
 				return $atts;
 		}
 
