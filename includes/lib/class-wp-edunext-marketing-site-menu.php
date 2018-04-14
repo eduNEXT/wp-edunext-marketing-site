@@ -42,6 +42,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				$this->button_types = array(
 						"login_or_menu_openedx"  => __('Login/User Menu', 'wp-edunext-marketing-site'),
 						"login_or_dash_openedx"  => __('Login/Dashboard', 'wp-edunext-marketing-site'),
+						"login_openedx"          => __('Login Btn', 'wp-edunext-marketing-site'),
 						"register_openedx"       => __('Register Btn', 'wp-edunext-marketing-site'),
 						"menu_openedx"           => __('User Menu', 'wp-edunext-marketing-site'),
 						"resume_openedx"         => __('Resume your last course', 'wp-edunext-marketing-site'),
@@ -79,9 +80,57 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		 * @return array
 		 */
 		function edunext_filter_invalid_items ($items, $menu, $args) {
-				foreach ($items as $item) {
+
+				if ( is_admin() ) {
+					return $items;
+				}
+
+				// Read the cookie to see if we go to login or to dashboard
+				$is_user_logged_in = false;
+				$is_logged_in_cookie = "edxloggedin";  // TODO, read from the vars
+				if(isset($_COOKIE[$is_logged_in_cookie])) {
+						if ( "true" == $_COOKIE[$is_logged_in_cookie] ) {
+								$is_user_logged_in = true;
+						}
+				}
+
+				foreach ( $items as $key => $item ) {
 						if ( $item->type == "wp-edunext-marketing-site" ) {
-								// TODO: Filter the items
+
+								// Items with OR clauses need to decide their path
+								if ( $item->object == "login_or_menu_openedx" ) {
+										$title = preg_split("/\//", $item->title);
+										if ( $is_user_logged_in ) {
+												$item->object = "menu_openedx";
+												$item->title = isset($title[1]) ? $title[1] : __("Dashboard", 'wp-edunext-marketing-site');
+										}
+										else {
+												$item->object = "login_openedx";
+												$item->title = isset($title[0]) ? $title[0] : __("Login", 'wp-edunext-marketing-site');
+										}
+								}
+								if ( $item->object == "login_or_dash_openedx" ) {
+										$title = preg_split("/\//", $item->title);
+										if ( $is_user_logged_in ) {
+												$item->object = "dashboard_openedx";
+												$item->title = isset($title[1]) ? $title[1] : __("Dashboard", 'wp-edunext-marketing-site');
+										}
+										else {
+												$item->object = "login_openedx";
+												$item->title = isset($title[0]) ? $title[0] : __("Login", 'wp-edunext-marketing-site');
+										}
+								}
+
+								// Users with no session, don't see this items
+								if ( !$is_user_logged_in && in_array($item->object, array("menu_openedx", "resume_openedx", "dashboard_openedx", "profile_openedx", "account_openedx", "signout_openedx") ) ) {
+										unset($items[$key]);
+								}
+
+								// Users with session, don't need to see this items
+								if ( $is_user_logged_in && in_array($item->object, array("login_openedx", "register_openedx") ) ) {
+										unset($items[$key]);
+								}
+
 						}
 				}
 				return $items;
@@ -121,7 +170,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				$walker = new Walker_Nav_Menu_Checklist(array());
 
 				?>
-				<div id="openedx-links" class="loginlinksdiv">
+				<div id="openedx-links" class="openedxlinksdiv">
 					<div id="tabs-panel-openedx-links-all" class="tabs-panel tabs-panel-view-all tabs-panel-active">
 						<ul id="openedx-linkschecklist" class="list:openedx-links categorychecklist form-no-clear">
 							<?php echo walk_nav_menu_tree(array_map('wp_setup_nav_menu_item', $elems_obj), 0, (object) array('walker' => $walker)); ?>
@@ -147,14 +196,6 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 				if ( $item->type = "wp-edunext-marketing-site" ) {
 
-						// Read the cookie to see if we go to login or to dashboard
-						$is_logged_in_cookie = "edxloggedin";  // TODO, read from the vars
-						if(isset($_COOKIE[$is_logged_in_cookie])) {
-								if ( "true" == $_COOKIE[$is_logged_in_cookie] ) {
-										$atts["href"] = "#go-to-dashboard";
-								}
-						}
-
 						$user_info_cookie = "edx-user-info";  // TODO, read from the vars
 						if(isset($_COOKIE[$user_info_cookie])) {
 								$cookie_val = $_COOKIE[$user_info_cookie];
@@ -166,7 +207,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 								foreach($this->button_types as $value => $title) {
 										if ( in_array( $value, $item->classes ) ) {
-												return call_user_func(array($this, 'handle_' . $value), $atts, $item, $args, $cookie_data );
+												return call_user_func(array($this, 'handle_menu'), $atts, $item, $args, $cookie_data );
+												// return call_user_func(array($this, 'handle_' . $value), $atts, $item, $args, $cookie_data );
 										}
 								}
 						}
