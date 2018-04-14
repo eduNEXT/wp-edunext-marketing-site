@@ -22,6 +22,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class WP_eduNEXT_Marketing_Site_Menu {
 
+
+		public $button_types;
+
 		/**
 		 * Constructor function.
 		 * @access  public
@@ -31,6 +34,19 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		public function __construct () {
 				add_action( 'admin_head-nav-menus.php', array( $this, 'edunext_add_menu_metabox' ), 10 );
 				add_filter( 'nav_menu_link_attributes', array( $this, 'edunext_nav_menu_filter'), 10, 3 );
+
+				$this->button_types = array(
+						"login_or_menu"  => __('Login/Username', 'wp-edunext-marketing-site'),
+						"login"          => __('Login Btn', 'wp-edunext-marketing-site'),
+						"register"       => __('Register Btn', 'wp-edunext-marketing-site'),
+						"menu"           => __('User Menu', 'wp-edunext-marketing-site'),
+						"resume"         => __('Resume your last course', 'wp-edunext-marketing-site'),
+						"dashboard"      => __('Dashboard', 'wp-edunext-marketing-site'),
+						"profile"        => __('Profile', 'wp-edunext-marketing-site'),
+						"account"        => __('Account', 'wp-edunext-marketing-site'),
+						"signout"        => __('Sign Out', 'wp-edunext-marketing-site'),
+				);
+
 		}
 
 
@@ -55,21 +71,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		public function edunext_nav_menu_metabox($object) {
 				global $nav_menu_selected_id;
 
-				$elems = array(
-					"login_or_menu"  => __('Login/Username', 'wp-edunext-marketing-site'),
-					"login"          => __('Login Btn', 'wp-edunext-marketing-site'),
-					"register"       => __('Register Btn', 'wp-edunext-marketing-site'),
-					"menu"           => __('User Menu', 'wp-edunext-marketing-site'),
-					"resume"         => __('Resume your last course', 'wp-edunext-marketing-site'),
-					"dashboard"      => __('Dashboard', 'wp-edunext-marketing-site'),
-					"profile"        => __('Profile', 'wp-edunext-marketing-site'),
-					"account"        => __('Account', 'wp-edunext-marketing-site'),
-					"signout"        => __('Sign Out', 'wp-edunext-marketing-site'),
-				);
-
 				$elems_obj = array();
 
-				foreach($elems as $value => $title) {
+				foreach($this->button_types as $value => $title) {
 						$elems_obj[$value]              = new WP_Base_Custom_Link_Object();
 						$elems_obj[$value]->title       = esc_attr($title);
 						$elems_obj[$value]->object_id   = esc_attr($value);
@@ -101,13 +105,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		 */
 		public function edunext_nav_menu_filter( $atts, $item, $args ) {
 
+				// If the link is not one of ours, then just leave
 				if ( in_array( "open-edx-link", $item->classes ) ) {
-
-
-						// PROOF OF CONCEPT
-
-						$atts["href"] = "#go-to-login";
-
 
 						// Read the cookie to see if we go to login or to dashboard
 						$is_logged_in_cookie = "edxloggedin";  // TODO, read from the vars
@@ -119,15 +118,30 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 						$user_info_cookie = "edx-user-info";  // TODO, read from the vars
 						if(isset($_COOKIE[$user_info_cookie])) {
-								if ( "true" == $_COOKIE[$is_logged_in_cookie] ) {
-										$atts["href"] = "#go-to-dashboard";
+								$cookie_val = $_COOKIE[$user_info_cookie];
+
+								$remove_054 = preg_replace('/\\\054/', ',', $cookie_val);
+								$stripslashes = stripslashes($remove_054);
+								$cookie_json = json_decode($stripslashes);
+								$cookie_data = json_decode($cookie_json, true);
+
+								foreach($this->button_types as $value => $title) {
+										if ( in_array( $value, $item->classes ) ) {
+												return call_user_func(array($this, 'handle_' . $value), $atts, $item, $args, $cookie_data );
+										}
 								}
 						}
-
-						// wp_die(var_dump($atts, $item));
-
 				}
 
 				return $atts;
 		}
+
+		public function handle_login_or_menu ( $atts, $item, $args, $data ) {
+				return $atts;
+		}
+
+		public function handle_menu ( $atts, $item, $args, $data ) {
+				return $atts;
+		}
+
 }
