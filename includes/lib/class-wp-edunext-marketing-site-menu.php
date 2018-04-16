@@ -302,42 +302,57 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		}
 
 		public function handle_login_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_login_openedx";
+				$base_url = get_option('wpt_lms_base_url');
+				$atts["href"] = $base_url . "/login";
 				return $atts;
 		}
 
 		public function handle_register_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_register_openedx";
+				$base_url = get_option('wpt_lms_base_url');
+				$atts["href"] = $base_url . "/register";
 				return $atts;
 		}
 
 		public function handle_menu_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_menu_openedx";
+				$base_url = get_option('wpt_lms_base_url');
+				$atts["href"] = $base_url . "/dashboard";
+				if ( isset( $data['username'] ) ) {
+						$item->title = $data['username'];
+				}
 				return $atts;
 		}
 
 		public function handle_resume_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_resume_openedx";
+				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["resume_block"] ) ) {
+						$atts["href"] = $data['header_urls']["resume_block"];
+				}
 				return $atts;
 		}
 
 		public function handle_dashboard_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_dashboard_openedx";
+				$base_url = get_option('wpt_lms_base_url');
+				$atts["href"] = $base_url . "/dashboard";
 				return $atts;
 		}
 
 		public function handle_profile_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_profile_openedx";
+				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["learner_profile"] ) ) {
+						$atts["href"] = $data['header_urls']["learner_profile"];
+				}
 				return $atts;
 		}
 
 		public function handle_account_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_account_openedx";
+				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["account_settings"] ) ) {
+						$atts["href"] = $data['header_urls']["account_settings"];
+				}
 				return $atts;
 		}
 
 		public function handle_signout_openedx ( $atts, $item, $args, $data ) {
-				echo "handle_signout_openedx";
+				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["logout"] ) ) {
+						$atts["href"] = $data['header_urls']["logout"];
+				}
 				return $atts;
 		}
 
