@@ -282,7 +282,6 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		public function edunext_nav_menu_filter( $atts, $item, $args ) {
 
 				// If the link is not one of ours, then just leave
-
 				if ( $item->type == "wp-edunext-marketing-site" ) {
 
 						$user_info_cookie = get_option('wpt_user_info_cookie_name');
@@ -301,18 +300,30 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				return $atts;
 		}
 
+		/**
+		 * Create a link to the lms login page
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_login_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
 				$atts["href"] = $base_url . "/login";
 				return $atts;
 		}
 
+		/**
+		 * Create a link to the lms register page
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_register_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
 				$atts["href"] = $base_url . "/register";
 				return $atts;
 		}
 
+		/**
+		 * Create a link to the dashboard page with the username as title
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_menu_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
 				$atts["href"] = $base_url . "/dashboard";
@@ -322,6 +333,10 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				return $atts;
 		}
 
+		/**
+		 * Create a link to resume block written in the cookie
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_resume_openedx ( $atts, $item, $args, $data ) {
 				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["resume_block"] ) ) {
 						$atts["href"] = $data['header_urls']["resume_block"];
@@ -329,12 +344,20 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				return $atts;
 		}
 
+		/**
+		 * Create a link to the resume block written in the cookie
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_dashboard_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
 				$atts["href"] = $base_url . "/dashboard";
 				return $atts;
 		}
 
+		/**
+		 * Create a link to the profile page written in the cookie
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_profile_openedx ( $atts, $item, $args, $data ) {
 				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["learner_profile"] ) ) {
 						$atts["href"] = $data['header_urls']["learner_profile"];
@@ -342,6 +365,10 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				return $atts;
 		}
 
+		/**
+		 * Create a link to the account settings page written in the cookie
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_account_openedx ( $atts, $item, $args, $data ) {
 				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["account_settings"] ) ) {
 						$atts["href"] = $data['header_urls']["account_settings"];
@@ -349,6 +376,10 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				return $atts;
 		}
 
+		/**
+		 * Create a link to the signout page written in the cookie
+		 * @return object              attributes for an anchor tag
+		 */
 		public function handle_signout_openedx ( $atts, $item, $args, $data ) {
 				if ( isset( $data['header_urls'] ) && isset( $data['header_urls']["logout"] ) ) {
 						$atts["href"] = $data['header_urls']["logout"];
