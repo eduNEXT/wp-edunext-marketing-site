@@ -87,7 +87,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 				// Read the cookie to see if we go to login or to dashboard
 				$is_user_logged_in = false;
-				$is_logged_in_cookie = "edxloggedin";  // TODO, read from the vars
+				$is_logged_in_cookie = get_option('wpt_is_logged_in_cookie_name');
 				if(isset($_COOKIE[$is_logged_in_cookie])) {
 						if ( "true" == $_COOKIE[$is_logged_in_cookie] ) {
 								$is_user_logged_in = true;
@@ -194,9 +194,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 				// If the link is not one of ours, then just leave
 
-				if ( $item->type = "wp-edunext-marketing-site" ) {
+				if ( $item->type == "wp-edunext-marketing-site" ) {
 
-						$user_info_cookie = "edx-user-info";  // TODO, read from the vars
+						$user_info_cookie = get_option('wpt_user_info_cookie_name');
 						if(isset($_COOKIE[$user_info_cookie])) {
 								$cookie_val = $_COOKIE[$user_info_cookie];
 
@@ -205,25 +205,50 @@ class WP_eduNEXT_Marketing_Site_Menu {
 								$cookie_json = json_decode($stripslashes);
 								$cookie_data = json_decode($cookie_json, true);
 
-								foreach($this->button_types as $value => $title) {
-										if ( in_array( $value, $item->classes ) ) {
-												return call_user_func(array($this, 'handle_menu'), $atts, $item, $args, $cookie_data );
-												// return call_user_func(array($this, 'handle_' . $value), $atts, $item, $args, $cookie_data );
-										}
-								}
+								return call_user_func(array($this, 'handle_' . $item->object), $atts, $item, $args, $cookie_data );
 						}
 				}
 
 				return $atts;
 		}
 
-		public function handle_login_or_menu ( $atts, $item, $args, $data ) {
-
+		public function handle_login_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_login_openedx";
 				return $atts;
 		}
 
-		public function handle_menu ( $atts, $item, $args, $data ) {
+		public function handle_register_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_register_openedx";
+				return $atts;
+		}
 
+		public function handle_menu_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_menu_openedx";
+				return $atts;
+		}
+
+		public function handle_resume_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_resume_openedx";
+				return $atts;
+		}
+
+		public function handle_dashboard_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_dashboard_openedx";
+				return $atts;
+		}
+
+		public function handle_profile_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_profile_openedx";
+				return $atts;
+		}
+
+		public function handle_account_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_account_openedx";
+				return $atts;
+		}
+
+		public function handle_signout_openedx ( $atts, $item, $args, $data ) {
+				echo "handle_signout_openedx";
 				return $atts;
 		}
 
