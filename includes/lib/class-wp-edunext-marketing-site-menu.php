@@ -285,6 +285,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				if ( $item->type == "wp-edunext-marketing-site" ) {
 
 						$user_info_cookie = get_option('wpt_user_info_cookie_name');
+						$cookie_data= [];
+
 						if(isset($_COOKIE[$user_info_cookie])) {
 								$cookie_val = $_COOKIE[$user_info_cookie];
 
@@ -293,8 +295,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 								$cookie_json = json_decode($stripslashes);
 								$cookie_data = json_decode($cookie_json, true);
 
-								return call_user_func(array($this, 'handle_' . $item->object), $atts, $item, $args, $cookie_data );
 						}
+						return call_user_func(array($this, 'handle_' . $item->object), $atts, $item, $args, $cookie_data );
 				}
 
 				return $atts;
@@ -306,7 +308,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		 */
 		public function handle_login_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
-				$atts["href"] = $base_url . "/login";
+				$login_location = get_option('wpt_advanced_login_location');
+				$atts["href"] = $base_url . "/" . $login_location;
 				return $atts;
 		}
 
@@ -316,7 +319,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		 */
 		public function handle_register_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
-				$atts["href"] = $base_url . "/register";
+				$registration_location = get_option('wpt_advanced_registration_location');
+				$atts["href"] = $base_url . "/" . $registration_location;
 				return $atts;
 		}
 
@@ -326,7 +330,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		 */
 		public function handle_menu_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
-				$atts["href"] = $base_url . "/dashboard";
+				$dashboard_location = get_option('wpt_advanced_dashboard_location');
+				$atts["href"] = $base_url . "/" . $dashboard_location;
 				if ( isset( $data['username'] ) ) {
 						$item->title = $data['username'];
 				}
@@ -350,7 +355,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		 */
 		public function handle_dashboard_openedx ( $atts, $item, $args, $data ) {
 				$base_url = get_option('wpt_lms_base_url');
-				$atts["href"] = $base_url . "/dashboard";
+				$dashboard_location = get_option('wpt_advanced_dashboard_location');
+				$atts["href"] = $base_url . "/" . $dashboard_location;
 				return $atts;
 		}
 

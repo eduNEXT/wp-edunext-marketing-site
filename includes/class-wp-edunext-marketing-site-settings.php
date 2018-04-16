@@ -175,6 +175,30 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'type'			=> 'text',
 					'default'		=> 'edunext-user-info',
 					'placeholder'	=> __( 'edunext-user-info', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'advanced_login_location',
+					'label'			=> __( 'Login location (advanced)' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the login handler. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> 'login',
+					'placeholder'	=> __( 'login', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'advanced_registration_location',
+					'label'			=> __( 'Registration location (advanced)' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the registration handler. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> 'register',
+					'placeholder'	=> __( 'register', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'advanced_dashboard_location',
+					'label'			=> __( 'Dashboard location (advanced)' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the Dashboard handler. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> 'dashboard',
+					'placeholder'	=> __( 'dashboard', 'wp-edunext-marketing-site' )
 				)
 
 			)
