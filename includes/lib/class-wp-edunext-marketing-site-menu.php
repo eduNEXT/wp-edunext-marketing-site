@@ -2,34 +2,123 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-	// TODO get some docstrings here
-	class WP_Base_Custom_Link_Object {
-		public $db_id = 0;
-		public $object = '';
-		public $object_id;
-		public $menu_item_parent = 0;
-		public $type = 'custom';
-		public $title;
-		public $url = '#';
-		public $target = '';
-		public $attr_title = '';
-		public $classes = array("menu-item", "menu-item-type-custom", "menu-item-object-custom", "open-edx-link");
-		public $xfn = '';
-		public $description = '';
-	}
+class WP_Base_Custom_Link_Object {
 
+		/**
+		 * Default object ID.
+		 * @var     number
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $db_id = 0;
+
+		/**
+		 * Type of link.
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $object = '';
+
+		/**
+		 * Link ID. Normally used for the POST->ID
+		 * @var     number
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $object_id;
+
+		/**
+		 * Parent ID
+		 * @var     number
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $menu_item_parent = 0;
+
+		/**
+		 * Type of menu object. Wordpress support only a few, so default is custom.
+		 * We override them using loop hooks to display the necessary values.
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $type = 'custom';
+
+		/**
+		 * User facing label
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $title;
+
+		/**
+		 * Link URL
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $url = '#';
+
+		/**
+		 * target attribute for the <a> tag
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $target = '';
+
+		/**
+		 * Unused
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $attr_title = '';
+
+		/**
+		 * CSS classes applied to the link
+		 * @var     array of strings
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $classes = array("menu-item", "menu-item-type-custom", "menu-item-object-custom", "open-edx-link");
+
+		/**
+		 * Unused
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $xfn = '';
+
+		/**
+		 * Unused
+		 * @var     string
+		 * @access  public
+		 * @since   1.1.0
+		 */
+		public $description = '';
+
+}
 
 
 class WP_eduNEXT_Marketing_Site_Menu {
 
-
+		/**
+		 * Possible link values
+		 * @var     array of strings
+		 * @access  public
+		 * @since   1.1.0
+		 */
 		public $button_types;
 
 
 		/**
 		 * Constructor function.
 		 * @access  public
-		 * @since   1.0.0
+		 * @since   1.1.0
 		 * @return  void
 		 */
 		public function __construct () {
