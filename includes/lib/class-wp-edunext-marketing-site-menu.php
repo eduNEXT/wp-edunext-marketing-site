@@ -231,7 +231,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		 * @return void
 		 */
 		public function edunext_add_menu_metabox() {
-				add_meta_box('edunext_menu_items', __('Integration Open edX', 'wp-edunext-marketing-site'), array( $this, 'edunext_nav_menu_metabox' ), 'nav-menus', 'side', 'default');
+				add_meta_box('edunext_menu_items', __('Open edX WP Integrator', 'wp-edunext-marketing-site'), array( $this, 'edunext_nav_menu_metabox' ), 'nav-menus', 'side', 'default');
 		}
 
 

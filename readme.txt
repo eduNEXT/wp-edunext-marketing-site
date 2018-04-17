@@ -1,4 +1,4 @@
-=== WP_eduNEXT_Marketing_Site ===
+=== Open edX LMS and Wordpress integrator ===
 Contributors: eduNEXT
 Tags: wordpress, plugin, template
 Requires at least: 3.9

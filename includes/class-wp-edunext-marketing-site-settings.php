@@ -67,7 +67,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 	 * @return void
 	 */
 	public function add_menu_item () {
-		$page = add_options_page( __( 'eduNEXT Marketing Site', 'wp-edunext-marketing-site' ) , __( 'eduNEXT Marketing Site', 'wp-edunext-marketing-site' ) , 'manage_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
+		$page = add_options_page( __( 'Open edX Wordpress Integrator', 'wp-edunext-marketing-site' ) , __( 'Open edX Wordpress Integrator', 'wp-edunext-marketing-site' ) , 'manage_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
 	}
 
@@ -113,7 +113,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 			'fields'				=> array(
 				array(
 					'id' 			=> 'lms_base_url',
-					'label'			=> __( 'Base domain for the eduNEXT domain' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Base domain for the open edX domain' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( 'The url where your courses are located.', 'wp-edunext-marketing-site' ),
 					'type'			=> 'text',
 					'default'		=> '',
@@ -121,7 +121,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 			=> 'enrollment_api_location',
-					'label'			=> __( 'Base domain for the eduNEXT domain' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Base domain for the open edX domain' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
 					'type'			=> 'text',
 					'default'		=> '/api/enrollment/v1/',
@@ -477,7 +477,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-			$html .= '<h2>' . __( 'Wp eduNEXT Marketing Site Settings' , 'wp-edunext-marketing-site' ) . '</h2>' . "\n";
+			$html .= '<h2>' . __( 'Open edX Wordpress Integrator Settings | By eduNEXT' , 'wp-edunext-marketing-site' ) . '</h2>' . "\n";
 
 			$tab = '';
 			if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
@@ -532,6 +532,12 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'wp-edunext-marketing-site' ) ) . '" />' . "\n";
 				$html .= '</p>' . "\n";
 			$html .= '</form>' . "\n";
+
+			$html .= '<a class="footer-logo edunext col-12" href="https://www.edunext.co" target="_self">
+                      <img src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="eduNEXT - World class open edX services provider | www.edunext.co">
+                      </a>' . "\n";
+
+
 		$html .= '</div>' . "\n";
 
 		echo $html;
