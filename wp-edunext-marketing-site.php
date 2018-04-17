@@ -27,6 +27,8 @@ require_once( 'includes/class-wp-edunext-marketing-site-settings.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-admin-api.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-post-type.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-taxonomy.php' );
+require_once( 'includes/lib/class-wp-edunext-marketing-site-menu.php' );
+
 
 /**
  * Returns the main instance of WP_eduNEXT_Marketing_Site to prevent the need to use globals.
@@ -35,7 +37,7 @@ require_once( 'includes/lib/class-wp-edunext-marketing-site-taxonomy.php' );
  * @return object WP_eduNEXT_Marketing_Site
  */
 function WP_eduNEXT_Marketing_Site () {
-	$instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '1.0.1' );
+	$instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '1.1.0' );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WP_eduNEXT_Marketing_Site_Settings::instance( $instance );

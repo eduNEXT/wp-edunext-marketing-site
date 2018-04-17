@@ -1,13 +1,13 @@
 === WP_eduNEXT_Marketing_Site ===
-Contributors: eduNEXT, hlashbrooke
+Contributors: eduNEXT
 Tags: wordpress, plugin, template
 Requires at least: 3.9
-Tested up to: 4.0
-Stable tag: 1.0
+Tested up to: 4.9.5
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin makes it easy to integrate a wordpress site with an open edx site from eduNEXT.
+This plugin makes it easy to integrate a wordpress site with an open edx site from eduNEXT or your own installation.
 
 == Description ==
 
@@ -36,11 +36,11 @@ This plugin makes it easy to integrate a wordpress site with an open edx site fr
 == Changelog ==
 
 = 1.0 =
-* 2012-12-13
+* 2018-01-20
 * Initial release
 
 == Upgrade Notice ==
 
 = 1.0 =
-* 2012-12-13
+* 2018-01-20
 * Initial release

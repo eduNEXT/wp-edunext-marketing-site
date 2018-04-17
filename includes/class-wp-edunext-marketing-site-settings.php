@@ -131,7 +131,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				array(
 					'id' 			=> 'button_class_generic',
 					'label'			=> __( 'CSS classes for the buttons ' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'You can override the specific buttons in the next tab' ),
+					'description'	=> __( 'You can override the specific buttons in the Enrollment tab' ),
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
@@ -139,7 +139,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				array(
 					'id' 			=> 'container_class_generic',
 					'label'			=> __( 'CSS classes for the container of the buttons' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'You can override the specific buttons in the next tab' ),
+					'description'	=> __( 'You can override the specific buttons in the Enrollment tab' ),
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
@@ -147,10 +147,58 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				array(
 					'id' 			=> 'color_class_generic',
 					'label'			=> __( 'CSS classes for the color of the buttons' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'You can override the specific buttons in the next tab' ),
+					'description'	=> __( 'You can override the specific buttons in the Enrollment tab' ),
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+				)
+
+			)
+		);
+
+		$settings['navigation'] = array(
+			'title'					=> __( 'Navigation Menu Settings', 'wp-edunext-marketing-site' ),
+			'description'			=> __( 'Configurations to get your nav menu working with the Marketing Site Integration from eduNEXT.', 'wp-edunext-marketing-site' ),
+			'fields'				=> array(
+				array(
+					'id' 			=> 'is_logged_in_cookie_name',
+					'label'			=> __( 'Name of the shared cookie that signals an open session' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'For standalone open edX installations usually `edxloggedin`' ),
+					'type'			=> 'text',
+					'default'		=> 'edunextloggedin',
+					'placeholder'	=> __( 'edunextloggedin', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'user_info_cookie_name',
+					'label'			=> __( 'Name of the shared cookie that holds the user info' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'For standalone open edX installations usually `edx-user-info`' ),
+					'type'			=> 'text',
+					'default'		=> 'edunext-user-info',
+					'placeholder'	=> __( 'edunext-user-info', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'advanced_login_location',
+					'label'			=> __( 'Login location (advanced)' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the login handler. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> 'login',
+					'placeholder'	=> __( 'login', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'advanced_registration_location',
+					'label'			=> __( 'Registration location (advanced)' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the registration handler. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> 'register',
+					'placeholder'	=> __( 'register', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'advanced_dashboard_location',
+					'label'			=> __( 'Dashboard location (advanced)' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the Dashboard handler. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> 'dashboard',
+					'placeholder'	=> __( 'dashboard', 'wp-edunext-marketing-site' )
 				)
 
 			)
