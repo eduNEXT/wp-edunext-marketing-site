@@ -2,7 +2,6 @@
 /*
  * Plugin Name: Open edX LMS and Wordpress integrator
  * Version: 1.1
- * Plugin URI: https://www.edunext.co/
  * Description: Set up your Wordpress site as the front end site or marketing site for your online learning initiative powered by the open edX platform.
  * Author: eduNEXT
  * Author URI: https://www.edunext.co/
