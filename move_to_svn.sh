@@ -17,11 +17,9 @@ cp -r lang svn/edunext-openedx-integrator/trunk/
 
 
 # cd svn/edunext-openedx-integrator
-# svn add trunk/*
+# svn add trunk/*    # only new files
 # svn ci -m 'Adding version 1.1.0 to the trunk' --username felipemontoya
 
 # Create a tag
-# mkdir tags/1.1.0
-# cp -r trunk/* tags/1.1.0
-# svn add tags/1.1.0/
-# svn ci -m 'Adding version 1.1.0 to the tags' --username felipemontoya
+# svn cp trunk tags/1.2.0 --parents
+# svn ci -m 'Adding version 1.2.0' --username felipemontoya
