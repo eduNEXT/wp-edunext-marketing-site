@@ -124,6 +124,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 		public function __construct () {
 				add_action( 'admin_head-nav-menus.php', array( $this, 'edunext_add_menu_metabox' ), 10 );
 				add_filter( 'nav_menu_link_attributes', array( $this, 'edunext_nav_menu_filter'), 10, 3 );
+				add_filter( 'post_link', array( $this, 'edunext_permalink_management'), 10, 3 );
 
 				add_filter( 'wp_setup_nav_menu_item', array( $this, 'edunext_menu_set_types'), 10, 3 );
 				add_filter( 'wp_get_nav_menu_items', array( $this, 'edunext_filter_invalid_items'), 10, 3 );
@@ -165,6 +166,41 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 
 		/**
+		 * Custom logic to determine the urls and functions of the integration menu items.
+		 * @return  void
+		 */
+		function process_menu_object ($item, $is_user_logged_in=false) {
+				// Items with OR clauses need to decide their path
+				if ( $item->object == "login_or_menu_openedx" ) {
+						$title = preg_split("/\//", $item->title);
+						if ( $is_user_logged_in ) {
+								$item->object = "menu_openedx";
+								$item->title = isset($title[1]) ? $title[1] : __("Dashboard", 'wp-edunext-marketing-site');
+						}
+						else {
+								$item->object = "login_openedx";
+								$item->title = isset($title[0]) ? $title[0] : __("Login", 'wp-edunext-marketing-site');
+						}
+				}
+				if ( $item->object == "login_or_dash_openedx" ) {
+						$title = preg_split("/\//", $item->title);
+						if ( $is_user_logged_in ) {
+								$item->object = "dashboard_openedx";
+								$item->title = isset($title[1]) ? $title[1] : __("Dashboard", 'wp-edunext-marketing-site');
+						}
+						else {
+								$item->object = "login_openedx";
+								$item->title = isset($title[0]) ? $title[0] : __("Login", 'wp-edunext-marketing-site');
+						}
+				}
+
+				// We also call the function here for themes that don't respect the nav_menu_link_attributes filter
+				$cookie_data = $this->get_openedx_info_cookie_data();
+				call_user_func(array($this, 'handle_' . $item->object), [], $item, [], $cookie_data );
+		}
+
+
+		/**
 		 * Work on the final list of menu items
 		 * @return array
 		 */
@@ -174,41 +210,11 @@ class WP_eduNEXT_Marketing_Site_Menu {
 					return $items;
 				}
 
-				// Read the cookie to see if we go to login or to dashboard
-				$is_user_logged_in = false;
-				$is_logged_in_cookie = get_option('wpt_is_logged_in_cookie_name');
-				if(isset($_COOKIE[$is_logged_in_cookie])) {
-						if ( "true" == $_COOKIE[$is_logged_in_cookie] ) {
-								$is_user_logged_in = true;
-						}
-				}
+				$is_user_logged_in = $this->get_openedx_loggedin();
 
 				foreach ( $items as $key => $item ) {
 						if ( $item->type == "wp-edunext-marketing-site" ) {
-
-								// Items with OR clauses need to decide their path
-								if ( $item->object == "login_or_menu_openedx" ) {
-										$title = preg_split("/\//", $item->title);
-										if ( $is_user_logged_in ) {
-												$item->object = "menu_openedx";
-												$item->title = isset($title[1]) ? $title[1] : __("Dashboard", 'wp-edunext-marketing-site');
-										}
-										else {
-												$item->object = "login_openedx";
-												$item->title = isset($title[0]) ? $title[0] : __("Login", 'wp-edunext-marketing-site');
-										}
-								}
-								if ( $item->object == "login_or_dash_openedx" ) {
-										$title = preg_split("/\//", $item->title);
-										if ( $is_user_logged_in ) {
-												$item->object = "dashboard_openedx";
-												$item->title = isset($title[1]) ? $title[1] : __("Dashboard", 'wp-edunext-marketing-site');
-										}
-										else {
-												$item->object = "login_openedx";
-												$item->title = isset($title[0]) ? $title[0] : __("Login", 'wp-edunext-marketing-site');
-										}
-								}
+								$this->process_menu_object($item, $is_user_logged_in);
 
 								// Users with no session, don't see this items
 								if ( !$is_user_logged_in && in_array($item->object, array("menu_openedx", "resume_openedx", "dashboard_openedx", "profile_openedx", "account_openedx", "signout_openedx") ) ) {
@@ -219,10 +225,6 @@ class WP_eduNEXT_Marketing_Site_Menu {
 								if ( $is_user_logged_in && in_array($item->object, array("login_openedx", "register_openedx") ) ) {
 										unset($items[$key]);
 								}
-
-								// We also call the function here for themes that don't respect the nav_menu_link_attributes filter
-								$cookie_data = $this->get_openedx_info_cookie_data();
-								call_user_func(array($this, 'handle_' . $item->object), [], $item, [], $cookie_data );
 
 						}
 				}
@@ -298,6 +300,22 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 				}
 				return $cookie_data;
+		}
+
+
+		/**
+		 * Read the configured cookie and find if the user is logged in
+		 * @return bool
+		 */
+		public function get_openedx_loggedin() {
+				$is_user_logged_in = false;
+				$is_logged_in_cookie = get_option('wpt_is_logged_in_cookie_name');
+				if(isset($_COOKIE[$is_logged_in_cookie])) {
+						if ( "true" == $_COOKIE[$is_logged_in_cookie] ) {
+								$is_user_logged_in = true;
+						}
+				}
+				return $is_user_logged_in;
 		}
 
 		/**
@@ -444,5 +462,20 @@ class WP_eduNEXT_Marketing_Site_Menu {
 				}
 				return $atts;
 		}
+
+
+		/**
+		 * Making permalinks also respond to the integrator functions.
+		 * @return string              the permalink url
+		 */
+		public function edunext_permalink_management($url, $post, $leavename=false) {
+				if ( $post->type == "wp-edunext-marketing-site" ) {
+						$is_user_logged_in = $this->get_openedx_loggedin();
+						$this->process_menu_object($post, $is_user_logged_in);
+						return $post->url;
+				}
+				return $url;
+		}
+
 
 }
