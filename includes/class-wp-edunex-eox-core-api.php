@@ -38,6 +38,7 @@ class WP_EoxCoreApi
 	function __construct() {
 		add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
 		add_action('admin_notices', array($this, 'show_messages'));
+		add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
 	}
 
 	public function add_admin_settings($settings) {
@@ -64,6 +65,16 @@ class WP_EoxCoreApi
 			)
 		);
 		return $settings;
+	}
+
+	public function eoxapi_settings_custom_html()
+	{
+		?>
+		<h2>Add new Open edx users</h2>
+		<p>Write a user per line in this format: email, username, password, fullname, activate_user
+		<br><sub>Example: jhoncena@gmail.com, jcena, nikkibella, Jhon Cena, 1</sub></p>
+		<textarea name="eox-api-new-users" id="" cols="70" rows="10"></textarea>
+		<?php
 	}
 
 	public function get_access_token() {
@@ -142,7 +153,7 @@ class WP_EoxCoreApi
 	}
 
 	public function handle_api_errors($json) {
-		foreach($json->non_field_errors as $value) {
+		foreach ($json->non_field_errors as $value) {
 			$this->add_message('error', $value);
 		}
 	}
