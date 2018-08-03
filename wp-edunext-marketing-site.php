@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 // Load plugin class files
 require_once( 'includes/class-wp-edunext-marketing-site.php' );
 require_once( 'includes/class-wp-edunext-marketing-site-settings.php' );
+require_once( 'includes/class-wp-edunex-eox-core-api.php' );
 
 // Load plugin libraries
 require_once( 'includes/lib/class-wp-edunext-marketing-site-admin-api.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-post-type.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-taxonomy.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-menu.php' );
-require_once( 'includes/eox-core.php' );
 
 
 /**
@@ -47,3 +47,17 @@ function WP_eduNEXT_Marketing_Site () {
 }
 
 WP_eduNEXT_Marketing_Site();
+
+
+/**
+ * Returns the main instance of WP_EoxCoreApi to prevent the need to use globals.
+ *
+ * @since  1.0.0
+ * @return object WP_EoxCoreApi
+ */
+function WP_EoxCoreApi () {
+	$instance = WP_EoxCoreApi::instance( __FILE__, '1.1.0' );
+	return $instance;
+}
+
+WP_EoxCoreApi();

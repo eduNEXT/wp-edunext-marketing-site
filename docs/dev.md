@@ -12,6 +12,11 @@ WP Plugin Development on Docker
 </pre>
 - Open the plugins folder then copy this plugin there, then start the docker container with `docker-compose up`, you should now be able to open http://localhost:8080 and see your wordpress installation running.
 
+- We need to allow this WP docker container to connect with your edx instance through the hostname `localhost`, to do that we are going to modify the hosts file by executing this command:
+```bash
+docker exec -it example_wordpress_1 bash -c "echo \"$(ip address show docker0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}') localhost\" | sudo tee -a /etc/hosts"
+```
+
 - Now start a simple edx instance using docker-compose, it may be https://github.com/edx/devstack or a similar one.
 
 - Open http://localhost:8080/wp-admin/options-general.php?page=wp-edunext-marketing-site_settings and login as admin by entering `root` for both user and password.
@@ -20,4 +25,26 @@ WP Plugin Development on Docker
 
 - Go to tab "Navigation Menu Settings" find the field labeled "Name of the shared cookie that signals an open session" and write `edxloggedin` (or whatever you are using), then on the field named "Name of the shared cookie that holds the user info" write `edx-user-info` (or whatever you are using)
 <br>
-<div align="center"><img src="https://img.devrant.com/devrant/rant/r_1201075_tRjTM.jpg" width="250" /></div>
+
+Using the EOX-API
+=================
+
+### - eox_create_new_user
+Used to create a new user
+```php
+# Example of using the eox_create_new_user function
+add_action('admin_head',function () {
+	WP_EoxCoreApi::instance()->eox_create_new_user([
+		'email' => 'fake@fake.com',
+		'username' => 'fake',
+		'password' => 'fake',
+		'fullname' => 'fake',
+		'is_active' => True,
+		'is_staff' => True,
+		'is_superuser' => True,
+		'activate_user' => True,
+	]);
+});
+```
+
+<div align="center"><img src="https://pbs.twimg.com/media/B4kIaZHCUAAKB6N.png" width="300" /></div>

@@ -456,7 +456,14 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					register_setting( $this->parent->_token . '_settings', $option_name, $validation );
 
 					// Add field to page
-					add_settings_field( $field['id'], $field['label'], array( $this->parent->admin, 'display_field' ), $this->parent->_token . '_settings', $section, array( 'field' => $field, 'prefix' => $this->base ) );
+					add_settings_field(
+						$field['id'],
+						$field['label'],
+						array( $this->parent->admin, 'display_field' ),
+						$this->parent->_token . '_settings',
+						$section,
+						array( 'field' => $field, 'prefix' => $this->base )
+					);
 				}
 
 				if ( ! $current_section ) break;
