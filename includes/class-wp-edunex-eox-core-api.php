@@ -5,7 +5,18 @@
 class WP_EoxCoreApi
 
 {
-	private $user_messages = array();
+	private $notices = array();
+	private $error_notices = array();
+	private $defaults = array(
+		'email' => '',
+		'username' => '',
+		'password' => '',
+		'fullname' => '',
+		'is_active' => False,
+		'is_staff' => False,
+		'is_superuser' => False,
+		'activate_user' => False,
+	);
 	private static $_instance;
 	/**
 	 * Main WP_EoxCoreApi Instance
@@ -25,8 +36,9 @@ class WP_EoxCoreApi
 		return self::$_instance;
 	} // End instance ()
 	
-	public function show_messages() {
-		foreach ($this->user_messages as $message) {
+	public function show_notices() {
+		$notices = array_merge($this->notices, $this->error_notices);
+		foreach ($notices as $message) {
 			?>
 			<div class="<?= $message['type'] ?> notice">
 		        	<p><?= __($message['message'], 'eox-core-api') ?></p>
@@ -36,9 +48,12 @@ class WP_EoxCoreApi
 	}
 
 	function __construct() {
-		add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
-		add_action('admin_notices', array($this, 'show_messages'));
-		add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
+		if ( is_admin() ) {
+			add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
+			add_action('admin_notices', array($this, 'show_notices'));
+			add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
+			add_action('wp_ajax_save_users_ajax', array($this, 'save_users_ajax'));
+		}
 	}
 
 	public function add_admin_settings($settings) {
@@ -69,12 +84,29 @@ class WP_EoxCoreApi
 
 	public function eoxapi_settings_custom_html()
 	{
-		?>
-		<h2>Add new Open edx users</h2>
-		<p>Write a user per line in this format: email, username, password, fullname, activate_user
-		<br><sub>Example: jhoncena@gmail.com, jcena, nikkibella, Jhon Cena, 1</sub></p>
-		<textarea name="eox-api-new-users" id="" cols="70" rows="10"></textarea>
-		<?php
+		include('exoapi_settings_custom_html.php');
+	}
+
+	public function save_users_ajax()
+	{
+		check_ajax_referer('eoxapi');
+		$new_users = json_decode($_POST['users']);
+
+		if (is_null($new_users)) {
+			$new_users = json_decode(stripslashes($_POST['users']));
+		}
+
+		if (is_array($new_users)) {
+			foreach ($new_users as $user) {
+				$this->eox_create_new_user($user);
+			}
+		} else if (is_null($new_users)) {
+			$this->add_notice('error', 'Cannot parse as JSON, make sure to enter a valid JSON');
+		} else {
+			$this->add_notice('error', 'An array is needed, got ' . gettype($new_users) . ' instead');
+		}
+		$this->show_notices();
+		wp_die();
 	}
 
 	public function get_access_token() {
@@ -85,16 +117,14 @@ class WP_EoxCoreApi
 			$response = wp_remote_post($url);
 			if (is_wp_error($response)) {
 				$error_message = $response->get_error_message();
-				$this->add_message('error', $error_message);
+				$this->add_notice('error', $error_message);
 				$error = new WP_Error('broke', $error_message, $response);
 				return $error;
 			}
 
 			$json_reponse = json_decode($response['body']);
 			if (!isset($json_reponse['error'])) {
-
 				// Cached token its still valid, return it
-
 				return $token;
 			}
 		}
@@ -112,7 +142,7 @@ class WP_EoxCoreApi
 		$response = wp_remote_post($url, $args);
 		if (is_wp_error($response)) {
 			$error_message = $response->get_error_message();
-			$this->add_message('error', $error_message);
+			$this->add_notice('error', $error_message);
 			$error = new WP_Error('broke', __("Couln't call the API to get a new", "eox-core-api") , $response);
 		}
 
@@ -123,46 +153,51 @@ class WP_EoxCoreApi
 	}
 
 	public function eox_create_new_user($args) {
-		$defaults = array(
-			'email' => '',
-			'username' => '',
-			'password' => '',
-			'fullname' => '',
-			'is_active' => False,
-			'is_staff' => False,
-			'is_superuser' => False,
-			'activate_user' => False,
-		);
-		$data = wp_parse_args($args, $defaults);
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
+
+			$data = wp_parse_args($args, $this->defaults);
 			$base_url = get_option('wpt_lms_base_url', '');
 			$url = $base_url . '/eox-core/api/v1/user/';
 			$response = wp_remote_post($url, array(
 				'headers' => 'Authorization: Bearer ' . $token,
 				'body' => $data
 			));
-			$response_json = json_decode($response['body']);
-			if (isset($response_json->non_field_errors)) {
-				$this->handle_api_errors($response_json);
+			$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
+			if ($response['response']['code'] !== 200) {
+				$response_json = json_decode($response['body']);
+				$this->handle_api_errors($response_json, $ref);
 			}
 			else {
-				$this->add_message('update', 'User creation success!');
+				$this->add_notice('notice-success', 'User creation success! <i>(' . $ref . ')</i>');
 			}
 		}
 	}
 
-	public function handle_api_errors($json) {
-		foreach ($json->non_field_errors as $value) {
-			$this->add_message('error', $value);
+	public function handle_api_errors($json, $ref) {
+		if (isset($json->non_field_errors)) {
+			foreach ($json->non_field_errors as $value) {
+				$this->add_notice('error', $value . ' (' . $ref . ')');
+			}
+		}
+		foreach (array_keys($this->defaults) as $key) {
+			if (isset($json->$key)) {
+				foreach ($json->$key as $value) {
+					$this->add_notice('error', ucfirst($key) . ': ' . $value . ' <i>(' . $ref . ')</i>');
+				}
+			}
 		}
 	}
 
-	public function add_message($type, $message) {
-		$user_message = array(
+	public function add_notice($type, $message) {
+		$notice = array(
 			'type' => $type,
 			'message' => $message
 		);
-		array_push($this->user_messages, $user_message);
+		if ($type === 'error') {
+			array_push($this->error_notices, $notice);
+		} else {
+			array_push($this->notices, $notice);
+		}
 	}
 }
