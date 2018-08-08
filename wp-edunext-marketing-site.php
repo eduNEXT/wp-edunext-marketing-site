@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 // Load plugin class files
 require_once( 'includes/class-wp-edunext-marketing-site.php' );
 require_once( 'includes/class-wp-edunext-marketing-site-settings.php' );
-require_once( 'includes/class-wp-edunex-eox-core-api.php' );
+require_once( 'includes/class-wp-edunext-eox-core-api.php' );
 
 // Load plugin libraries
 require_once( 'includes/lib/class-wp-edunext-marketing-site-admin-api.php' );
