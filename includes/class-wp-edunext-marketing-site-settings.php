@@ -543,7 +543,6 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				do_settings_sections( $this->parent->_token . '_settings' );
 				do_action($this->active_tab . '_after_settings_page_html');
 				$html .= ob_get_clean();
-				echo "<script>console.log('" . $this->active_tab . '_after_settings_page_html' . "')</script>";
 				$html .= '<p class="submit">' . "\n";
 					$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
 					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'wp-edunext-marketing-site' ) ) . '" />' . "\n";
