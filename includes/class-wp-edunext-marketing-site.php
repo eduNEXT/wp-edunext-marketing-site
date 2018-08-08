@@ -82,7 +82,7 @@ class WP_eduNEXT_Marketing_Site {
 	 * @since   1.0.0
 	 * @return  void
 	 */
-	public function __construct ( $file = '', $version = '1.1.0' ) {
+	public function __construct ( $file = '', $version = '1.0.0' ) {
 		$this->_version = $version;
 		$this->_token = 'wp-edunext-marketing-site';
 
