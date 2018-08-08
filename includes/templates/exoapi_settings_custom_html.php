@@ -49,11 +49,11 @@
 	</p>
 	<textarea name="eox-api-new-users" id="eox-api-new-users" cols="70" rows="10">
 [{
-    "email": "someone@example.com",
-    "username": "jcena",
-    "password": "nikkibella",
-    "fullname": "Example",
-    "activate_user": true 
+    "email": "honor@example.com",
+    "username": "honor",
+    "password": "edx",
+    "fullname": "Honor McGregor",
+    "activate_user": true
 }]</textarea>
 	<button class="button-secondary save-users-button">Execute API call</button>
 </div>

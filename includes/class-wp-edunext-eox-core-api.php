@@ -5,8 +5,20 @@
 class WP_EoxCoreApi
 
 {
+
+	/**
+	 *
+	 */
 	private $notices = array();
+
+	/**
+	 *
+	 */
 	private $error_notices = array();
+
+	/**
+	 * Default values used to create a new edxapp user
+	 */
 	private $defaults = array(
 		'email' => '',
 		'username' => '',
@@ -17,25 +29,29 @@ class WP_EoxCoreApi
 		'is_superuser' => False,
 		'activate_user' => False,
 	);
+
 	private static $_instance;
 	/**
 	 * Main WP_EoxCoreApi Instance
 	 *
 	 * Ensures only one instance of WP_EoxCoreApi is loaded or can be loaded.
 	 *
-	 * @since 1.0.0
+	 * @since 1.2.0
 	 * @static
 	 * @see WP_EoxCoreApi()
 	 * @return Main WP_EoxCoreApi instance
 	 */
-	public static function instance($file = '', $version = '1.0.1') {
+	public static function instance($file = '', $version = '1.2.0') {
 		if (is_null(self::$_instance)) {
 			self::$_instance = new self($file, $version);
 		}
 
 		return self::$_instance;
 	} // End instance ()
-	
+
+	/**
+	 *
+	 */
 	public function show_notices() {
 		$notices = array_merge($this->notices, $this->error_notices);
 		foreach ($notices as $message) {
@@ -47,6 +63,9 @@ class WP_EoxCoreApi
 		}
 	}
 
+	/**
+	 *
+	 */
 	function __construct() {
 		if ( is_admin() ) {
 			add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
@@ -56,6 +75,9 @@ class WP_EoxCoreApi
 		}
 	}
 
+	/**
+	 * Hook to add a complete tab in the plugin setting's page
+	 */
 	public function add_admin_settings($settings) {
 		$settings['eoxapi'] = array(
 			'title' => __('EOX API', 'wp-edunext-marketing-site') ,
@@ -64,7 +86,7 @@ class WP_EoxCoreApi
 				array(
 					'id' => 'eox_client_id',
 					'label' => __('Client id', 'wp-edunext-marketing-site') ,
-					'description' => __('Client id of the edx instance API.', 'wp-edunext-marketing-site') ,
+					'description' => __('Client id of the open edX instance API.', 'wp-edunext-marketing-site') ,
 					'type' => 'text',
 					'default' => '',
 					'placeholder' => ''
@@ -72,7 +94,7 @@ class WP_EoxCoreApi
 				array(
 					'id' => 'eox_client_secret',
 					'label' => __('Client secret', 'wp-edunext-marketing-site') ,
-					'description' => __('Client secret of the edx instance API.', 'wp-edunext-marketing-site') ,
+					'description' => __('Client secret of the open edX instance API.', 'wp-edunext-marketing-site') ,
 					'type' => 'text',
 					'default' => '',
 					'placeholder' => ''
@@ -82,13 +104,17 @@ class WP_EoxCoreApi
 		return $settings;
 	}
 
-	public function eoxapi_settings_custom_html()
-	{
-		include('exoapi_settings_custom_html.php');
+	/**
+	 * Renders the custom form in the admin page
+	 */
+	public function eoxapi_settings_custom_html() {
+		include('templates/exoapi_settings_custom_html.php');
 	}
 
-	public function save_users_ajax()
-	{
+	/**
+	 *
+	 */
+	public function save_users_ajax() {
 		check_ajax_referer('eoxapi');
 		$new_users = json_decode($_POST['users']);
 
@@ -109,6 +135,9 @@ class WP_EoxCoreApi
 		wp_die();
 	}
 
+	/**
+	 * Produce an authentication token for the eox api using oauth 2.0
+	 */
 	public function get_access_token() {
 		$token = get_option('wpt_eox_token', '');
 		$base_url = get_option('wpt_lms_base_url', '');
@@ -143,7 +172,7 @@ class WP_EoxCoreApi
 		if (is_wp_error($response)) {
 			$error_message = $response->get_error_message();
 			$this->add_notice('error', $error_message);
-			$error = new WP_Error('broke', __("Couln't call the API to get a new", "eox-core-api") , $response);
+			$error = new WP_Error('broke', __("Couldn't call the API to get a new", "eox-core-api") , $response);
 		}
 
 		$token_details = json_decode($response['body']);
@@ -152,6 +181,9 @@ class WP_EoxCoreApi
 		return $token;
 	}
 
+	/**
+	 * Function to execute the API calls required to make a new edxapp user
+	 */
 	public function eox_create_new_user($args) {
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
@@ -174,6 +206,9 @@ class WP_EoxCoreApi
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function handle_api_errors($json, $ref) {
 		if (isset($json->non_field_errors)) {
 			foreach ($json->non_field_errors as $value) {
@@ -189,6 +224,9 @@ class WP_EoxCoreApi
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function add_notice($type, $message) {
 		$notice = array(
 			'type' => $type,
