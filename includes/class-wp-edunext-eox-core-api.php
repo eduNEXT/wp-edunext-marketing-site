@@ -11,17 +11,27 @@ class WP_EoxCoreApi
 	 */
 	const API_VERSION = 'v1';
 	const PATH_USER_API = '/eox-core/api/' . self::API_VERSION . '/user/';
+	const PATH_ENROLLMENT_API = '/eox-core/api/' . self::API_VERSION . '/enrollment/';
 
 	/**
 	 * Default values used to create a new edxapp user
 	 */
-	private $defaults = array(
+	private $user_defaults = array(
 		'email' => '',
 		'username' => '',
 		'password' => '',
 		'fullname' => '',
 		'is_active' => False,
 		'activate_user' => False,
+	);
+
+	/**
+	 * Default values used to create a new enrollemnt
+	 */
+	private $enroll_defaults = array(
+		'username' => '',
+		'mode' => '',
+		'course_id' => '',
 	);
 
 	private static $_instance;
@@ -52,6 +62,7 @@ class WP_EoxCoreApi
 			add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
 			add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
 			add_action('wp_ajax_save_users_ajax', array($this, 'save_users_ajax'));
+			add_action('wp_ajax_save_enrollments_ajax', array($this, 'save_enrollments_ajax'));
 		}
 	}
 
@@ -91,25 +102,45 @@ class WP_EoxCoreApi
 		include('templates/exoapi_settings_custom_html.php');
 	}
 
+	public function handle_ajax_json_input($input) {
+		check_ajax_referer('eoxapi');
+		$json = json_decode($input);
+		if (is_null($json)) {
+			$json = json_decode(stripslashes($input));
+		}
+		if (is_null($json)) {
+			$this->add_notice('error', 'Cannot parse as JSON, make sure to enter a valid JSON');
+		} else if (!is_array($json)) {
+			$this->add_notice('error', 'An array is needed, got ' . gettype($json) . ' instead');
+		} else {
+			return $json;
+		}
+		return null;
+	}
+
 	/**
-	 *
+	 * Called with AJAX function to POST to users API
+	 */
+	public function save_enrollments_ajax() {
+		$new_enrollments = $this->handle_ajax_json_input($_POST['enrollments']);
+		if ($new_enrollments) {
+			foreach ($new_enrollments as $enrollment) {
+				$this->eox_create_enrollment($enrollment);
+			}
+		}
+		$this->show_notices();
+		wp_die();
+	}
+
+	/**
+	 * Called with AJAX function to POST to users API
 	 */
 	public function save_users_ajax() {
-		check_ajax_referer('eoxapi');
-		$new_users = json_decode($_POST['users']);
-
-		if (is_null($new_users)) {
-			$new_users = json_decode(stripslashes($_POST['users']));
-		}
-
-		if (is_array($new_users)) {
+		$new_users = $this->handle_ajax_json_input($_POST['users']);
+		if ($new_users) {
 			foreach ($new_users as $user) {
-				$this->eox_create_new_user($user);
+				$this->eox_create_user($user);
 			}
-		} else if (is_null($new_users)) {
-			$this->add_notice('error', 'Cannot parse as JSON, make sure to enter a valid JSON');
-		} else {
-			$this->add_notice('error', 'An array is needed, got ' . gettype($new_users) . ' instead');
 		}
 		$this->show_notices();
 		wp_die();
@@ -171,11 +202,33 @@ class WP_EoxCoreApi
 	/**
 	 * Function to execute the API calls required to make a new edxapp user
 	 */
-	public function eox_create_new_user($args) {
+	public function eox_create_enrollment($args) {
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
 
-			$data = wp_parse_args($args, $this->defaults);
+			$data = wp_parse_args($args, $this->enroll_defaults);
+			$base_url = get_option('wpt_lms_base_url', '');
+			$url = $base_url . self::PATH_ENROLLMENT_API;
+			$response = wp_remote_post($url, array(
+				'headers' => 'Authorization: Bearer ' . $token,
+				'body' => $data
+			));
+			$ref = $data['username'];
+			$errors = $this->check_response_errors($response, $ref);
+			if (!$errors) {
+				$this->add_notice('notice-success', 'Enrollment success! <i>(' . $ref . ')</i>');
+			}
+		}
+	}
+
+	/**
+	 * Function to execute the API calls required to make a new edxapp user
+	 */
+	public function eox_create_user($args) {
+		$token = $this->get_access_token();
+		if (!is_wp_error($token)) {
+
+			$data = wp_parse_args($args, $this->user_defaults);
 			$base_url = get_option('wpt_lms_base_url', '');
 			$url = $base_url . self::PATH_USER_API;
 			$response = wp_remote_post($url, array(
@@ -183,32 +236,43 @@ class WP_EoxCoreApi
 				'body' => $data
 			));
 			$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
-			$response_json = json_decode($response['body']);
-			if (is_null($response_json) && $response['response']['code'] === 404) {
-				$this->add_notice('error', '404 - eox-core is likely not installed on the remote server' . $response['body']);
-			}
-			else if (is_null($response_json)) {
-				$this->add_notice('error', 'non-json response, server returned status code ' . $response['response']['code']);
-			}
-			else if ($response['response']['code'] !== 200) {
-				$this->handle_api_errors($response_json, $ref);
-			}
-			else {
+			$errors = $this->check_response_errors($response, $ref);
+			if (!$errors) {
 				$this->add_notice('notice-success', 'User creation success! <i>(' . $ref . ')</i>');
 			}
 		}
+	}
+
+	public function check_response_errors($response, $ref)
+	{
+		$response_json = json_decode($response['body']);
+		if (is_null($response_json) && $response['response']['code'] === 404) {
+			$this->add_notice('error', '404 - eox-core is likely not installed on the remote server' . $response['body']);
+		}
+		else if (is_null($response_json)) {
+			$this->add_notice('error', 'non-json response, server returned status code ' . $response['response']['code']);
+		}
+		else if ($response['response']['code'] !== 200) {
+			$this->handle_api_errors($response_json, $ref);
+		} else {
+			return false;
+		}
+		return true;
 	}
 
 	/**
 	 *
 	 */
 	public function handle_api_errors($json, $ref) {
+		if (isset($json->detail)) {
+			$this->add_notice('error', $json->detail . ' (' . $ref . ')');
+		}
 		if (isset($json->non_field_errors)) {
 			foreach ($json->non_field_errors as $value) {
 				$this->add_notice('error', $value . ' (' . $ref . ')');
 			}
 		}
-		foreach (array_keys($this->defaults) as $key) {
+		foreach (array_keys($this->user_defaults) as $key) {
 			if (isset($json->$key)) {
 				foreach ($json->$key as $value) {
 					$this->add_notice('error', ucfirst($key) . ': ' . $value . ' <i>(' . $ref . ')</i>');

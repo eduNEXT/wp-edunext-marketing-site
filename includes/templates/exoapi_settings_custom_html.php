@@ -1,5 +1,9 @@
 <style>
-.exoapi-add-new-users {
+.eoxapis-container {
+	position: relative;
+	max-width: 631px;
+}
+.eoxapis-container > div {
     display: inline-block;
     background: white;
     padding: 0 20px 15px 20px;
@@ -7,7 +11,7 @@
     border-radius: 3px;
     position: relative;
 }
-.exoapi-add-new-users .json-example {
+.eoxapis-container .json-example {
 	display: inline-block;
 	background: #DDD;
 	font-family: monospace;
@@ -20,34 +24,41 @@
 	border-radius: 3px;
 	padding: 5px;
 }
-.exoapi-add-new-users .json-example-container {
+.eoxapis-container .json-example-container {
 	position: relative;
 }
-.exoapi-add-new-users .json-toggle {
+.eoxapis-container .json-toggle {
 	text-decoration: underline;
 	cursor: help;
 }
-.exoapi-add-new-users .exoapi-add-new-users {
-	background: white;
-}
-.exoapi-add-new-users .exoapi-add-new-users {
-    background: white;
-    padding: 0 20px 15px 20px;
-    display: inline-block;
-    border: 1px solid #5555;
-}
-.exoapi-add-new-users .save-users-button {
+.eoxapis-container .button-secondary {
 	display: block;
 	margin-top: 12px;
 	margin-left: auto;
 }
+.eoxapis-container textarea {
+	font-family: monospace;
+}
+#eox-select-api {
+	position: absolute;
+	top: 15px;
+	right: 20px;
+	z-index: 3;
+	width: 130px;
+}
 </style>
-<div class="exoapi-add-new-users">
-	<h2>Add new Open edx users</h2>
-	<p>
-		Write the new users info using a JSON array:
-	</p>
-	<textarea name="eox-api-new-users" id="eox-api-new-users" cols="70" rows="10">
+<div class="eoxapis-container">
+	<select name="" id="eox-select-api">
+		<option value="exoapi-add-new-users" selected>Users</option>
+		<option value="exoapi-add-new-enrollments">Enrollments</option>
+	</select>
+	
+	<div class="exoapi-add-new-users">
+		<h2>Add new Open edx users</h2>
+		<p>
+			Write the new users info using a JSON array:
+		</p>
+		<textarea name="eox-api-new-users" id="eox-api-new-users" cols="70" rows="10">
 [{
     "email": "honor@example.com",
     "username": "honor",
@@ -55,7 +66,21 @@
     "fullname": "Honor McGregor",
     "activate_user": true
 }]</textarea>
-	<button class="button-secondary save-users-button">Execute API call</button>
+		<button class="button-secondary save-users-button">Execute API call</button>
+	</div>
+	<div class="exoapi-add-new-enrollments">
+		<h2>Add new Enrollments</h2>
+		<p>
+			Write the new enrollments info using a JSON array:
+		</p>
+		<textarea name="eox-api-new-enrollments" id="eox-api-new-enrollments" cols="70" rows="10">
+[{
+    "username": "honor",
+    "course_id": "course-v1:edX+DemoX+Demo_Course",
+    "mode": "audit"
+}]</textarea>
+		<button class="button-secondary save-enrollments-button">Execute API call</button>
+	</div>
 </div>
 <script>
 jQuery(function ($) {
@@ -82,5 +107,18 @@ jQuery(function ($) {
 		e.stopPropagation();
 		return false;
 	});
+
+	$('.save-enrollments-button').click(function (e) {
+		var data = {enrollments: $('#eox-api-new-enrollments').val()};
+		callAction('save_enrollments_ajax', data);
+		e.stopPropagation();
+		return false;
+	});
+
+	$('#eox-select-api').on('change', function () {
+		$('.' + this.value).show().siblings('div').hide();
+	});
+
+	$('#eox-select-api').change();
 })
 </script>
