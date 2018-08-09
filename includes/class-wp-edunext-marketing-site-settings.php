@@ -36,6 +36,14 @@ class WP_eduNEXT_Marketing_Site_Settings {
 	 */
 	public $settings = array();
 
+	/**
+	 * Available settings for plugin.
+	 * @var     string
+	 * @access  public
+	 * @since   1.0.0
+	 */
+	public $active_tab = '';
+
 	public function __construct ( $parent ) {
 		$this->parent = $parent;
 
@@ -441,6 +449,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				if ( $current_section && $current_section != $section ) continue;
 
 				// Add section to page
+				$this->active_tab = $section;
 				add_settings_section( $section, $data['title'], array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
 
 				foreach ( $data['fields'] as $field ) {
@@ -456,7 +465,14 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					register_setting( $this->parent->_token . '_settings', $option_name, $validation );
 
 					// Add field to page
-					add_settings_field( $field['id'], $field['label'], array( $this->parent->admin, 'display_field' ), $this->parent->_token . '_settings', $section, array( 'field' => $field, 'prefix' => $this->base ) );
+					add_settings_field(
+						$field['id'],
+						$field['label'],
+						array( $this->parent->admin, 'display_field' ),
+						$this->parent->_token . '_settings',
+						$section,
+						array( 'field' => $field, 'prefix' => $this->base )
+					);
 				}
 
 				if ( ! $current_section ) break;
@@ -525,8 +541,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				ob_start();
 				settings_fields( $this->parent->_token . '_settings' );
 				do_settings_sections( $this->parent->_token . '_settings' );
+				do_action($this->active_tab . '_after_settings_page_html');
 				$html .= ob_get_clean();
-
 				$html .= '<p class="submit">' . "\n";
 					$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
 					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'wp-edunext-marketing-site' ) ) . '" />' . "\n";

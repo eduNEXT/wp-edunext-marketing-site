@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Open edX LMS and Wordpress integrator
- * Version: 1.2
+ * Version: 1.3
  * Description: Set up your Wordpress site as the front end site or marketing site for your online learning initiative powered by the open edX platform.
  * Author: eduNEXT
  * Author URI: https://www.edunext.co/
@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 // Load plugin class files
 require_once( 'includes/class-wp-edunext-marketing-site.php' );
 require_once( 'includes/class-wp-edunext-marketing-site-settings.php' );
+require_once( 'includes/class-wp-edunext-eox-core-api.php' );
 
 // Load plugin libraries
 require_once( 'includes/lib/class-wp-edunext-marketing-site-admin-api.php' );
@@ -36,7 +37,7 @@ require_once( 'includes/lib/class-wp-edunext-marketing-site-menu.php' );
  * @return object WP_eduNEXT_Marketing_Site
  */
 function WP_eduNEXT_Marketing_Site () {
-	$instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '1.2.0' );
+	$instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '1.3.0' );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WP_eduNEXT_Marketing_Site_Settings::instance( $instance );
@@ -46,3 +47,17 @@ function WP_eduNEXT_Marketing_Site () {
 }
 
 WP_eduNEXT_Marketing_Site();
+
+
+/**
+ * Returns the main instance of WP_EoxCoreApi to prevent the need to use globals.
+ *
+ * @since  1.0.0
+ * @return object WP_EoxCoreApi
+ */
+function WP_EoxCoreApi () {
+	$instance = WP_EoxCoreApi::instance( __FILE__, '1.1.0' );
+	return $instance;
+}
+
+WP_EoxCoreApi();
