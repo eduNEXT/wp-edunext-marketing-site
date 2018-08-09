@@ -5,10 +5,18 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
+     * Where notices to be shown to the user are stored
+     */
+    private $notices = array();
+    private $error_notices = array();
+
+
+    /**
      * Constructor function
      */
     public function __construct () {
         add_action( 'save_post', array( $this, 'save_meta_boxes' ), 10, 1 );
+        add_action('admin_notices', array($this, 'show_notices'));
     }
 
     /**
@@ -316,5 +324,35 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
             }
         }
     }
+
+    /**
+     *
+     */
+    public function add_notice($type, $message) {
+        $notice = array(
+            'type' => $type,
+            'message' => $message
+        );
+        if ($type === 'error') {
+            array_push($this->error_notices, $notice);
+        } else {
+            array_push($this->notices, $notice);
+        }
+    }
+
+    /**
+     *
+     */
+    public function show_notices() {
+        $notices = array_merge($this->notices, $this->error_notices);
+        foreach ($notices as $message) {
+            ?>
+            <div class="<?= $message['type'] ?> notice">
+                    <p><?= __($message['message'], 'eox-core-api') ?></p>
+            </div>
+            <?php
+        }
+    }
+
 
 }

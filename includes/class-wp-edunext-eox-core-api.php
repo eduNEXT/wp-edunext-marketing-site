@@ -7,14 +7,10 @@ class WP_EoxCoreApi
 {
 
 	/**
-	 *
+	 * Class Constants
 	 */
-	private $notices = array();
-
-	/**
-	 *
-	 */
-	private $error_notices = array();
+	const API_VERSION = 'v1';
+	const PATH_USER_API = '/eox-core/api/' . self::API_VERSION . '/user/';
 
 	/**
 	 * Default values used to create a new edxapp user
@@ -25,8 +21,6 @@ class WP_EoxCoreApi
 		'password' => '',
 		'fullname' => '',
 		'is_active' => False,
-		'is_staff' => False,
-		'is_superuser' => False,
 		'activate_user' => False,
 	);
 
@@ -49,19 +43,6 @@ class WP_EoxCoreApi
 		return self::$_instance;
 	} // End instance ()
 
-	/**
-	 *
-	 */
-	public function show_notices() {
-		$notices = array_merge($this->notices, $this->error_notices);
-		foreach ($notices as $message) {
-			?>
-			<div class="<?= $message['type'] ?> notice">
-		        	<p><?= __($message['message'], 'eox-core-api') ?></p>
-		    </div>
-		    <?php
-		}
-	}
 
 	/**
 	 *
@@ -69,7 +50,6 @@ class WP_EoxCoreApi
 	function __construct() {
 		if ( is_admin() ) {
 			add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
-			add_action('admin_notices', array($this, 'show_notices'));
 			add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
 			add_action('wp_ajax_save_users_ajax', array($this, 'save_users_ajax'));
 		}
@@ -140,6 +120,11 @@ class WP_EoxCoreApi
 	 */
 	public function get_access_token() {
 		$token = get_option('wpt_eox_token', '');
+		$last_checked = get_option('last_checked_working', 0);
+		$five_min_ago = time() - 60 * 5;
+		if ($last_checked  > $five_min_ago) {
+			return $token;
+		}
 		$base_url = get_option('wpt_lms_base_url', '');
 		if ($token !== '') {
 			$url = $base_url . '/oauth2/access_token/' . $token . '/';
@@ -153,6 +138,8 @@ class WP_EoxCoreApi
 
 			$json_reponse = json_decode($response['body']);
 			if (!isset($json_reponse['error'])) {
+				// Cache the last time it was succesfully checked
+				$token = update_option('last_checked_working', time());
 				// Cached token its still valid, return it
 				return $token;
 			}
@@ -190,14 +177,20 @@ class WP_EoxCoreApi
 
 			$data = wp_parse_args($args, $this->defaults);
 			$base_url = get_option('wpt_lms_base_url', '');
-			$url = $base_url . '/eox-core/api/v1/user/';
+			$url = $base_url . self::PATH_USER_API;
 			$response = wp_remote_post($url, array(
 				'headers' => 'Authorization: Bearer ' . $token,
 				'body' => $data
 			));
 			$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
-			if ($response['response']['code'] !== 200) {
-				$response_json = json_decode($response['body']);
+			$response_json = json_decode($response['body']);
+			if (is_null($response_json) && $response['response']['code'] === 404) {
+				$this->add_notice('error', '404 - eox-core is likely not installed on the remote server' . $response['body']);
+			}
+			else if (is_null($response_json)) {
+				$this->add_notice('error', 'non-json response, server returned status code ' . $response['response']['code']);
+			}
+			else if ($response['response']['code'] !== 200) {
 				$this->handle_api_errors($response_json, $ref);
 			}
 			else {
@@ -224,18 +217,12 @@ class WP_EoxCoreApi
 		}
 	}
 
-	/**
-	 *
-	 */
 	public function add_notice($type, $message) {
-		$notice = array(
-			'type' => $type,
-			'message' => $message
-		);
-		if ($type === 'error') {
-			array_push($this->error_notices, $notice);
-		} else {
-			array_push($this->notices, $notice);
-		}
+		WP_eduNEXT_Marketing_Site()->admin->add_notice($type, $message);
 	}
+
+	public function show_notices() {
+		WP_eduNEXT_Marketing_Site()->admin->show_notices();
+	}
+
 }

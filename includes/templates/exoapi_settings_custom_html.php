@@ -60,7 +60,7 @@
 <script>
 jQuery(function ($) {
 
-	let callAction = function (action, data_arg) {
+	var callAction = function (action, data_arg) {
 		var data = {
 			'action': action,
 			'_ajax_nonce': "<?= wp_create_nonce( 'eoxapi' ); ?>"
@@ -77,7 +77,7 @@ jQuery(function ($) {
 	});
 
 	$('.save-users-button').click(function (e) {
-		let data = {users: $('#eox-api-new-users').val()};
+		var data = {users: $('#eox-api-new-users').val()};
 		callAction('save_users_ajax', data);
 		e.stopPropagation();
 		return false;
