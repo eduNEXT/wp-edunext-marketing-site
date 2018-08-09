@@ -170,7 +170,7 @@ class WP_EoxCoreApi
 			$json_reponse = json_decode($response['body']);
 			if (!isset($json_reponse['error'])) {
 				// Cache the last time it was succesfully checked
-				$token = update_option('last_checked_working', time());
+				update_option('last_checked_working', time());
 				// Cached token its still valid, return it
 				return $token;
 			}
