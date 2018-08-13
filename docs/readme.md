@@ -22,7 +22,6 @@ Enrolling the current user to a course (assuming user was already created using 
 
 ```php
 $user = wp_get_current_user();
-$new_password = wp_generate_password();
 
 WP_EoxCoreApi()->create_enrollment([
     'email' => $user->user_email,
