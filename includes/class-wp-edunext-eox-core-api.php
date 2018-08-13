@@ -125,7 +125,7 @@ class WP_EoxCoreApi
 		$new_enrollments = $this->handle_ajax_json_input($_POST['enrollments']);
 		if ($new_enrollments) {
 			foreach ($new_enrollments as $enrollment) {
-				$this->eox_create_enrollment($enrollment);
+				$this->create_enrollment($enrollment);
 			}
 		}
 		$this->show_notices();
@@ -139,7 +139,7 @@ class WP_EoxCoreApi
 		$new_users = $this->handle_ajax_json_input($_POST['users']);
 		if ($new_users) {
 			foreach ($new_users as $user) {
-				$this->eox_create_user($user);
+				$this->create_user($user);
 			}
 		}
 		$this->show_notices();
@@ -202,7 +202,7 @@ class WP_EoxCoreApi
 	/**
 	 * Function to execute the API calls required to make a new edxapp user
 	 */
-	public function eox_create_enrollment($args) {
+	public function create_enrollment($args) {
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
 
@@ -224,7 +224,7 @@ class WP_EoxCoreApi
 	/**
 	 * Function to execute the API calls required to make a new edxapp user
 	 */
-	public function eox_create_user($args) {
+	public function create_user($args) {
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
 
