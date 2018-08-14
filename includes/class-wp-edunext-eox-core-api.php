@@ -159,16 +159,15 @@ class WP_EoxCoreApi
 		$base_url = get_option('wpt_lms_base_url', '');
 		if ($token !== '') {
 			$url = $base_url . '/oauth2/access_token/' . $token . '/';
-			$response = wp_remote_post($url);
+			$response = wp_remote_get($url);
 			if (is_wp_error($response)) {
 				$error_message = $response->get_error_message();
 				$this->add_notice('error', $error_message);
 				$error = new WP_Error('broke', $error_message, $response);
 				return $error;
 			}
-
 			$json_reponse = json_decode($response['body']);
-			if (!isset($json_reponse['error'])) {
+			if (!isset($json_reponse->error)) {
 				// Cache the last time it was succesfully checked
 				update_option('last_checked_working', time());
 				// Cached token its still valid, return it
