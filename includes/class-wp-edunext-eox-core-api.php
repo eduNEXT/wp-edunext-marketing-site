@@ -204,7 +204,7 @@ class WP_EoxCoreApi
 		$data = wp_parse_args($args, $this->enroll_defaults);
 		$api_url = self::PATH_ENROLLMENT_API;
 		$ref = $data['username'];
-		$success_message = 'Enrollment success! <i>(' . $ref . ')</i>';
+		$success_message = 'Enrollment success!';
 		return $this->api_call($api_url, $data, $ref, $success_message);
 	}
 
@@ -215,7 +215,7 @@ class WP_EoxCoreApi
 		$data = wp_parse_args($args, $this->user_defaults);
 		$api_url = self::PATH_USER_API;
 		$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
-		$success_message = 'User creation success! <i>(' . $ref . ')</i>';
+		$success_message = 'User creation success!';
 		return $this->api_call($api_url, $data, $ref, $success_message);
 	}
 
@@ -235,7 +235,7 @@ class WP_EoxCoreApi
 				$this->add_notice('error', $err);
 			}
 			if (empty($errors)) {
-				$this->add_notice('notice-success', $success_message);
+				$this->add_notice('notice-success', $success_message . ' <i>(' . $ref . ')</i>');
 				return json_decode($response['body']);
 			} else {
 				return new WP_Error('eox-api-error', implode(', ', $errors));
