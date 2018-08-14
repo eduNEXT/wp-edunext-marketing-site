@@ -8,7 +8,7 @@ WP Plugin Development on Docker
 <pre>
     volumes:
       - ./data:/data
-      - ./plugins:/app/wp-content/plugins
+      - ./plugins/wp-edunext-marketing-site:/app/wp-content/plugins/wp-edunext-marketing-site
 </pre>
 - Open the plugins folder then copy this plugin there, then start the docker container with `docker-compose up`, you should now be able to open http://localhost:8080 and see your wordpress installation running.
 
