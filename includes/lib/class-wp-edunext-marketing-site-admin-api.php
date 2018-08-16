@@ -80,7 +80,12 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
             case 'text':
             case 'url':
             case 'email':
-                $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '" />' . "\n";
+                $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" ';
+                $html .= 'name="' . esc_attr( $option_name ) . '" ';
+                $html .= 'placeholder="' . esc_attr( $field['placeholder'] ) . '" ';
+                $html .= 'value="' . esc_attr( $data ) . '" ';
+                $html .= empty($field['advanced_setting']) ? '' : ' class="advanced_setting"';
+                $html .= '/>' . "\n";
             break;
 
             case 'password':
@@ -212,6 +217,23 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
         echo $html;
 
+    }
+
+    public function show_advance_settings_toggle () {
+        ?>
+        <div class="advanced_settings_toggle">
+            <a href="#" id="toggle_advanced_settings"><?= __('Show advanced settings', 'wp-edunext-marketing-site') ?></a>
+        <script>
+        jQuery('.advanced_setting').parent().parent().hide();
+        jQuery('#toggle_advanced_settings').click(function(){
+            jQuery(this).hide();
+            jQuery('.advanced_setting').parent().parent().show();
+            return false;
+        });
+        </script>
+        </div>
+        <?php
+        echo $html;
     }
 
     /**

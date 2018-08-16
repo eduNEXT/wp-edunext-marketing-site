@@ -265,7 +265,9 @@ class WP_eduNEXT_Marketing_Site {
 		wp_localize_script( 'edunext_enroll_button', $short_id, $atts );
 		wp_localize_script( 'edunext_enroll_button', 'ENEXT_SRV', array(
 				'lms_base_url' => get_option('wpt_lms_base_url'),
-				'enrollment_api_location' => get_option('wpt_enrollment_api_location')
+				'enrollment_api_location' => get_option('wpt_enrollment_api_location', '/api/enrollment/v1/'),
+				'user_enrollment_url' => get_option('wpt_user_enrollment_url', '/register?course_id=%course_id%&enrollment_action=enroll'),
+				'course_has_not_started_url' => get_option('wpt_course_has_not_started_url', '/dashboard'),
 		));
 
 		$course_id = $atts['course_id'];
