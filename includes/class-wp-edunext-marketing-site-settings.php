@@ -79,6 +79,16 @@ class WP_eduNEXT_Marketing_Site_Settings {
 		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
 	}
 
+
+	/**
+	 * Load frontend CSS.
+	 * @access  public
+	 * @since   1.0.0
+	 * @return void
+	 */
+	public function enqueue_styles () {
+	} // End enqueue_styles ()
+
 	/**
 	 * Load settings JS & CSS
 	 * @return void
@@ -93,8 +103,10 @@ class WP_eduNEXT_Marketing_Site_Settings {
     	// We're including the WP media scripts here because they're needed for the image upload field
     	// If you're not including an image upload then you can leave this function call out
     	wp_enqueue_media();
-
-    	wp_register_script( $this->parent->_token . '-settings-js', $this->parent->assets_url . 'js/settings' . $this->parent->script_suffix . '.js', array( 'farbtastic', 'jquery' ), '1.0.0' );
+    	$this->parent->register_and_localize_commons_scripts();
+		wp_register_style( $this->parent->_token . '-settings-css', $this->parent->assets_url . 'css/settings.css', array(), '1.0.0' );
+    	wp_register_script( $this->parent->_token . '-settings-js', $this->parent->assets_url . 'js/settings' . $this->parent->script_suffix . '.js', array( 'farbtastic', 'jquery', 'edunext_commons' ), '1.0.0' );
+		wp_enqueue_style( $this->parent->_token . '-settings-css' );
     	wp_enqueue_script( $this->parent->_token . '-settings-js' );
 	}
 

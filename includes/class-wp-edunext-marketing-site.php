@@ -206,9 +206,21 @@ class WP_eduNEXT_Marketing_Site {
 	 * @return  void
 	 */
 	public function enroll_integration_scripts ( $hook = '' ) {
-		wp_register_script( 'edunext_commons', esc_url( $this->assets_url ) . 'js/commons' . $this->script_suffix . '.js' , array( 'jquery' ), $this->_version );
 		wp_register_script( 'edunext_enroll_button', esc_url( $this->assets_url ) . 'js/edunextEnrollButton' . $this->script_suffix . '.js' , array( 'jquery', 'edunext_commons' ), $this->_version );
 	} // End enroll_integration_scripts ()
+
+	public function register_and_localize_commons_scripts($value='')
+	{
+		wp_register_script( 'edunext_commons', esc_url( $this->assets_url ) . 'js/commons' . $this->script_suffix . '.js' , array( 'jquery' ), $this->_version );
+		wp_localize_script( 'edunext_commons', 'ENEXT_SRV', array(
+				'sessionid_cookie' => isset($_COOKIE['sessionid']),
+				'nonce' => wp_create_nonce('eoxapi'),
+				'lms_base_url' => get_option('wpt_lms_base_url'),
+				'enrollment_api_location' => get_option('wpt_enrollment_api_location', '/api/enrollment/v1/'),
+				'user_enrollment_url' => get_option('wpt_user_enrollment_url', '/register?course_id=%course_id%&enrollment_action=enroll'),
+				'course_has_not_started_url' => get_option('wpt_course_has_not_started_url', '/dashboard'),
+		));
+	}
 
 	/**
 	 * Load shortcodes.
@@ -263,15 +275,11 @@ class WP_eduNEXT_Marketing_Site {
 			'edunext_enroll_button'
 		);
 
+		$this->register_and_localize_commons_scripts();
 		wp_enqueue_script( 'edunext_commons' );
 		wp_enqueue_script( 'edunext_enroll_button' );
 		wp_localize_script( 'edunext_enroll_button', $short_id, $atts );
-		wp_localize_script( 'edunext_commons', 'ENEXT_SRV', array(
-				'lms_base_url' => get_option('wpt_lms_base_url'),
-				'enrollment_api_location' => get_option('wpt_enrollment_api_location', '/api/enrollment/v1/'),
-				'user_enrollment_url' => get_option('wpt_user_enrollment_url', '/register?course_id=%course_id%&enrollment_action=enroll'),
-				'course_has_not_started_url' => get_option('wpt_course_has_not_started_url', '/dashboard'),
-		));
+
 
 		$course_id = $atts['course_id'];
 

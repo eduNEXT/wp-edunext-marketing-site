@@ -12,6 +12,7 @@ class WP_EoxCoreApi
 	const API_VERSION = 'v1';
 	const PATH_USER_API = '/eox-core/api/' . self::API_VERSION . '/user/';
 	const PATH_ENROLLMENT_API = '/eox-core/api/' . self::API_VERSION . '/enrollment/';
+	const PATH_USERINFO = '/eox-core/api/' . self::API_VERSION . '/userinfo';
 
 	/**
 	 * Default values used to create a new edxapp user
@@ -62,6 +63,7 @@ class WP_EoxCoreApi
 			add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
 			add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
 			add_action('wp_ajax_save_users_ajax', array($this, 'save_users_ajax'));
+			add_action('wp_ajax_get_userinfo_ajax', array($this, 'get_userinfo_ajax'));
 			add_action('wp_ajax_save_enrollments_ajax', array($this, 'save_enrollments_ajax'));
 		}
 	}
@@ -147,6 +149,21 @@ class WP_EoxCoreApi
 	}
 
 	/**
+	 * Called with AJAX function to POST to users API
+	 */
+	public function get_userinfo_ajax() {
+		$errors = $this->eox_userinfo();
+		if (!$errors) {
+			$this->show_notices();
+			wp_die();
+		} else {
+			http_response_code(400);
+			$this->show_notices();
+			wp_die();
+		}
+	}
+
+	/**
 	 * Produce an authentication token for the eox api using oauth 2.0
 	 */
 	public function get_access_token() {
@@ -159,16 +176,14 @@ class WP_EoxCoreApi
 		$base_url = get_option('wpt_lms_base_url', '');
 		if ($token !== '') {
 			$url = $base_url . '/oauth2/access_token/' . $token . '/';
-			$response = wp_remote_post($url);
+			$response = wp_remote_get($url);
 			if (is_wp_error($response)) {
 				$error_message = $response->get_error_message();
 				$this->add_notice('error', $error_message);
-				$error = new WP_Error('broke', $error_message, $response);
-				return $error;
 			}
 
 			$json_reponse = json_decode($response['body']);
-			if (!isset($json_reponse['error'])) {
+			if (!isset($json_reponse->error)) {
 				// Cache the last time it was succesfully checked
 				update_option('last_checked_working', time());
 				// Cached token its still valid, return it
@@ -194,6 +209,9 @@ class WP_EoxCoreApi
 		}
 
 		$token_details = json_decode($response['body']);
+		if (isset($token_details->error)) {
+			$this->add_notice('error', $token_details->error);
+		}
 		$token = $token_details->access_token;
 		update_option('wpt_eox_token', $token);
 		return $token;
@@ -218,6 +236,28 @@ class WP_EoxCoreApi
 			if (!$errors) {
 				$this->add_notice('notice-success', 'Enrollment success! <i>(' . $ref . ')</i>');
 			}
+		}
+	}
+
+	/**
+	 * Function to execute the API calls required to make a new edxapp user
+	 */
+	public function eox_userinfo() {
+		$token = $this->get_access_token();
+		if (!is_wp_error($token)) {
+			$base_url = get_option('wpt_lms_base_url', '');
+			$url = $base_url . self::PATH_USERINFO;
+			$response = wp_remote_get($url, array(
+				'headers' => 'Authorization: Bearer ' . $token,
+				'body' => $data
+			));
+			$errors = $this->check_response_errors($response, 'userinfo');
+			if (!$errors) {
+				$this->add_notice('notice-success', $response['body']);
+			}
+			return $errors;
+		} else {
+			return array($token);
 		}
 	}
 
