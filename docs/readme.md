@@ -2,7 +2,28 @@
 Examples
 ========
 
-Creating a new user based on the current user (using wp_get_current_user)
+Creating a new user using an array of data
+
+```php
+$user = [
+    'username' => 'jhondoe',
+    'email' => 'jhondoe@example.com',
+    'fullname' => 'Jhon Doe',
+    'password' => 'foo123456'
+];
+
+$response = WP_EoxCoreApi()->create_user($user);
+
+if (is_wp_error($response)) {
+    echo $response->get_error_message();
+} else {
+    /* no error found, response is the user created */
+    echo "<h3>Edx Account created for {$response->username}! Your password is $new_password</h3>";
+}
+
+```
+
+Creating a new user based on the current user (if your site uses wordpress users and they are logged in)
 
 ```php
 $user = wp_get_current_user();
