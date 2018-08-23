@@ -128,15 +128,6 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'placeholder'	=> __( 'https://mylms.edunext.io', 'wp-edunext-marketing-site' )
 				),
 				array(
-					'id' 			=> 'enrollment_api_location',
-					'label'			=> __( 'Base domain for the open edX domain' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
-					'type'			=> 'text',
-					'default'		=> '/api/enrollment/v1/',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
-				),
-
-				array(
 					'id' 			=> 'button_class_generic',
 					'label'			=> __( 'CSS classes for the buttons ' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( 'You can override the specific buttons in the Enrollment tab' ),
@@ -159,7 +150,34 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
-				)
+				),
+				array(
+					'id' 				=> 'enrollment_api_location',
+					'label'				=> __( 'Enrollment API Location' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> '/api/enrollment/v1/',
+					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
+					'advanced_setting' 	=> true
+				),
+				array(
+					'id' 				=> 'user_enrollment_url',
+					'label'				=> __( 'Button URL for an user to enroll' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> '/register?course_id=%course_id%&enrollment_action=enroll',
+					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
+					'advanced_setting' 	=> true
+				),
+				array(
+					'id' 				=> 'course_has_not_started_url',
+					'label'				=> __( 'Button URL when course has not yet started' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> '/dashboard',
+					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
+					'advanced_setting' 	=> true
+				),
 
 			)
 		);
@@ -537,10 +555,14 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 			$html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
 
-				// Get settings fields
+
 				ob_start();
+				// Get settings fields
 				settings_fields( $this->parent->_token . '_settings' );
 				do_settings_sections( $this->parent->_token . '_settings' );
+				if ($this->active_tab === 'general') {
+					$this->parent->admin->show_advance_settings_toggle();
+				}
 				do_action($this->active_tab . '_after_settings_page_html');
 				$html .= ob_get_clean();
 				$html .= '<p class="submit">' . "\n";
