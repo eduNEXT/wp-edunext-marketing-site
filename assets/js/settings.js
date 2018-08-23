@@ -68,4 +68,43 @@ jQuery(document).ready(function($) {
         return false;
     });
 
+    jQuery(document).ready(function($){
+        var isSettingsTab = Boolean($('[name="wpt_lms_base_url"]').length);
+        console.log(isSettingsTab);
+        if (isSettingsTab) {
+            var $span = $('<span></span>');
+            $('p').first().append('<br>').append($span);
+            setInterval(function(){
+                if (ENEXT.amILoggedIn()) {
+                    $span.html('Cookie found!');
+                } else {
+                    $span.html('Cookie not found!');
+                }
+            }, 100);
+        }
+    });
+
+});
+jQuery(document).ready(function($){
+    var isSettingsTab = Boolean($('[name="wpt_lms_base_url"]').length);
+    if (isSettingsTab) {
+        var $cookie_status = $('<span></span>').css({'font-weight': 'bold'});
+        var $fetch_enrollment_status = $('<span></span>').css({'font-weight': 'bold'});
+        $('p').first().append('<br>')
+          .append($cookie_status)
+          .append($fetch_enrollment_status);
+        setInterval(function(){
+            if (ENEXT.amILoggedIn()) {
+                $cookie_status.html('✓ Cookie found!').css({color: 'green'});
+            } else {
+                $cookie_status.html('✘ Cookie not found! Maybe you are not logged in?').css({color: 'red'});
+            }
+
+            ENEXT.getEnrollmentInfo().done(function () {
+              $fetch_enrollment_status.html('✓ Enrollment API fetching success!').css({color: 'green'});
+            }).fail(function () {
+              $fetch_enrollment_status.html('✓ Enrollment API fetching failed!').css({color: 'red'});
+            })
+        }, 5000);
+    }
 });
