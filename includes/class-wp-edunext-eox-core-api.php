@@ -125,7 +125,7 @@ class WP_EoxCoreApi
 		$new_enrollments = $this->handle_ajax_json_input($_POST['enrollments']);
 		if ($new_enrollments) {
 			foreach ($new_enrollments as $enrollment) {
-				$this->eox_create_enrollment($enrollment);
+				$this->create_enrollment($enrollment);
 			}
 		}
 		$this->show_notices();
@@ -139,7 +139,7 @@ class WP_EoxCoreApi
 		$new_users = $this->handle_ajax_json_input($_POST['users']);
 		if ($new_users) {
 			foreach ($new_users as $user) {
-				$this->eox_create_user($user);
+				$this->create_user($user);
 			}
 		}
 		$this->show_notices();
@@ -159,16 +159,15 @@ class WP_EoxCoreApi
 		$base_url = get_option('wpt_lms_base_url', '');
 		if ($token !== '') {
 			$url = $base_url . '/oauth2/access_token/' . $token . '/';
-			$response = wp_remote_post($url);
+			$response = wp_remote_get($url);
 			if (is_wp_error($response)) {
 				$error_message = $response->get_error_message();
 				$this->add_notice('error', $error_message);
 				$error = new WP_Error('broke', $error_message, $response);
 				return $error;
 			}
-
 			$json_reponse = json_decode($response['body']);
-			if (!isset($json_reponse['error'])) {
+			if (!isset($json_reponse->error)) {
 				// Cache the last time it was succesfully checked
 				update_option('last_checked_working', time());
 				// Cached token its still valid, return it
@@ -187,98 +186,104 @@ class WP_EoxCoreApi
 		);
 		$url = $base_url . '/oauth2/access_token/';
 		$response = wp_remote_post($url, $args);
-		if (is_wp_error($response)) {
-			$error_message = $response->get_error_message();
+		$json_reponse = json_decode($response['body']);		
+		if (is_wp_error($response) || isset($json_reponse->error)) {
+			$error_message = is_wp_error($response) ? $response->get_error_message() : $json_reponse->error;
 			$this->add_notice('error', $error_message);
-			$error = new WP_Error('broke', __("Couldn't call the API to get a new", "eox-core-api") , $response);
+			return new WP_Error('broke', __("Couldn't call the API to get a new", "eox-core-api") , $response);
 		}
-
-		$token_details = json_decode($response['body']);
-		$token = $token_details->access_token;
+		$token = $json_reponse->access_token;
 		update_option('wpt_eox_token', $token);
 		return $token;
 	}
 
 	/**
-	 * Function to execute the API calls required to make a new edxapp user
+	 * Function to execute the API calls required to make a new enrollment
 	 */
-	public function eox_create_enrollment($args) {
-		$token = $this->get_access_token();
-		if (!is_wp_error($token)) {
-
-			$data = wp_parse_args($args, $this->enroll_defaults);
-			$base_url = get_option('wpt_lms_base_url', '');
-			$url = $base_url . self::PATH_ENROLLMENT_API;
-			$response = wp_remote_post($url, array(
-				'headers' => 'Authorization: Bearer ' . $token,
-				'body' => $data
-			));
-			$ref = $data['username'];
-			$errors = $this->check_response_errors($response, $ref);
-			if (!$errors) {
-				$this->add_notice('notice-success', 'Enrollment success! <i>(' . $ref . ')</i>');
-			}
-		}
+	public function create_enrollment($args) {
+		$data = wp_parse_args($args, $this->enroll_defaults);
+		$api_url = self::PATH_ENROLLMENT_API;
+		$ref = $data['username'];
+		$success_message = 'Enrollment success!';
+		return $this->api_call($api_url, $data, $ref, $success_message);
 	}
 
 	/**
 	 * Function to execute the API calls required to make a new edxapp user
 	 */
-	public function eox_create_user($args) {
+	public function create_user($args) {
+		$data = wp_parse_args($args, $this->user_defaults);
+		$api_url = self::PATH_USER_API;
+		$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
+		$success_message = 'User creation success!';
+		return $this->api_call($api_url, $data, $ref, $success_message);
+	}
+
+	/**
+	 *
+	 */
+	public function api_call($api_url, $data, $ref, $success_message) {
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
-
-			$data = wp_parse_args($args, $this->user_defaults);
-			$base_url = get_option('wpt_lms_base_url', '');
-			$url = $base_url . self::PATH_USER_API;
+			$url = get_option('wpt_lms_base_url', '') . $api_url;
 			$response = wp_remote_post($url, array(
 				'headers' => 'Authorization: Bearer ' . $token,
 				'body' => $data
 			));
-			$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
-			$errors = $this->check_response_errors($response, $ref);
-			if (!$errors) {
-				$this->add_notice('notice-success', 'User creation success! <i>(' . $ref . ')</i>');
+			$errors = $this->get_response_errors($response, $ref);
+			foreach ($errors as $err) {
+				$this->add_notice('error', $err);
 			}
+			if (empty($errors)) {
+				$this->add_notice('notice-success', $success_message . ' <i>(' . $ref . ')</i>');
+				return json_decode($response['body']);
+			} else {
+				return new WP_Error('eox-api-error', implode(', ', $errors));
+			}
+		} else {
+			return $token;
 		}
 	}
 
-	public function check_response_errors($response, $ref)
+	public function get_response_errors($response, $ref)
 	{
 		$response_json = json_decode($response['body']);
+		$errors = array();
+
 		if (is_null($response_json) && $response['response']['code'] === 404) {
-			$this->add_notice('error', '404 - eox-core is likely not installed on the remote server' . $response['body']);
+			$errors[] = '404 - eox-core is likely not installed on the remote server' . $response['body'];
 		}
 		else if (is_null($response_json)) {
-			$this->add_notice('error', 'non-json response, server returned status code ' . $response['response']['code']);
+			$errors[] = 'non-json response, server returned status code ' . $response['response']['code'];
 		}
 		else if ($response['response']['code'] !== 200) {
-			$this->handle_api_errors($response_json, $ref);
-		} else {
-			return false;
+			$errors = array_merge($errors, $this->handle_api_errors($response_json, $ref));
 		}
-		return true;
+
+		return $errors;
 	}
 
 	/**
 	 *
 	 */
 	public function handle_api_errors($json, $ref) {
+		$errors = [];
 		if (isset($json->detail)) {
-			$this->add_notice('error', $json->detail . ' (' . $ref . ')');
+			$errors[] = $json->detail . ' (' . $ref . ')';
 		}
 		if (isset($json->non_field_errors)) {
 			foreach ($json->non_field_errors as $value) {
-				$this->add_notice('error', $value . ' (' . $ref . ')');
+				$errors[] = $value . ' (' . $ref . ')';
 			}
 		}
 		foreach (array_keys($this->user_defaults) as $key) {
 			if (isset($json->$key)) {
 				foreach ($json->$key as $value) {
-					$this->add_notice('error', ucfirst($key) . ': ' . $value . ' <i>(' . $ref . ')</i>');
+					$errors[] = ucfirst($key) . ': ' . $value . ' <i>(' . $ref . ')</i>';
 				}
 			}
 		}
+		return $errors;
 	}
 
 	public function add_notice($type, $message) {
