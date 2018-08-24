@@ -256,6 +256,7 @@ class WP_eduNEXT_Marketing_Site {
 				'button_class_enrollment_closed' => get_option('wpt_button_class_enrollment_closed'),
 				'container_class_enrollment_closed' => get_option('wpt_container_class_enrollment_closed'),
 				'color_class_enrollment_closed' => get_option('wpt_color_class_enrollment_closed'),
+				'hide_if' => '',
 			),
 			$atts,
 			'edunext_enroll_button'
@@ -272,7 +273,7 @@ class WP_eduNEXT_Marketing_Site {
 
 		$course_id = $atts['course_id'];
 
-		return "<div class=\"ednx-enroll-button-js\" data-course-id=\"${course_id}\" data-settings=\"${short_id}\"><span>" . $course_id . "</span></div>";
+		return "<div class=\"ednx-enroll-button-js\" style=\"display:none\" data-course-id=\"${course_id}\" data-settings=\"${short_id}\"><span>" . $course_id . "</span></div>";
 
 	} // End edunext_enroll_button ()
 
