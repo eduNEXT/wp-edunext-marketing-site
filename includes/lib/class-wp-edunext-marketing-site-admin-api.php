@@ -233,7 +233,6 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
         </script>
         </div>
         <?php
-        echo $html;
     }
 
     /**
