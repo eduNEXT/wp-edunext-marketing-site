@@ -227,6 +227,15 @@ class WP_eduNEXT_Marketing_Site_Menu {
 								}
 
 						}
+						// Marked by class-wp-edunext-marketing-site-menu-items-attributes.php for deletion if user is NOT logged in
+						if (!$is_user_logged_in && in_array($item->ID, Edx_Walker_Nav_Menu_Edit::$hide_if_not_logged_in)) {
+								unset($items[$key]);
+						}
+
+						// Marked by class-wp-edunext-marketing-site-menu-items-attributes.php for deletion if user is logged in
+						if ( $is_user_logged_in && in_array($item->ID, Edx_Walker_Nav_Menu_Edit::$hide_if_logged_in)) {
+								unset($items[$key]);
+						}
 				}
 				return $items;
 		}

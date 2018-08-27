@@ -5,6 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 
 class Edx_Walker_Nav_Menu_Edit extends Walker_Nav_Menu_Edit {
+
+	public static $hide_if_not_logged_in = array();
+	public static $hide_if_logged_in = array();
+
 	function start_el(&$output, $item, $depth = 0, $args = Array(), $id = 0) {
 		$item_output = '';
 		parent::start_el($item_output, $item, $depth, $args);
@@ -39,13 +43,17 @@ class Edx_Walker_Nav_Menu_Edit extends Walker_Nav_Menu_Edit {
 		return $fields;
 	}
 
-	public static function filter_out_hidden( $classes, $item ) {
-		$hide_if = get_post_meta($item->ID, Edx_Nav_Menu_Item_Custom_Fields::get_menu_item_postmeta_key('hide_if'), true);
-		if ($hide_if) {
-			$css_class = 'hide-if-' . str_replace(' ', '-', $hide_if);
-			$classes[] = $css_class;
+	public static function filter_out_hidden ($items, $menu, $args) {
+		foreach ($items as $item) {
+			$hide_if = get_post_meta($item->ID, Edx_Nav_Menu_Item_Custom_Fields::get_menu_item_postmeta_key('hide_if'), true);
+			if ($hide_if === 'logged in') {
+				array_push(self::$hide_if_logged_in, $item->ID);
+			}
+			if ($hide_if === 'not logged in') {
+				array_push(self::$hide_if_not_logged_in, $item->ID);
+			}
 		}
-	    return $classes;
+	    return $items;
 	}
 
 	public static function setup () {
@@ -53,7 +61,7 @@ class Edx_Walker_Nav_Menu_Edit extends Walker_Nav_Menu_Edit {
 			add_filter( 'edx_nav_menu_item_additional_fields', array('Edx_Walker_Nav_Menu_Edit', 'additional_fields'));
 			Edx_Nav_Menu_Item_Custom_Fields::setup();
 		} else {
-			add_filter('nav_menu_css_class', array(__CLASS__, 'filter_out_hidden'), 10, 2);
+			add_filter('wp_get_nav_menu_items', array(__CLASS__, 'filter_out_hidden'), 9, 3);
 		}
 	}
 }
