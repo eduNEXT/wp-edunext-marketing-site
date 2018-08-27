@@ -318,6 +318,7 @@ class WP_eduNEXT_Marketing_Site {
     color_class_<strong>invitation_only</strong>="my-custom-color"]</pre>
     	In this example we are using the "invitation_only" state but you can use any other and it will work as expected.
 		</p>
+		<p>You may use the attribute <strong>hide_if="not logged in"</strong> if you want to hide the button when the user is NOT logged in. Inversely you may use the attribute <strong>hide_if="logged in"</strong> if you want to hide the button when the user is logged in</p>
 		<script>
 			jQuery(function ($) {
 				var $metabox = $('#exo-shortcode-help');
