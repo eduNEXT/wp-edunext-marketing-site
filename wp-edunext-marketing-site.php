@@ -28,6 +28,7 @@ require_once( 'includes/lib/class-wp-edunext-marketing-site-admin-api.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-post-type.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-taxonomy.php' );
 require_once( 'includes/lib/class-wp-edunext-marketing-site-menu.php' );
+require_once( 'includes/lib/class-wp-edunext-marketing-site-menu-items-attributes.php' );
 
 
 /**
@@ -61,3 +62,4 @@ function WP_EoxCoreApi () {
 }
 
 WP_EoxCoreApi();
+

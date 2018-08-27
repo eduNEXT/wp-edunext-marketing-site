@@ -32,3 +32,21 @@
         transform: scale(1);
     }
 }
+
+/* menus structure attributes */
+
+p.additional-menu-field-hide_if.description.description-thin {
+    float: none;
+    display: inline-block;
+    width: auto;
+    margin-right: 0;
+}
+
+p.edx-hide-if {
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.additional-menu-field-hide_if:last-of-type input[type=radio]:checked::before {
+    background: #999;
+}

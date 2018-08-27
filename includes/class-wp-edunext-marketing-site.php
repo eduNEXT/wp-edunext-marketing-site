@@ -114,8 +114,11 @@ class WP_eduNEXT_Marketing_Site {
 		// Add meta box for menus
 		$this->menu = new WP_eduNEXT_Marketing_Site_Menu();
 
-		// Load API for generic admin functions
+		// Add attributes for menus items
+		add_action( 'init', array( 'Edx_Walker_Nav_Menu_Edit', 'setup' ) );
+
 		if ( is_admin() ) {
+			// Load API for generic admin functions
 			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
 		}
 
