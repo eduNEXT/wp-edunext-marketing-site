@@ -209,10 +209,28 @@ class WP_eduNEXT_Marketing_Site {
 	 * @return  void
 	 */
 	public function enroll_integration_scripts ( $hook = '' ) {
-		wp_register_script( 'edunext_commons', esc_url( $this->assets_url ) . 'js/commons' . $this->script_suffix . '.js' , array( 'jquery' ), $this->_version );
 		wp_register_script( 'edunext_enroll_button', esc_url( $this->assets_url ) . 'js/edunextEnrollButton' . $this->script_suffix . '.js' , array( 'jquery', 'edunext_commons' ), $this->_version );
 	} // End enroll_integration_scripts ()
 
+	/**
+	 * Register commons.js needed shortcode button and for admin.
+	 * @access  public
+	 * @since   1.0.0
+	 * @return  void
+	 */
+	public function enqueue_commons_script($value='')
+	{
+		wp_register_script( 'edunext_commons', esc_url( $this->assets_url ) . 'js/commons' . $this->script_suffix . '.js' , array( 'jquery' ), $this->_version );
+		wp_localize_script( 'edunext_commons', 'ENEXT_SRV', array(
+				'user_info_cookie_name' => get_option('wpt_user_info_cookie_name'),
+				'is_loggedin_cookie_name' => get_option('wpt_is_logged_in_cookie_name'),
+				'lms_base_url' => get_option('wpt_lms_base_url'),
+				'enrollment_api_location' => get_option('wpt_enrollment_api_location', '/api/enrollment/v1/'),
+				'user_enrollment_url' => get_option('wpt_user_enrollment_url', '/register?course_id=%course_id%&enrollment_action=enroll'),
+				'course_has_not_started_url' => get_option('wpt_course_has_not_started_url', '/dashboard'),
+		));
+		wp_enqueue_script( 'edunext_commons' );
+	}
 	/**
 	 * Load shortcodes.
 	 * @access  public
@@ -266,16 +284,9 @@ class WP_eduNEXT_Marketing_Site {
 			'edunext_enroll_button'
 		);
 
-		wp_enqueue_script( 'edunext_commons' );
+		$this->enqueue_commons_script();
 		wp_enqueue_script( 'edunext_enroll_button' );
 		wp_localize_script( 'edunext_enroll_button', $short_id, $atts );
-		wp_localize_script( 'edunext_commons', 'ENEXT_SRV', array(
-				'is_loggedin_cookie_name' => get_option('wpt_is_logged_in_cookie_name'),
-				'lms_base_url' => get_option('wpt_lms_base_url'),
-				'enrollment_api_location' => get_option('wpt_enrollment_api_location', '/api/enrollment/v1/'),
-				'user_enrollment_url' => get_option('wpt_user_enrollment_url', '/register?course_id=%course_id%&enrollment_action=enroll'),
-				'course_has_not_started_url' => get_option('wpt_course_has_not_started_url', '/dashboard'),
-		));
 
 		$course_id = $atts['course_id'];
 
