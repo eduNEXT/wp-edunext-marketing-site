@@ -12,9 +12,18 @@ div.eox-status-container {
 }
 
 div.eox-status-container span {
-	display: block;
+    display: block;
 }
 
 div.eox-status-container .error {
-	color: red;
+    color: red;
+}
+
+span.reload-warning {
+    display: block;
+    padding: 8px 10px;
+    background: lightyellow;
+    margin-top: 10px;
+    color: darkgoldenrod;
+    border-radius: 4px;
 }
