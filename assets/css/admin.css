@@ -1,0 +1,34 @@
+#exo-shortcode-help.shine {
+    transform: scale(1);
+    z-index: 10;
+    position: relative;
+    animation: big_for_a_moment 1s ease-in-out 1;
+    opacity: 1;
+}
+
+#exo-shortcode-help pre {
+    background: #EFEFEF;
+    padding: 10px;
+    border-radius: 3px;
+    overflow: auto;
+}
+
+#exo-shortcode-help li {
+	margin-left: 5px;
+}
+
+#exo-shortcode-help i {
+    color: #888;
+    padding-left: 7px;
+}
+
+@keyframes big_for_a_moment {
+    0% {
+    	opacity: 0;
+        transform: scale(1.2);
+    }
+    100% {
+    	opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -108,6 +108,9 @@ class WP_eduNEXT_Marketing_Site {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enroll_integration_scripts' ), 10 );
 		add_shortcode( 'edunext_enroll_button', array( $this, 'edunext_enroll_button' ) );
 
+		// Helpful tips for users using the shortcode
+		add_action( 'add_meta_boxes', array( $this, 'add_shortcode_help_meta_box') );
+
 		// Add meta box for menus
 		$this->menu = new WP_eduNEXT_Marketing_Site_Menu();
 
@@ -279,6 +282,25 @@ class WP_eduNEXT_Marketing_Site {
 		return "<div class=\"ednx-enroll-button-js\" style=\"display:none\" data-course-id=\"${course_id}\" data-settings=\"${short_id}\"><span>" . $course_id . "</span></div>";
 
 	} // End edunext_enroll_button ()
+
+	public function add_shortcode_help_meta_box()
+	{
+		$screens = array( 'post', 'page' );
+
+		foreach ( $screens as $screen ) {
+		    add_meta_box(
+		        'exo-shortcode-help',
+		        __( 'Edunext Enroll Button Shortcode Help', 'wp-edunext-marketing-site' ),
+		        array($this, 'show_shortcode_help_meta_box'),
+		        $screen
+		    );
+		}
+	}
+
+	public function show_shortcode_help_meta_box()
+	{
+		include('templates/shortcode_help_meta_box.php');
+	}
 
 	/**
 	 * Load plugin localisation
