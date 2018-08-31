@@ -12,6 +12,7 @@ class WP_EoxCoreApi
 	const API_VERSION = 'v1';
 	const PATH_USER_API = '/eox-core/api/' . self::API_VERSION . '/user/';
 	const PATH_ENROLLMENT_API = '/eox-core/api/' . self::API_VERSION . '/enrollment/';
+	const PATH_USERINFO_API = '/eox-core/api/' . self::API_VERSION . '/userinfo';
 
 	/**
 	 * Default values used to create a new edxapp user
@@ -62,6 +63,7 @@ class WP_EoxCoreApi
 			add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
 			add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
 			add_action('wp_ajax_save_users_ajax', array($this, 'save_users_ajax'));
+			add_action('wp_ajax_get_userinfo_ajax', array($this, 'get_userinfo_ajax'));
 			add_action('wp_ajax_save_enrollments_ajax', array($this, 'save_enrollments_ajax'));
 		}
 	}
@@ -119,7 +121,7 @@ class WP_EoxCoreApi
 	}
 
 	/**
-	 * Called with AJAX function to POST to users API
+	 * Called with AJAX function to POST to enrollment API
 	 */
 	public function save_enrollments_ajax() {
 		$new_enrollments = $this->handle_ajax_json_input($_POST['enrollments']);
@@ -144,6 +146,19 @@ class WP_EoxCoreApi
 		}
 		$this->show_notices();
 		wp_die();
+	}
+
+	/**
+	 * Called with AJAX function to GET usesinfo
+	 */
+	public function get_userinfo_ajax() {
+		$userinfo = $this->userinfo();
+		if (is_wp_error($userinfo)) {
+			wp_send_json_error($userinfo, 400);
+		} else {
+			$this->show_notices();
+			wp_die();
+		}
 	}
 
 	/**
@@ -198,6 +213,17 @@ class WP_EoxCoreApi
 	}
 
 	/**
+	 * API calls to get current user info
+	 */
+	public function userinfo() {
+		$data = array();
+		$ref = '';
+		$api_url = self::PATH_USERINFO_API;
+		$success_message = 'Userinfo reading ok!';
+		return $this->api_call($api_url, $data, $ref, $success_message);
+	}
+
+	/**
 	 * Function to execute the API calls required to make a new enrollment
 	 */
 	public function create_enrollment($args) {
@@ -226,10 +252,16 @@ class WP_EoxCoreApi
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
 			$url = get_option('wpt_lms_base_url', '') . $api_url;
-			$response = wp_remote_post($url, array(
-				'headers' => 'Authorization: Bearer ' . $token,
-				'body' => $data
-			));
+			if (empty($data)) {
+				$response = wp_remote_get($url, array(
+					'headers' => 'Authorization: Bearer ' . $token
+				));
+			} else {
+				$response = wp_remote_post($url, array(
+					'headers' => 'Authorization: Bearer ' . $token,
+					'body' => $data
+				));
+			}
 			$errors = $this->get_response_errors($response, $ref);
 			foreach ($errors as $err) {
 				$this->add_notice('error', $err);
