@@ -22,6 +22,7 @@ if (is_wp_error($response)) {
 }
 
 ```
+---
 
 Creating a new user based on the current user (if your site uses wordpress users and they are logged in)
 
@@ -44,6 +45,7 @@ if (is_wp_error($response)) {
 }
 
 ```
+---
 
 Enrolling the current user to a course (assuming user was already created using create_user)
 
@@ -61,4 +63,41 @@ if (is_wp_error($response)) {
 	echo "<h3>Enroll success!</h3>";
 }
 ;
+```
+---
+
+Enrolling using Woocommerce after succesful purchase, assuming the product already has an "id" attribute with the id of the course as shown in this image (separate by "|" for multiple values):
+
+<img src="https://i.imgur.com/S2xLZfy.png" alt="id attribute on woocommerce product">
+
+```php
+function handle_payment_successful_result( $result, $order_id ) { 
+
+    $order = wc_get_order( $order_id );
+    $items = $order->get_items();
+    $user = wp_get_current_user();
+    foreach ( $items as $item ) {
+        $product = $item->get_product();
+        $attr = $product->get_attribute('course_id');
+        if (!$attr) {
+            $attr = $product->get_attribute('course_ids');
+        }
+        if ($attr) { 
+            $course_ids = explode('|', $attr);
+            foreach ($course_ids as $course_id) {
+                $response = WP_EoxCoreApi()->create_enrollment([
+                    'email' => $user->user_email,
+                    'course_id' => trim($course_id),
+                    'force' => true
+                ]);
+                if (is_wp_error($response)) {
+                    error_log($response->get_error_message());
+                }
+            }
+        }
+    }
+    return $result; 
+}; 
+         
+add_filter( 'woocommerce_payment_complete', 'handle_payment_successful_result', 10, 2 );    
 ```
