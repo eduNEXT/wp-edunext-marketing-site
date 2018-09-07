@@ -201,7 +201,7 @@ class WP_EoxCoreApi
 		);
 		$url = $base_url . '/oauth2/access_token/';
 		$response = wp_remote_post($url, $args);
-		$json_reponse = json_decode($response['body']);		
+		$json_reponse = is_wp_error($response) ? False : json_decode($response['body']);
 		if (is_wp_error($response) || isset($json_reponse->error)) {
 			$error_message = is_wp_error($response) ? $response->get_error_message() : $json_reponse->error;
 			$this->add_notice('error', $error_message);
@@ -283,7 +283,7 @@ class WP_EoxCoreApi
 		$errors = array();
 
 		if (is_null($response_json) && $response['response']['code'] === 404) {
-			$errors[] = '404 - eox-core is likely not installed on the remote server' . $response['body'];
+			$errors[] = '404 - eox-core is likely not installed on the remote server';
 		}
 		else if (is_null($response_json)) {
 			$errors[] = 'non-json response, server returned status code ' . $response['response']['code'];
@@ -319,11 +319,15 @@ class WP_EoxCoreApi
 	}
 
 	public function add_notice($type, $message) {
-		WP_eduNEXT_Marketing_Site()->admin->add_notice($type, $message);
+		if (isset(WP_eduNEXT_Marketing_Site()->admin)) {
+			WP_eduNEXT_Marketing_Site()->admin->add_notice($type, $message);
+		}
 	}
 
 	public function show_notices() {
-		WP_eduNEXT_Marketing_Site()->admin->show_notices();
+		if (isset(WP_eduNEXT_Marketing_Site()->admin)) {
+			WP_eduNEXT_Marketing_Site()->admin->show_notices();
+		}
 	}
 
 }
