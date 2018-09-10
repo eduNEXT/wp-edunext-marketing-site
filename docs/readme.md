@@ -1,3 +1,9 @@
+Troubleshooting
+=======
+
+### Why can't I see the buttons to conditionally hide menu items?
+**A:** Some WordPress plugins such as "Popup Maker" use their own custom code for the menus admin interface and unfortunately WordPress only allows one overwrite, so you need to [disable menu options for Popup Maker](https://docs.wppopupmaker.com/article/297-popup-maker-is-overwriting-my-menu-editor-functions-how-can-i-fix-this) or any plugin that may be interfering; you may re-enable those later without fear of losing your "hide-if" parameters.
+
 
 Examples
 ========
