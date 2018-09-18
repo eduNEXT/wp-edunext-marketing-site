@@ -246,7 +246,7 @@ class WP_EoxCoreApi
 	}
 
 	/**
-	 *
+	 * Generic api call method
 	 */
 	public function api_call($api_url, $data, $ref, $success_message) {
 		$token = $this->get_access_token();
@@ -308,7 +308,8 @@ class WP_EoxCoreApi
 				$errors[] = $value . ' (' . $ref . ')';
 			}
 		}
-		foreach (array_keys($this->user_defaults) as $key) {
+		$valid_error_keys = array_merge(array_keys($this->user_defaults), array_keys($this->enroll_defaults));
+		foreach ($valid_error_keys as $key) {
 			if (isset($json->$key)) {
 				foreach ($json->$key as $value) {
 					$errors[] = ucfirst($key) . ': ' . $value . ' <i>(' . $ref . ')</i>';
