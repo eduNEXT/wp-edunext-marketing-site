@@ -331,4 +331,52 @@ class WP_EoxCoreApi
 		}
 	}
 
+	public function activate_woocommerce_integration() {
+		add_action( 'woocommerce_order_status_processing', array($this, 'handle_payment_successful_result'), 10, 1 );
+	}
+
+
+	public function handle_payment_successful_result( $order_id ) {
+		$order = wc_get_order( $order_id );
+		$items = $order->get_items();
+		$user = wp_get_current_user();
+		$course_items_count = 0;
+		foreach ( $items as $item ) {
+			$product = $item->get_product();
+			$is_course_item = False;
+			$mode = $product->get_attribute('mode');
+			if (empty($mode)) {
+				$mode = 'honor';
+			}
+			foreach (['course_id', 'bundle_id'] as $key) {
+				$attr_course_id = $product->get_attribute($key);
+				if (!$attr_course_id) {
+					$attr_course_id = $product->get_attribute($key . 's');
+				}
+				if ($attr_course_id) {
+					$is_course_item = True;
+					$ids = explode('|', $attr_course_id);
+					foreach ($ids as $id) {
+						$response = WP_EoxCoreApi()->create_enrollment([
+							'email' => $user->user_email,
+							$key => trim($id),
+							'mode' => $mode,
+							'force' => True
+						]);
+						if (is_wp_error($response)) {
+							error_log($response->get_error_message());
+						}
+					}
+				}
+			}
+			if ($is_course_item) {
+				$course_items_count++;
+			}
+		}
+		if (count($items) == $course_items_count) {
+			$order->update_status('completed');
+		}
+	}
+
+
 }
