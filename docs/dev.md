@@ -24,27 +24,5 @@ docker exec -it example_wordpress_1 bash -c "echo \"$(ip address show docker0 | 
 - In the field labeled "Base domain for the open edX domain" enter the URL of your edx instance, which is likely to be `http://localhost:18000` then click save.
 
 - Go to tab "Navigation Menu Settings" find the field labeled "Name of the shared cookie that signals an open session" and write `edxloggedin` (or whatever you are using), then on the field named "Name of the shared cookie that holds the user info" write `edx-user-info` (or whatever you are using)
-<br>
-
-Using the EOX-API
-=================
-
-### - eox_create_new_user
-Used to create a new user
-```php
-# Example of using the eox_create_new_user function
-add_action('admin_head',function () {
-	WP_EoxCoreApi::instance()->eox_create_new_user([
-		'email' => 'fake@fake.com',
-		'username' => 'fake',
-		'password' => 'fake',
-		'fullname' => 'fake',
-		'is_active' => True,
-		'is_staff' => True,
-		'is_superuser' => True,
-		'activate_user' => True,
-	]);
-});
-```
 
 <div align="center"><img src="https://pbs.twimg.com/media/B4kIaZHCUAAKB6N.png" width="300" /></div>
