@@ -262,6 +262,9 @@ class WP_EoxCoreApi
 					'body' => $data
 				));
 			}
+			if (is_wp_error($response)) {
+				return $response;
+			}
 			$errors = $this->get_response_errors($response, $ref);
 			foreach ($errors as $err) {
 				$this->add_notice('error', $err);
