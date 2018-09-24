@@ -355,6 +355,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
             'message' => $message
         );
         if ($type === 'error') {
+            error_log($notice);
             array_push($this->error_notices, $notice);
         } else {
             array_push($this->notices, $notice);
