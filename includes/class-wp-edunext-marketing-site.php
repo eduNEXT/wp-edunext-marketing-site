@@ -117,6 +117,10 @@ class WP_eduNEXT_Marketing_Site {
 		// Add attributes for menus items
 		add_action( 'init', array( 'Edx_Walker_Nav_Menu_Edit', 'setup' ) );
 
+		if ( get_option('wpt_enable_woocommerce_integration') ) {
+			$this->woocommerce = new WP_eduNEXT_Woocommerce_Integration();
+		}
+
 		if ( is_admin() ) {
 			// Load API for generic admin functions
 			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
