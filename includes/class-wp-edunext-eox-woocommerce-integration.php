@@ -52,6 +52,13 @@ class WP_eduNEXT_Woocommerce_Integration {
             'billing_postcode' => 'zip',
         );
 
+        $mappings = get_option('wpt_eox_client_wc_field_mappings', '');
+        $json_mappings = json_decode($mappings, true);
+        if ($json_mappings) {
+            $extra_fields_mapped = array_merge($json_mappings, $extra_fields_mapped);
+        }
+
+
         if ( $current_user->ID !== 0 && empty($value) ) {        
             if (empty($this->eox_user_info)) {
                 $this->eox_user_info = WP_EoxCoreApi()->get_user_info(['email' => $current_user->user_email]);

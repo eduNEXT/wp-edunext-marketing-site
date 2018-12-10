@@ -1,8 +1,8 @@
 <?php
-
-
-
 /**
+ * Code found at https://github.com/joshfraser/PHP-Name-Parser
+ * Released under Apache 2.0 license
+ *
  * Split a full name into its constituent parts
  *   - prefix/salutation (Mr. Mrs. Dr. etc)
  *   - given/first name

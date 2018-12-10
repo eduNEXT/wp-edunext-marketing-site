@@ -54,13 +54,13 @@
 		<option value="exoapi-get-users">Get users info</option>
 	</select>
 	<div class="exoapi-get-users">
-		<h2>Get Open edx users ibnfo</h2>
+		<h2>Get Open edx users info</h2>
 		<p>
 			Write an array of users as JSON array:
 		</p>
 		<textarea name="eox-api-get-users" id="eox-api-get-users" cols="70" rows="10">
 [{
-    "username": "chavo"
+    "username": "honor"
 }]</textarea>
 		<button class="button-secondary get-users-button">Execute API call</button>
 	</div>
