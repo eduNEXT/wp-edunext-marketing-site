@@ -83,6 +83,7 @@ class WP_eduNEXT_Marketing_Site {
 	 * @return  void
 	 */
 	public function __construct ( $file = '', $version = '1.0.0' ) {
+
 		$this->_version = $version;
 		$this->_token = 'wp-edunext-marketing-site';
 
@@ -117,10 +118,6 @@ class WP_eduNEXT_Marketing_Site {
 		// Add attributes for menus items
 		add_action( 'init', array( 'Edx_Walker_Nav_Menu_Edit', 'setup' ) );
 
-		if ( get_option('wpt_enable_woocommerce_integration') ) {
-			$this->woocommerce = new WP_eduNEXT_Woocommerce_Integration();
-		}
-
 		if ( is_admin() ) {
 			// Load API for generic admin functions
 			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
@@ -129,6 +126,7 @@ class WP_eduNEXT_Marketing_Site {
 		// Handle localisation
 		$this->load_plugin_textdomain();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
+		do_action($this->_token . '_init', $this);
 	} // End __construct ()
 
 	/**

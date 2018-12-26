@@ -92,14 +92,6 @@ class WP_EoxCoreApi
 					'type' => 'text',
 					'default' => '',
 					'placeholder' => ''
-				) ,
-				array(
-					'id' => 'eox_client_wc_field_mappings',
-					'label' => __('User fields mappings', 'wp-edunext-marketing-site') ,
-					'description' => __('Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site') ,
-					'type' => 'text',
-					'default' => '',
-					'placeholder' => '{"wc_example": "example"}'
 				)
 			)
 		);

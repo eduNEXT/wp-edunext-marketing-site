@@ -22,7 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( 'includes/class-wp-edunext-marketing-site.php' );
 require_once( 'includes/class-wp-edunext-marketing-site-settings.php' );
 require_once( 'includes/class-wp-edunext-eox-core-api.php' );
-require_once( 'includes/class-wp-edunext-eox-woocommerce-integration.php' );
 
 // Load plugin libraries
 require_once( 'includes/lib/class-wp-edunext-marketing-site-admin-api.php' );
@@ -39,7 +38,7 @@ require_once( 'includes/lib/class-wp-edunext-marketing-site-menu-items-attribute
  * @return object WP_eduNEXT_Marketing_Site
  */
 function WP_eduNEXT_Marketing_Site () {
-	$instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '1.3.0' );
+	$instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '1.4.0' );
 
 	if ( is_null( $instance->settings ) ) {
 		$instance->settings = WP_eduNEXT_Marketing_Site_Settings::instance( $instance );
