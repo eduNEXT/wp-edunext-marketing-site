@@ -51,8 +51,19 @@
 	<select name="" id="eox-select-api">
 		<option value="exoapi-add-new-users" selected>Users</option>
 		<option value="exoapi-add-new-enrollments">Enrollments</option>
+		<option value="exoapi-get-users">Get users info</option>
 	</select>
-	
+	<div class="exoapi-get-users">
+		<h2>Get Open edx users info</h2>
+		<p>
+			Write an array of users as JSON array:
+		</p>
+		<textarea name="eox-api-get-users" id="eox-api-get-users" cols="70" rows="10">
+[{
+    "username": "honor"
+}]</textarea>
+		<button class="button-secondary get-users-button">Execute API call</button>
+	</div>
 	<div class="exoapi-add-new-users">
 		<h2>Add new Open edx users</h2>
 		<p>
@@ -104,6 +115,13 @@ jQuery(function ($) {
 	$('.save-users-button').click(function (e) {
 		var data = {users: $('#eox-api-new-users').val()};
 		callAction('save_users_ajax', data);
+		e.stopPropagation();
+		return false;
+	});
+
+	$('.get-users-button').click(function (e) {
+		var data = {users: $('#eox-api-get-users').val()};
+		callAction('get_users_ajax', data);
 		e.stopPropagation();
 		return false;
 	});

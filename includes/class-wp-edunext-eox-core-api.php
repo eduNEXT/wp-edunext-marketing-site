@@ -63,6 +63,7 @@ class WP_EoxCoreApi
 			add_filter('wp-edunext-marketing-site_settings_fields', array($this, 'add_admin_settings'));
 			add_action('eoxapi_after_settings_page_html', array($this, 'eoxapi_settings_custom_html'));
 			add_action('wp_ajax_save_users_ajax', array($this, 'save_users_ajax'));
+			add_action('wp_ajax_get_users_ajax', array($this, 'get_users_ajax'));
 			add_action('wp_ajax_get_userinfo_ajax', array($this, 'get_userinfo_ajax'));
 			add_action('wp_ajax_save_enrollments_ajax', array($this, 'save_enrollments_ajax'));
 		}
@@ -91,6 +92,14 @@ class WP_EoxCoreApi
 					'type' => 'text',
 					'default' => '',
 					'placeholder' => ''
+				) ,
+				array(
+					'id' => 'eox_client_wc_field_mappings',
+					'label' => __('User fields mappings', 'wp-edunext-marketing-site') ,
+					'description' => __('Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site') ,
+					'type' => 'text',
+					'default' => '',
+					'placeholder' => '{"wc_example": "example"}'
 				)
 			)
 		);
@@ -144,6 +153,22 @@ class WP_EoxCoreApi
 				$this->create_user($user);
 			}
 		}
+		$this->show_notices();
+		wp_die();
+	}
+
+	/**
+	 * Called with AJAX function to POST to users API
+	 */
+	public function get_users_ajax() {
+		$new_users = $this->handle_ajax_json_input($_POST['users']);
+		$users_info = [];
+		if ($new_users) {
+			foreach ($new_users as $user) {
+				$users_info[] = $this->get_user_info($user);
+			}
+		}
+		$this->add_notice('user-info', '<pre>' . json_encode($users_info, JSON_PRETTY_PRINT) . '</pre>');
 		$this->show_notices();
 		wp_die();
 	}
@@ -243,6 +268,18 @@ class WP_EoxCoreApi
 		$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
 		$success_message = 'User creation success!';
 		return $this->api_call($api_url, $data, $ref, $success_message);
+	}
+
+	/**
+	 * Function to execute the API calls required to get an existing edxapp user
+	 */
+	public function get_user_info($args) {
+		$args = (array)$args;
+		$api_url = self::PATH_USER_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'User fetching success!';
+		$api_url .= '?' . http_build_query($args);
+		return $this->api_call($api_url, NULL, $ref, $success_message);
 	}
 
 	/**

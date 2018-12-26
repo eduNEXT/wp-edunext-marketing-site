@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once( 'includes/class-wp-edunext-marketing-site.php' );
 require_once( 'includes/class-wp-edunext-marketing-site-settings.php' );
 require_once( 'includes/class-wp-edunext-eox-core-api.php' );
+require_once( 'includes/class-wp-edunext-eox-woocommerce-integration.php' );
 
 // Load plugin libraries
 require_once( 'includes/lib/class-wp-edunext-marketing-site-admin-api.php' );
@@ -62,4 +63,3 @@ function WP_EoxCoreApi () {
 }
 
 WP_EoxCoreApi();
-
