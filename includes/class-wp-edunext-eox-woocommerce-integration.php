@@ -59,11 +59,11 @@ class WP_eduNEXT_Woocommerce_Integration {
         }
 
 
-        if ( $current_user->ID !== 0 && empty($value) ) {        
+        if ( $current_user->ID !== 0 && empty($value) ) {
             if (empty($this->eox_user_info)) {
                 $this->eox_user_info = WP_EoxCoreApi()->get_user_info(['email' => $current_user->user_email]);
                 if ( is_wp_error( $this->eox_user_info ) ) {
-                   echo '<div id="message" class="error"><p>' . $this->eox_user_info->get_error_message() . '</p></div>';
+                   echo '<div id="message" class="error" style="display: none;"><p>' . $this->eox_user_info->get_error_message() . '</p></div>';
                    return $value;
                 }
             }
@@ -83,7 +83,7 @@ class WP_eduNEXT_Woocommerce_Integration {
             }
 
             $processing_name_part = $input === 'billing_first_name' || $input === 'billing_last_name';
-            
+
             if ($processing_name_part && empty($value) && !empty($this->eox_user_info->name)) {
                 $parser = new FullNameParser();
                 $parsed = $parser->parse_name($this->eox_user_info->name);
