@@ -78,12 +78,12 @@ class WP_eduNEXT_Marketing_Site {
 
 	/**
 	 * YouTube embed video url.
-	 * https://developers.google.com/youtube/player_parameters#Embedding_a_Player
 	 * @var     string
-	 * @access  public
+	 * @access  private
 	 * @since   1.6.0
+	 * @link https://developers.google.com/youtube/player_parameters#Embedding_a_Player
 	 */
-	public $YOUTUBE_EMBED_VIDEO_URL = 'https://www.youtube.com/embed/';
+	private $YOUTUBE_EMBED_VIDEO_URL = 'https://www.youtube.com/embed/';
 
 	/**
 	 * Constructor function.
@@ -116,7 +116,7 @@ class WP_eduNEXT_Marketing_Site {
 		// Load shortcodes
 		add_action( 'wp_enqueue_scripts', array( $this, 'enroll_integration_scripts' ), 10 );
 		add_shortcode( 'edunext_enroll_button', array( $this, 'edunext_enroll_button' ) );
-		add_shortcode( 'foobar', array( $this, 'foobar_func' )  );
+		add_shortcode( 'course_details', array( $this, 'course_details' )  );
 
 		// Helpful tips for users using the shortcode
 		add_action( 'add_meta_boxes', array( $this, 'add_shortcode_help_meta_box') );
@@ -325,8 +325,19 @@ class WP_eduNEXT_Marketing_Site {
 		}
 	}
 
-	//[foobar]
-	public function foobar_func( $atts ) {
+	/**
+	 * Course deatils shortcode.
+	 *
+	 * Shortcode that enables to show more course info like:
+	 * title, short description, start date, main video.
+	 * All information is fetched from Open edX Discovery API.
+	 *
+	 * @since 1.6.0
+	 * @param string $atts Shortcode attributes.
+	 * @return string Html document or string error.
+	 */
+	public function course_details( $atts ) {
+		// Turn on output buffering.
 		ob_start();
 
 		$atts = shortcode_atts(
@@ -339,18 +350,16 @@ class WP_eduNEXT_Marketing_Site {
 				'course_video_styles' => '',
 			),
 			$atts,
-			'foobar_func'
+			'course_details'
 		);
 		$body = array();
-		$course_details_array = $this->convert_string_to_array($atts['course_details']);
-
-		$course_title_styles= $this->convert_string_to_array($atts['course_title_styles']);
-		$course_short_description_styles= $this->convert_string_to_array($atts['course_short_description_styles']);
-		$course_start_styles= $this->convert_string_to_array($atts['course_start_styles']);
-		$course_video_styles= $this->convert_string_to_array($atts['course_video_styles']);
-
-		$base_discovery_url = get_option('wpt_discovery_base_url', '');
-		$discovery_api_token = get_option('wpt_discovery_api_token', '');
+		$course_details_array = $this->convert_string_to_array( $atts['course_details'] );
+		$course_title_styles= $this->convert_string_to_array( $atts['course_title_styles'] );
+		$course_short_description_styles= $this->convert_string_to_array( $atts['course_short_description_styles'] );
+		$course_start_styles= $this->convert_string_to_array( $atts['course_start_styles'] );
+		$course_video_styles= $this->convert_string_to_array( $atts['course_video_styles'] );
+		$base_discovery_url = get_option( 'wpt_discovery_base_url', '' );
+		$discovery_api_token = get_option( 'wpt_discovery_api_token', '' );
 		$request_url = $base_discovery_url . 'api/v1/courses/' . $atts['course_id'];
 		$request_args = array(
 			'headers' => array(
@@ -358,40 +367,41 @@ class WP_eduNEXT_Marketing_Site {
 			),
 		);
 
-		$response = wp_remote_get($request_url, $request_args);
+		$response = wp_remote_get( $request_url, $request_args );
 
-		if (is_array($response) && !is_wp_error($response)) {
-			$body = json_decode($response['body'], true);
+		if ( is_array($response) && !is_wp_error($response) ) {
+			$body = json_decode( $response['body'], true );
 		} else {
 			return $response->get_error_message();
 		}
 
-		if (isset($body['course_runs'][0])) {
+		if ( isset( $body['course_runs'][0] ) ) {
 			$course_details = $body['course_runs'][0];
-			// return print_r($course_details_array);
 
-			if (in_array('start', $course_details_array)) {
+			if ( in_array( 'start', $course_details_array ) ) {
 				$date_format = '%A %d %B %G at %R %Z';
 				$course_details['start'] = strftime($date_format, strtotime($course_details['start']));
 			}
 
-			if (in_array('video', $course_details_array)) {
-				$youtube_video_parsed_url = parse_url($course_details['video']['src']);
-				$youtube_query_params = parse_str($youtube_video_parsed_url['query'], $query_params);
+			if ( in_array( 'video', $course_details_array ) ) {
+				// Format YouTube video url with correct path.
+				$youtube_video_parsed_url = parse_url( $course_details['video']['src'] );
+				$youtube_query_params = parse_str( $youtube_video_parsed_url['query'], $query_params );
 				$course_details['video']['src'] = $this->YOUTUBE_EMBED_VIDEO_URL . $query_params['v'];
 			}
 
-			include('templates/shortcode_course_details.php');
+			include( 'templates/shortcode-course-details.php' );
+			// Return the buffer contents, and delete current output buffer.
 			return ob_get_clean();
 		}
 		ob_end_clean();
 		// return print_r($body['course_runs'][0]['short_description']);
 	}
 
-	private function convert_string_to_array($array_string) {
-		$string_filter = filter_var($array_string, FILTER_SANITIZE_STRING);
-		$array_string_space_replaced = str_replace(' ', '', $string_filter);
-		$array_from_string = explode(',', $array_string_space_replaced);
+	private function convert_string_to_array( $array_string ) {
+		$clean_string = sanitize_text_field( $array_string );
+		$array_string_space_replaced = str_replace( ' ', '', $clean_string );
+		$array_from_string = explode( ',', $array_string_space_replaced );
 
 		return $array_from_string;
 	}
