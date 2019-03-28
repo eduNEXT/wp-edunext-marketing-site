@@ -398,6 +398,13 @@ class WP_eduNEXT_Marketing_Site {
 		// return print_r($body['course_runs'][0]['short_description']);
 	}
 
+	/**
+	 * Method to convert from string array like to array.
+	 *
+	 * @since 1.6.0
+	 * @param string $array_string String array like(strings separated by commas).
+	 * @return string Array containing the input string values.
+	 */
 	private function convert_string_to_array( $array_string ) {
 		$clean_string = sanitize_text_field( $array_string );
 		$array_string_space_replaced = str_replace( ' ', '', $clean_string );
