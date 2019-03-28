@@ -191,6 +191,24 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
 					'advanced_setting' 	=> true
 				),
+				array(
+					'id' 				=> 'discovery_base_url',
+					'label'				=> __( 'Discovery service base url' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'The url where discovery service is located.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> 'https://discovery.edunext.io',
+					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
+					'advanced_setting' 	=> true
+				),
+				array(
+					'id' 				=> 'discovery_api_token',
+					'label'				=> __( 'Discovery api Bearer token.' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'The Bearer token generated for Discovery api.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> '',
+					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
+					'advanced_setting' 	=> true
+				),
 
 			)
 		);
