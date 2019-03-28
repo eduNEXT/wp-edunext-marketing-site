@@ -332,13 +332,23 @@ class WP_eduNEXT_Marketing_Site {
 		$atts = shortcode_atts(
 			array(
 				'course_id' => '',
-				'course_details' => ''
+				'course_details' => '',
+				'course_title_styles' => '',
+				'course_short_description_styles' => '',
+				'course_start_styles' => '',
+				'course_video_styles' => '',
 			),
 			$atts,
 			'foobar_func'
 		);
 		$body = array();
 		$course_details_array = $this->convert_string_to_array($atts['course_details']);
+
+		$course_title_styles= $this->convert_string_to_array($atts['course_title_styles']);
+		$course_short_description_styles= $this->convert_string_to_array($atts['course_short_description_styles']);
+		$course_start_styles= $this->convert_string_to_array($atts['course_start_styles']);
+		$course_video_styles= $this->convert_string_to_array($atts['course_video_styles']);
+
 		$base_discovery_url = get_option('wpt_discovery_base_url', '');
 		$discovery_api_token = get_option('wpt_discovery_api_token', '');
 		$request_url = $base_discovery_url . 'api/v1/courses/' . $atts['course_id'];
