@@ -321,6 +321,12 @@ class WP_eduNEXT_Marketing_Site {
 		        __( 'Edunext Enroll Button Shortcode Help', 'wp-edunext-marketing-site' ),
 		        array($this, 'show_shortcode_help_meta_box'),
 		        $screen
+			);
+			add_meta_box(
+		        'wpe-course-details-shortcode-help',
+		        __( 'Edunext Course Details Shortcode Help', 'wp-edunext-marketing-site' ),
+		        array($this, 'show_course_deatils_shortcode_help_meta_box'),
+		        $screen
 		    );
 		}
 	}
@@ -411,6 +417,15 @@ class WP_eduNEXT_Marketing_Site {
 		$array_from_string = explode( ',', $array_string_space_replaced );
 
 		return $array_from_string;
+	}
+
+	/**
+	 * Method to include shortcode-course-details-help-meta-box.php in help box context.
+	 *
+	 * @since 1.6.0
+	 */
+	public function show_course_deatils_shortcode_help_meta_box() {
+		include('templates/shortcode-course-details-help-meta-box.php');
 	}
 
 	public function show_shortcode_help_meta_box()
