@@ -334,7 +334,7 @@ class WP_eduNEXT_Marketing_Site {
 	/**
 	 * Course deatils shortcode.
 	 *
-	 * Shortcode that enables to show more course info like:
+	 * Shortcode that enables to show more course deatils like:
 	 * title, short description, start date, main video.
 	 * All information is fetched from Open edX Discovery API.
 	 *
@@ -375,10 +375,8 @@ class WP_eduNEXT_Marketing_Site {
 
 		$response = wp_remote_get( $request_url, $request_args );
 
-		if ( is_array($response) && !is_wp_error($response) ) {
+		if ( !is_wp_error($response) && $response['response']['code'] == 200 ) {
 			$body = json_decode( $response['body'], true );
-		} else {
-			return $response->get_error_message();
 		}
 
 		if ( isset( $body['course_runs'][0] ) ) {
@@ -390,7 +388,7 @@ class WP_eduNEXT_Marketing_Site {
 			}
 
 			if ( in_array( 'video', $course_details_array ) ) {
-				// Format YouTube video url with correct path.
+				// Format YouTube video url with the correct path.
 				$youtube_video_parsed_url = parse_url( $course_details['video']['src'] );
 				$youtube_query_params = parse_str( $youtube_video_parsed_url['query'], $query_params );
 				$course_details['video']['src'] = $this->YOUTUBE_EMBED_VIDEO_URL . $query_params['v'];
@@ -400,8 +398,16 @@ class WP_eduNEXT_Marketing_Site {
 			// Return the buffer contents, and delete current output buffer.
 			return ob_get_clean();
 		}
+		// Delete and turn off the output buffer.
 		ob_end_clean();
-		// return print_r($body['course_runs'][0]['short_description']);
+
+		if ( !is_wp_error($response) ) {
+			$api_error_message = __( 'There is an error calling Discovery API: ' . $response['response']['code'] . ' - ' . $response['response']['message'], 'wp-edunext-marketing-site' );
+			return $api_error_message;
+		} else {
+			$request_error_message = __( 'An error ocurred calling Discovery service: ' . $response->get_error_message(), 'wp-edunext-marketing-site' );
+			return $request_error_message;
+		}
 	}
 
 	/**
