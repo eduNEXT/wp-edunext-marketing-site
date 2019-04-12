@@ -86,6 +86,14 @@ class WP_eduNEXT_Marketing_Site {
 	private $YOUTUBE_EMBED_VIDEO_URL = 'https://www.youtube.com/embed/';
 
 	/**
+	 * Discovery API endpoint.
+	 * @var     string
+	 * @access  private
+	 * @since   1.6.0
+	 */
+	private $DISCOVERY_API_ENDPOINT = 'api/v1/courses/';
+
+	/**
 	 * Constructor function.
 	 * @access  public
 	 * @since   1.0.0
@@ -366,7 +374,7 @@ class WP_eduNEXT_Marketing_Site {
 		$course_video_styles= $this->convert_string_to_array( $atts['course_video_styles'] );
 		$base_discovery_url = get_option( 'wpt_discovery_base_url', '' );
 		$discovery_api_token = get_option( 'wpt_discovery_api_token', '' );
-		$request_url = $base_discovery_url . 'api/v1/courses/' . $atts['course_id'];
+		$request_url = $base_discovery_url . $this->DISCOVERY_API_ENDPOINT . $atts['course_id'];
 		$request_args = array(
 			'headers' => array(
 				'Authorization' => 'Bearer ' . $discovery_api_token
