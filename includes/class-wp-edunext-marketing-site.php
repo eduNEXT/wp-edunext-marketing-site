@@ -362,6 +362,7 @@ class WP_eduNEXT_Marketing_Site {
 				'course_short_description_styles' => '',
 				'course_start_styles' => '',
 				'course_video_styles' => '',
+				'course_image_styles' => '',
 			),
 			$atts,
 			'course_details'
@@ -372,6 +373,7 @@ class WP_eduNEXT_Marketing_Site {
 		$course_short_description_styles= $this->convert_string_to_array( $atts['course_short_description_styles'] );
 		$course_start_styles= $this->convert_string_to_array( $atts['course_start_styles'] );
 		$course_video_styles= $this->convert_string_to_array( $atts['course_video_styles'] );
+		$course_image_styles= $this->convert_string_to_array( $atts['course_image_styles'] );
 		$base_discovery_url = get_option( 'wpt_discovery_base_url', '' );
 		$discovery_api_token = get_option( 'wpt_discovery_api_token', '' );
 		$request_url = $base_discovery_url . $this->DISCOVERY_API_ENDPOINT . $atts['course_id'];
