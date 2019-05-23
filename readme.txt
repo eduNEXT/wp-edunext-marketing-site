@@ -2,44 +2,65 @@
 Contributors: eduNEXT
 Tags: wordpress, plugin, Open edX, LMS
 Requires at least: 3.9
-Tested up to: 4.9.5
-Stable tag: 1.6.0
+Tested up to: 5.1.1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 
-This plugin makes it easy to integrate a Wordpress site with an open edX site from eduNEXT or your own installation.
+This plugin makes it easy to integrate a Wordpress site with an open edX LMS provided by eduNEXT or with your own Open edX installation.
 
 
 == Description ==
 
-Open edX LMS and Wordpress integrator. This plugin helps you set up your Wordpress site as the front end site or marketing site for your online learning initiative powered by the open edX platform.
+This plugin helps you set up your Wordpress site as the front end site or marketing site for your online learning initiative powered by the Open edX platform.
 
-The idea behind this integration is to leave the open edX only to be used once the user logs in to visit his dashboard or courses and to use the power of Wordpress to build:
+The idea behind this integration is to use the greater flexibiliy of Wordpress for the content management pages and leave the open edX only to be used once the user logs in to visit his dashboard or courses. 
 
-- the site's the homepage
-- the course catalog page
-- the pages that describe each of the courses
-- any additional static pages that the initiative requires
+In these integrations, Wordpress will typically be used for:
+
+- The site's the homepage
+- The course catalog page
+- The pages that describe each of the courses
+- Any additional static pages that the initiative requires
+
+This plugin is made available by eduNEXT, a world class open edX services provider. The plugin is initially tuned to work against an open edX site provided by eduNEXT, but it can also be used to integrate Wordpress and any Open edX site.
+
+The integration between open edX and Wordpress currently works at 3 different places:
+
+1) In the wordpress navigation menu.
+By adding a menu to your Wordpress site that allows users to log in / register to the Open edX site. Once the user has logged in, this menu becomes aware of the session and transforms to a user menu with all the options the Open edX user menu has.
+
+2) At the page / post content level to link posts with courses.
+By adding a Course button to a particular page or post, it can be used as a couse description page, where all the information of the course can be stored and from which the user can access their courses based on the course settings and the learner state.
+This button is added using a shortcode, and it takes care of rendering the correct action depending on the configuration that the course has for that particular user on the Open edX site.
+
+3) At the static pages level.
+Open edX includes some static pages for things like the Terms of Service, Privacy Policy, etc, but it has very little capabilities for manageing these web contents. The integration allows to host this content directly in wordpress and make sure that the trafic going to each of these static destinations reaches the right page.
+
+Some additional integrations are currently under development. If you require a different kind of integration, or professional services to optimize your Open edX platform, contact eduNEXT at https://eduNEXT.co
 
 
-This plugin is made available by eduNEXT, a world class open edX services provider. The plugin is initially tuned to work against an open edX site provided by eduNEXT, but it can also be used to integrate Wordpress and any open edX site.
+== Installation ==
 
-The integration between open edX and Wordpress currently works at 2 different levels:
+= Automatic Installation =
 
-1) At the site menu level.
-By adding a menu to your open edX site that allows users to log in / register to the open edX site. Once the user has logged in, this menu becomes a user menu with all the standard options the open edX user menu has.
+1. Go to the Plugins menu from the dashboard.
+2. Click on the "Add New" button on this page.
+3. Search for "Open edX LMS and Wordpress integrator" in the search bar provided.
+4. Click on "Install Now" once you have located the plugin.
+5. On successful installation click the "Activate Plugin" link to activate the plugin.
 
-2) At the page / post content level.
-By adding a course access button to be placed in each of the pages that describe the courses.
-This button is added using a shortcode, and it takes care of rendering the correct action depending on the configuration that the course has for that particular user on the open edX site.
+= Manual Installation =
 
-If you require a different kind of integration, contact us at https://www.eduNEXT.co
+1. Download the "Open edX LMS and Wordpress integrator" plugin from wordpress.org.
+2. Now unzip and upload the folder using the FTP application of your choice.
+3. The plugin can then be activated by navigating to the Plugins menu in the admin dashboard.
 
 
-== Usage ==
+== Frequently Asked Questions ==
 
-= Menu Integration =
+= How to do the Open edX User Menu Configuration =
 
 To create an open edX menu:
 
@@ -50,51 +71,39 @@ To create an open edX menu:
 The list of menu items includes:
 
 - Login/User Menu:
-
     If the user is logged in, the menu will display the name of the user with a link to the dashboard of the lms.
     Otherwise it will display a link to login, with the label provided. To change the label, you can edit the menu item in place. Be sure to follow the convention <Label displayed for logged out user>/<This will be replaced by the user name>
 
 - Login/Dashboard:
-
     If the user is logged in, the menu will display the configured label with a link to the dashboard of the lms.
     Otherwise it will display a link to login, with the label provided. To change the label, you can edit the menu item in place. Be sure to follow the convention <Label displayed for logged out user>/<Label displayed for the logged out user>
 
 - Login Btn:
-
     A menu item, with a link to the login page. If the user is already logged in, nothing will appear.
 
 - Register Btn:
-
     A menu item, with a link to the register page. If the user is already logged in, nothing will appear.
 
 - User Menu:
-
     A menu item, with a link to the dashboard page using the username as the label. If the user is not logged in, this item will not appear.
 
 - Resume your last course:
-
     A link to the last known location of a user in his or her courses. If the user is not logged in, this item will not appear.
 
 - Dashboard:
-
     A link to the user dashboard. If the user is not logged in, this item will not appear.
 
 - Profile:
-
     A link to the user profile page. If the user is not logged in, this item will not appear.
 
 - Account:
-
     A link to the user account settings page. If the user is not logged in, this item will not appear.
 
 - Sign Out:
-
     A link to a page that will log the user out. If the user is not logged in, this item will not appear.
 
 
-
-= Course Pages Integration =
-
+= How to integrate access to Open edX Courses from the Wordpress pages or posts =
 
 Buttons to enroll or in general take any action call on the courses are produced using the `edunext_enroll_button` shortcode.
 
@@ -105,11 +114,9 @@ The most simple example is using the shortcode giving it the course_id of the co
 
 To configure any of the settings per-button, you can also change the setting of any setting defined in the settings page specifically for a particular shortcode.
 
-
 E.g: To change the label from "Enroll" which is the default, to "Enroll in the course now" you can use:
 
     [edunext_enroll_button course_id="course-v1:edX+Demo+demo_course" label_enroll="Enroll in the course now"]
-
 
 Here is a list of all the properties you can override:
 
@@ -142,26 +149,21 @@ Here is a list of all the properties you can override:
 - container_class_enrollment_closed
 - color_class_enrollment_closed
 
-
-
-== Installation ==
-
-= Automatic Installation =
-
-1. Go to the Plugins menu from the dashboard.
-2. Click on the "Add New" button on this page.
-3. Search for "Open edX LMS and Wordpress integrator" in the search bar provided.
-4. Click on "Install Now" once you have located the plugin.
-5. On successful installation click the "Activate Plugin" link to activate the plugin.
-
-= Manual Installation =
-
-1. Download the "Open edX LMS and Wordpress integrator" plugin from wordpress.org.
-2. Now unzip and upload the folder using the FTP application of your choice.
-3. The plugin can then be activated by navigating to the Plugins menu in the admin dashboard.
+- hide_if 
 
 
 == Changelog ==
+
+= 2.0 =
+* 2019-06-01
+* Improved internal documentation
+* Improved arrangement of the different settings
+
+
+= 1.5 =
+* 2018-12-16
+* Adding some additional capabilities to the navigation menu integration
+
 
 = 1.1 =
 * 2018-04-16
