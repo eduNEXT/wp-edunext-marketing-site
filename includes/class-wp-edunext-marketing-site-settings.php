@@ -115,67 +115,68 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		$settings['general'] = array(
 			'title'					=> __( 'General settings', 'wp-edunext-marketing-site' ),
-			'description'			=> __( 'Basic settings to get your marketing site integrated.', 'wp-edunext-marketing-site' ),
+			'description'			=> __( 'Basic settings to get Wordpress site integrated with your Open edX site.', 'wp-edunext-marketing-site' ),
 			'fields'				=> array(
 				array(
 					'id' 			=> 'lms_base_url',
-					'label'			=> __( 'Base domain for the open edX domain' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'The url where your courses are located.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Base domain for the Open edX LMS' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'The url where your Open edX courses are located.', 'wp-edunext-marketing-site' ),
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'	=> __( 'https://mylms.edunext.io', 'wp-edunext-marketing-site' )
+				),
+				array(
+					'id' 			=> 'is_logged_in_cookie_name',
+					'label'			=> __( 'Session cookie name' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Name of the shared user session cookie. If you are hosting your Open edX site with one of eduNEXT cloud subscriptions, you don´t need to change this. For standalone open edX installations it usually requires `edxloggedin`' ),
+					'type'			=> 'text',
+					'default'		=> 'edunextloggedin',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'user_info_cookie_name',
+					'label'			=> __( 'User info cookie name' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Name of the shared cookie that holds the logged user information. If you are hosting your Open edX site with one of eduNEXT cloud subscriptions, you don´t need to change this. For standalone open edX installations usually `edx-user-info`' ),
+					'type'			=> 'text',
+					'default'		=> 'edunext-user-info',
+					'placeholder'	=> ''
 				)
 			)
 		);
 
 		$settings['navigation'] = array(
-			'title'					=> __( 'Navigation Menu Settings', 'wp-edunext-marketing-site' ),
-			'description'			=> __( 'Configurations to get your nav menu working with the Marketing Site Integration from eduNEXT.', 'wp-edunext-marketing-site' ),
+			'title'					=> __( 'Open edX User Menu Settings', 'wp-edunext-marketing-site' ),
+			'description'			=> __( 'Visit "Appearence -> Menús" to build the Open edX user menu for your WP site.', 'wp-edunext-marketing-site' ),
 			'fields'				=> array(
 				array(
-					'id' 			=> 'is_logged_in_cookie_name',
-					'label'			=> __( 'Name of the shared cookie that signals an open session' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'For standalone open edX installations usually `edxloggedin`' ),
-					'type'			=> 'text',
-					'default'		=> 'edunextloggedin',
-					'placeholder'	=> __( 'edunextloggedin', 'wp-edunext-marketing-site' )
-				),
-				array(
-					'id' 			=> 'user_info_cookie_name',
-					'label'			=> __( 'Name of the shared cookie that holds the user info' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'For standalone open edX installations usually `edx-user-info`' ),
-					'type'			=> 'text',
-					'default'		=> 'edunext-user-info',
-					'placeholder'	=> __( 'edunext-user-info', 'wp-edunext-marketing-site' )
-				),
-				array(
 					'id' 			=> 'advanced_login_location',
-					'label'			=> __( 'Login location (advanced)' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'Location of the login handler. Only change this if you know exactly what you are doing.' ),
+					'label'			=> __( 'Login handler' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the login handler. This is an advanced setting, mostly for eduNEXT customers. Only change this if you know exactly what you are doing.' ),
 					'type'			=> 'text',
 					'default'		=> 'login',
-					'placeholder'	=> __( 'login', 'wp-edunext-marketing-site' )
+					'placeholder'	=> '',
+					'advanced_setting' 	=> true
 				),
 				array(
 					'id' 			=> 'advanced_registration_location',
-					'label'			=> __( 'Registration location (advanced)' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'Location of the registration handler. Only change this if you know exactly what you are doing.' ),
+					'label'			=> __( 'Registration handler' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the registration handler. This is an advanced setting, mostly for eduNEXT customers. Only change this if you know exactly what you are doing.' ),
 					'type'			=> 'text',
 					'default'		=> 'register',
-					'placeholder'	=> __( 'register', 'wp-edunext-marketing-site' )
+					'placeholder'	=> '',
+					'advanced_setting' 	=> true
 				),
 				array(
 					'id' 			=> 'advanced_dashboard_location',
-					'label'			=> __( 'Dashboard location (advanced)' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'Location of the Dashboard handler. Only change this if you know exactly what you are doing.' ),
+					'label'			=> __( 'Dashboard handler' , 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Location of the Dashboard handler. This is an advanced setting, mostly for eduNEXT customers. Only change this if you know exactly what you are doing.' ),
 					'type'			=> 'text',
 					'default'		=> 'dashboard',
-					'placeholder'	=> __( 'dashboard', 'wp-edunext-marketing-site' )
+					'placeholder'	=> '',
+					'advanced_setting' 	=> true
 				)
-
 			)
 		);
-
 		
 		$settings['enrollment'] = array(
 			'title'					=> __( 'Course buttons', 'wp-edunext-marketing-site' ),
