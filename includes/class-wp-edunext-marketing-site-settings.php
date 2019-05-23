@@ -124,68 +124,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'type'			=> 'text',
 					'default'		=> '',
 					'placeholder'	=> __( 'https://mylms.edunext.io', 'wp-edunext-marketing-site' )
-				),
-				array(
-					'id' 			=> 'button_class_generic',
-					'label'			=> __( 'CSS classes for the buttons ' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'You can override the specific buttons in the Enrollment tab' ),
-					'type'			=> 'text',
-					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
-				),
-				array(
-					'id' 			=> 'container_class_generic',
-					'label'			=> __( 'CSS classes for the container of the buttons' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'You can override the specific buttons in the Enrollment tab' ),
-					'type'			=> 'text',
-					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
-				),
-				array(
-					'id' 			=> 'color_class_generic',
-					'label'			=> __( 'CSS classes for the color of the buttons' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'You can override the specific buttons in the Enrollment tab' ),
-					'type'			=> 'text',
-					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
-				),
-				array(
-					'id' 				=> 'enable_woocommerce_integration',
-					'label'				=> __( 'Enable Eox-core Woocommerce integrations' , 'wp-edunext-marketing-site' ),
-					'description'		=> __( 'Features: Checkout pre-filling', 'wp-edunext-marketing-site' ),
-					'type'				=> 'checkbox',
-					'default'			=> false,
-					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
-					'advanced_setting' 	=> true
-				),
-				array(
-					'id' 				=> 'enrollment_api_location',
-					'label'				=> __( 'Enrollment API Location' , 'wp-edunext-marketing-site' ),
-					'description'		=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
-					'type'				=> 'text',
-					'default'			=> '/api/enrollment/v1/',
-					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
-					'advanced_setting' 	=> true
-				),
-				array(
-					'id' 				=> 'user_enrollment_url',
-					'label'				=> __( 'Button URL for an user to enroll' , 'wp-edunext-marketing-site' ),
-					'description'		=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
-					'type'				=> 'text',
-					'default'			=> '/register?course_id=%course_id%&enrollment_action=enroll',
-					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
-					'advanced_setting' 	=> true
-				),
-				array(
-					'id' 				=> 'course_has_not_started_url',
-					'label'				=> __( 'Button URL when course has not yet started' , 'wp-edunext-marketing-site' ),
-					'description'		=> __( 'Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
-					'type'				=> 'text',
-					'default'			=> '/dashboard',
-					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
-					'advanced_setting' 	=> true
-				),
-
+				)
 			)
 		);
 
@@ -237,22 +176,81 @@ class WP_eduNEXT_Marketing_Site_Settings {
 			)
 		);
 
+		
 		$settings['enrollment'] = array(
-			'title'					=> __( 'Enrollment buttons', 'wp-edunext-marketing-site' ),
-			'description'			=> __( 'These settings modify the shortcodes for enrollment buttons.', 'wp-edunext-marketing-site' ),
+			'title'					=> __( 'Course buttons', 'wp-edunext-marketing-site' ),
+			'description'			=> __( 'Course buttons can be added via a Shortcode in any page or post and they will have a specific behaviour depending on the course settings in Open edX and the stated of authenticated user in the course.', 'wp-edunext-marketing-site' ),
 			'fields'				=> array(
-				// Button Enroll
+				
+				// Button Generic
+				array(
+					'id' 			=> 'header_generic',
+					'label'			=> __( 'Default settings for all buttons', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'These settings can be applied to all buttons, and will be overwriten by the button specific settings in case they are also set.', 'wp-edunext-marketing-site' ),
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'button_class_generic',
+					'label'			=> __( 'CSS classes for the link element of the buttons' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'color_class_generic',
+					'label'			=> __( 'Additional CSS classes for the link element of the button' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'container_class_generic',
+					'label'			=> __( 'CSS classes for the container of the buttons' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'separator_generic',
+					'label'			=> '---------------------------------',
+					'description'	=> '',
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> '',
+				),				
+				// #1 Enroll to course button
+				array(
+					'id' 			=> 'header_enroll',
+					'label'			=> __( 'Enroll to course', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button will be visible when the course is available for enrollments and the user is not yet enrolled, or there is not a user session yet.', 'wp-edunext-marketing-site' ),
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
 				array(
 					'id' 			=> 'label_enroll',
-					'label'			=> __( 'Text for the button to enroll' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'It will be showed when the user is not yet registered but can register directly.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> 'Enroll',
-					'placeholder'	=> __( 'Enroll', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'Enroll to this course', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
 					'id' 			=> 'button_class_enroll',
-					'label'			=> __( 'CSS classes for the enroll button' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the link element of the button', 'wp-edunext-marketing-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'color_class_enroll',
+					'label'			=> __( 'Additional CSS classes for the link element of the button' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
@@ -260,41 +258,57 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 			=> 'container_class_enroll',
-					'label'			=> __( 'CSS classes for the container to the enroll button' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the container of the button', 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
-					'id' 			=> 'color_class_enroll',
-					'label'			=> __( 'CSS classes for the color of the enroll button' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( '' ),
-					'type'			=> 'text',
-					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'id' 				=> 'user_enrollment_url',
+					'label'				=> __( 'URL for the enrollment endpoint' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'This is an advanced featured for eduNEXT customers. Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> '/register?course_id=%course_id%&enrollment_action=enroll',
+					'placeholder'		=> '',
+					'advanced_setting' 	=> true
 				),
 				array(
 					'id' 			=> 'separator_enroll',
-					'label'			=> '-------------------------------------',
+					'label'			=> '---------------------------------',
 					'description'	=> '',
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> '',
 				),
-
-				// Button Go To Course
+				// #2 Button Go To Course
+				array(
+					'id' 			=> 'header_go_to_course',
+					'label'			=> __( 'Go to course', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button will be visible when the course is open and the user is already enrolled.', 'wp-edunext-marketing-site' ),
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
 				array(
 					'id' 			=> 'label_go_to_course',
-					'label'			=> __( 'Text for the go to the course button' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'It will be showed when the user is already registered and can access the course content inmediatly.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> 'Go to the course',
-					'placeholder'	=> __( 'Go to the course', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'Go to course', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
 					'id' 			=> 'button_class_go_to_course',
-					'label'			=> __( 'CSS classes for the go to the course button' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the link element of the button', 'wp-edunext-marketing-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'color_class_go_to_course',
+					'label'			=> __( 'Additional CSS classes for the link element of the button' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
@@ -302,41 +316,48 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 			=> 'container_class_go_to_course',
-					'label'			=> __( 'CSS classes for the container of the go to the course button' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the container of the button', 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
-				),
-				array(
-					'id' 			=> 'color_class_go_to_course',
-					'label'			=> __( 'CSS classes for the color in the go to the course button' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( '' ),
-					'type'			=> 'text',
-					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
 					'id' 			=> 'separator_go_to_course',
-					'label'			=> '-------------------------------------',
+					'label'			=> '---------------------------------',
 					'description'	=> '',
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> '',
 				),
-
-				// Button Course Has Not started
+				// #3 Button Course Has Not started
+				array(
+					'id' 			=> 'header_course_has_not_started',
+					'label'			=> __( 'Course is closed', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button will be visible when the course is closed based on the course start and end dated set in Open edX.', 'wp-edunext-marketing-site' ),
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
 				array(
 					'id' 			=> 'label_course_has_not_started',
-					'label'			=> __( 'Text for when the course has not started yet' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'It will be showed when the user is already registered but the course has not started yet.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> 'The course has not yet started',
-					'placeholder'	=> __( 'The course has not yet started', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'This course is closed', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
 					'id' 			=> 'button_class_course_has_not_started',
-					'label'			=> __( 'CSS classes for when the course has not started yet' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the link element of the button', 'wp-edunext-marketing-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'color_class_course_has_not_started',
+					'label'			=> __( 'Additional CSS classes for the link element of the button' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
@@ -344,42 +365,57 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 			=> 'container_class_course_has_not_started',
-					'label'			=> __( 'CSS classes for the container when the course has not started yet' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the container of the button', 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
-					'id' 			=> 'color_class_course_has_not_started',
-					'label'			=> __( 'CSS classes for the color when the course has not started yet' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( '' ),
-					'type'			=> 'text',
-					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'id' 				=> 'course_has_not_started_url',
+					'label'				=> __( 'URL for courses not yet started' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'URL to direct used to direct users to when course has not yet started. Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> '/dashboard',
+					'placeholder'		=> __( '', 'wp-edunext-marketing-site' ),
+					'advanced_setting' 	=> true
 				),
 				array(
 					'id' 			=> 'separator_course_has_not_started',
-					'label'			=> '-------------------------------------',
+					'label'			=> '---------------------------------',
 					'description'	=> '',
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> '',
 				),
-
-
-				// Button Invitation Only
+				// #4 Button Invitation Only
+				array(
+					'id' 			=> 'header_invitation_only',
+					'label'			=> __( 'Invitatin only', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button will be visible when the course is set to be for enrollments by Invitation only in Open edX.', 'wp-edunext-marketing-site' ),
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
 				array(
 					'id' 			=> 'label_invitation_only',
-					'label'			=> __( 'Text for the Invitation only button' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'It will be showed when the course is private and can be accessed only by invitation.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> 'Invitation only',
-					'placeholder'	=> __( 'Invitation only', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'This course by invitation only', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
 					'id' 			=> 'button_class_invitation_only',
-					'label'			=> __( 'CSS classes for when the course is invitation only' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the link element of the button', 'wp-edunext-marketing-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'color_class_invitation_only',
+					'label'			=> __( 'Additional CSS classes for the link element of the button' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
@@ -387,41 +423,48 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 			=> 'container_class_invitation_only',
-					'label'			=> __( 'CSS classes for the container when the course is invitation only' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the container of the button', 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
-				),
-				array(
-					'id' 			=> 'color_class_invitation_only',
-					'label'			=> __( 'CSS classes for the color when the course is invitation only' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( '' ),
-					'type'			=> 'text',
-					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
 					'id' 			=> 'separator_invitation_only',
-					'label'			=> '-------------------------------------',
+					'label'			=> '---------------------------------',
 					'description'	=> '',
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> '',
 				),
-
-				// Button Enrollment Closed
+				// #5 Button Enrollment Closed
+				array(
+					'id' 			=> 'header_enrollment_closed',
+					'label'			=> __( 'Enrollment closed', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button will be visible when the course is closed for enrollments as set by the enrollments start and end dated in Open edX.', 'wp-edunext-marketing-site' ),
+					'type'			=> '',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
 				array(
 					'id' 			=> 'label_enrollment_closed',
-					'label'			=> __( 'Text for when the enrollment has ended' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'It will be showed when the enrollment end date has already passed.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
+					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> 'Registration is closed',
-					'placeholder'	=> __( 'Registration is closed', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'Enrollment for this course is closed', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
 					'id' 			=> 'button_class_enrollment_closed',
-					'label'			=> __( 'CSS classes for when the enrollment has ended' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the link element of the button', 'wp-edunext-marketing-site' ),
+					'description'	=> __( '' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> ''
+				),
+				array(
+					'id' 			=> 'color_class_enrollment_closed',
+					'label'			=> __( 'Additional CSS classes for the link element of the button' , 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
@@ -429,19 +472,19 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 			=> 'container_class_enrollment_closed',
-					'label'			=> __( 'CSS classes for the container when the enrollment has ended' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'CSS classes for the container of the button', 'wp-edunext-marketing-site' ),
 					'description'	=> __( '' ),
 					'type'			=> 'text',
 					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'placeholder'	=> ''
 				),
 				array(
-					'id' 			=> 'color_class_enrollment_closed',
-					'label'			=> __( 'CSS classes for the color when the enrollment has ended' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( '' ),
-					'type'			=> 'text',
+					'id' 			=> 'separator_enrollment_closed',
+					'label'			=> '---------------------------------',
+					'description'	=> '',
+					'type'			=> '',
 					'default'		=> '',
-					'placeholder'	=> __( '', 'wp-edunext-marketing-site' )
+					'placeholder'	=> '',
 				)
 			)
 		);
