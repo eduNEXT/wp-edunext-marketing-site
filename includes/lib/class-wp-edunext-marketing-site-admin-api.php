@@ -219,22 +219,6 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     }
 
-    public function show_advance_settings_toggle () {
-        ?>
-        <div class="advanced_settings_toggle">
-            <a href="#" id="toggle_advanced_settings"><?= __('Show advanced settings', 'wp-edunext-marketing-site') ?></a>
-        <script>
-        jQuery('.advanced_setting').closest('tr').hide();
-        jQuery('#toggle_advanced_settings').click(function(){
-            jQuery(this).hide();
-            jQuery('.advanced_setting').closest('tr').show();
-            return false;
-        });
-        </script>
-        </div>
-        <?php
-    }
-
     /**
      * Validate form field
      * @param  string $data Submitted value

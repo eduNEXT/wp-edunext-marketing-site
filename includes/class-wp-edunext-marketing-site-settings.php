@@ -185,12 +185,11 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				)
 			)
 		);
-		
+
 		$settings['enrollment'] = array(
 			'title'					=> __( 'Course buttons', 'wp-edunext-marketing-site' ),
 			'description'			=> __( 'Course buttons can be added via a Shortcode in any page or post and they will have a specific behaviour depending on the course settings in Open edX and the stated of authenticated user in the course.', 'wp-edunext-marketing-site' ),
 			'fields'				=> array(
-				
 				// Button Generic
 				array(
 					'id' 			=> 'header_generic',
@@ -231,7 +230,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> '',
-				),				
+				),
 				// #1 Enroll to course button
 				array(
 					'id' 			=> 'header_enroll',
@@ -246,7 +245,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
 					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> __( 'Enroll to this course', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'Enroll to this course', 'wp-edunext-marketing-site' ),
 					'placeholder'	=> ''
 				),
 				array(
@@ -304,7 +303,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
 					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> __( 'Go to course', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'Go to course', 'wp-edunext-marketing-site' ),
 					'placeholder'	=> ''
 				),
 				array(
@@ -353,7 +352,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
 					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> __( 'This course is closed', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'This course is closed', 'wp-edunext-marketing-site' ),
 					'placeholder'	=> ''
 				),
 				array(
@@ -411,7 +410,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
 					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> __( 'This course by invitation only', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'This course by invitation only', 'wp-edunext-marketing-site' ),
 					'placeholder'	=> ''
 				),
 				array(
@@ -460,7 +459,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
 					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> __( 'Enrollment for this course is closed', 'wp-edunext-marketing-site' )
+					'default'		=> __( 'Enrollment for this course is closed', 'wp-edunext-marketing-site' ),
 					'placeholder'	=> ''
 				),
 				array(
@@ -619,9 +618,6 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				// Get settings fields
 				settings_fields( $this->parent->_token . '_settings' );
 				do_settings_sections( $this->parent->_token . '_settings' );
-				if ($this->active_tab === 'general') {
-					$this->parent->admin->show_advance_settings_toggle();
-				}
 				do_action($this->active_tab . '_after_settings_page_html');
 				$html .= ob_get_clean();
 				$html .= '<p class="submit">' . "\n";
