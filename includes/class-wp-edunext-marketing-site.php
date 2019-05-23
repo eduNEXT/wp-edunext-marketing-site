@@ -308,7 +308,7 @@ class WP_eduNEXT_Marketing_Site {
 		foreach ( $screens as $screen ) {
 		    add_meta_box(
 		        'exo-shortcode-help',
-		        __( 'Edunext Enroll Button Shortcode Help', 'wp-edunext-marketing-site' ),
+		        __( 'eduNEXT WP - Open edX integrator | Shortcode Help', 'wp-edunext-marketing-site' ),
 		        array($this, 'show_shortcode_help_meta_box'),
 		        $screen
 		    );

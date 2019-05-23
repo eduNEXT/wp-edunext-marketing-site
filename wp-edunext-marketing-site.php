@@ -4,9 +4,9 @@
  * Version: 1.5
  * Description: Set up your Wordpress site as the front end site or marketing site for your online learning initiative powered by the open edX platform.
  * Author: eduNEXT
- * Author URI: https://www.edunext.co/
+ * Author URI: https://edunext.co/
  * Requires at least: 4.0
- * Tested up to: 4.0
+ * Tested up to: 5.2
  *
  * Text Domain: wp-edunext-marketing-site
  * Domain Path: /lang/
