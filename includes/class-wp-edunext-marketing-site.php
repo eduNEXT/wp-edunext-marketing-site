@@ -125,8 +125,16 @@ class WP_eduNEXT_Marketing_Site {
 			'show_ui' => true,
 			'show_in_menu' => false,
 			'show_in_nav_menus' => true,
+			'supports' => array( 'title', 'custom-fields', 'revisions'),
 			'menu_icon' => 'dashicons-admin-post'
 		);
+		// Note fmo:
+		// Esta claro que hay que hacerlo de la misma forma que los coupons de Woo.
+		// Un objeto WP_EoxEnrollment que tenga toda la lógica y que sea el que crea o destruye esa vaina.
+		// La parte de editarlo luego puede ser menos prioritaria
+		// URL de lista http://www.localhost:19000/wp-admin/edit.php?post_type=openedx_enrollment
+		// Toda la info del coupon esta almacenada en wp_postmeta, aunque según el CPT lo unico que soporta es title.
+		// Todos los demás metaboxes esta claro que los hicieron a pedal
 		$this->register_post_type('openedx_enrollment', 'Open edX Enrollments', 'Open edX Enrollment', '', $enrollment_cpt_options);
 
 		// WooCommerce integration
