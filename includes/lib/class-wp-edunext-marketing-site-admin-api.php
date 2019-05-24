@@ -220,6 +220,45 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     }
 
     /**
+     * Render a settings page header with an explanation of the available options
+     * @return void
+     */
+    public function render_settings_page_header ($active_tab = '') {
+        $template = dirname(__DIR__) . '/templates/' . $active_tab . '_settings_custom_header_html.php';
+        if (file_exists($template)){
+            include($template);
+        }
+    }
+
+    /**
+     * Render a settings page header with an explanation of the available options
+     * @return void
+     */
+    public function show_advance_settings_toggle () {
+        ?>
+        <div class="advanced_settings_toggle">
+            <label>
+                <input type="checkbox" id="toggle_advanced_settings" name="toggle_advanced_settings"><?= __('Show advanced settings', 'wp-edunext-marketing-site')?>
+            </label>
+            <script>
+            jQuery( document ).ready(function() {
+                jQuery('.advanced_setting').closest('tr').hide();
+                jQuery('#toggle_advanced_settings').change(function(){
+                    if (jQuery(this).is(":checked")) {
+                        jQuery('.advanced_setting').closest('tr').show();
+                    }
+                    else {
+                        jQuery('.advanced_setting').closest('tr').hide();
+                    }
+                });
+                jQuery('#toggle_advanced_settings').trigger("change");
+            });
+            </script>
+        </div>
+        <?php
+    }
+
+    /**
      * Validate form field
      * @param  string $data Submitted value
      * @param  string $type Type of field to validate

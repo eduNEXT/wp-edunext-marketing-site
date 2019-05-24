@@ -88,12 +88,12 @@ class WP_eduNEXT_Marketing_Site_Settings {
 		// We're including the farbtastic script & styles here because they're needed for the colour picker
 		// If you're not including a colour picker field then you can leave these calls out as well as the farbtastic dependency for the wpt-admin-js script below
 		wp_enqueue_style( 'farbtastic' );
-    	wp_enqueue_script( 'farbtastic' );
+		wp_enqueue_script( 'farbtastic' );
 
-    	// We're including the WP media scripts here because they're needed for the image upload field
-    	// If you're not including an image upload then you can leave this function call out
-    	wp_enqueue_media();
-    	$this->parent->enqueue_commons_script();
+		// We're including the WP media scripts here because they're needed for the image upload field
+		// If you're not including an image upload then you can leave this function call out
+		wp_enqueue_media();
+		$this->parent->enqueue_commons_script();
 	}
 
 	/**
@@ -103,8 +103,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 	 */
 	public function add_settings_link ( $links ) {
 		$settings_link = '<a href="options-general.php?page=' . $this->parent->_token . '_settings">' . __( 'Settings', 'wp-edunext-marketing-site' ) . '</a>';
-  		array_push( $links, $settings_link );
-  		return $links;
+		array_push( $links, $settings_link );
+		return $links;
 	}
 
 	/**
@@ -115,16 +115,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		$settings['general'] = array(
 			'title'					=> __( 'General settings', 'wp-edunext-marketing-site' ),
-			'description'			=> __( 'Basic settings to get Wordpress site integrated with your Open edX site.', 'wp-edunext-marketing-site' ),
 			'fields'				=> array(
-				array(
-					'id' 			=> 'lms_general_header',
-					'label'			=> __( 'Enable the website integration on the open edX side' , 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'All the configurations and features of the integration will only work if the Website integration is also correctly configured in the Open edX side.  If you are using one of eduNEXT\'s Open edX cloud subscriptions, please request assistance to the eduNEXT support team to enable the integration. If you are running Open edX on your own, please refer to the Open edX documentation.', 'wp-edunext-marketing-site' ),
-					'type'			=> '',
-					'default'		=> '',
-					'placeholder'	=> ''
-				),
 				array(
 					'id' 			=> 'lms_base_url',
 					'label'			=> __( 'Base domain for the Open edX LMS' , 'wp-edunext-marketing-site' ),
@@ -166,7 +157,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'default'			=> '/api/enrollment/v1/',
 					'placeholder'		=> '',
 					'advanced_setting' 	=> true
-				)			
+				)
 			)
 		);
 
@@ -544,7 +535,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 				// Add section to page
 				$this->active_tab = $section;
-				add_settings_section( $section, $data['title'], array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
+				add_settings_section( $section, '', array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
 
 				foreach ( $data['fields'] as $field ) {
 
@@ -587,66 +578,72 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-			$html .= '<h2>' . __( 'Open edX Wordpress Integrator Settings | By eduNEXT' , 'wp-edunext-marketing-site' ) . '</h2>' . "\n";
+		$html .= '<h2>' . __( 'Open edX Wordpress Integrator Settings | By eduNEXT' , 'wp-edunext-marketing-site' ) . '</h2>' . "\n";
 
-			$tab = '';
-			if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
-				$tab .= $_GET['tab'];
-			}
+		$tab = '';
+		if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
+			$tab .= $_GET['tab'];
+		}
 
-			// Show page tabs
-			if ( is_array( $this->settings ) && 1 < count( $this->settings ) ) {
+		// Show page tabs
+		if ( is_array( $this->settings ) && 1 < count( $this->settings ) ) {
 
-				$html .= '<h2 class="nav-tab-wrapper">' . "\n";
+			$html .= '<h2 class="nav-tab-wrapper">' . "\n";
 
-				$c = 0;
-				foreach ( $this->settings as $section => $data ) {
+			$c = 0;
+			foreach ( $this->settings as $section => $data ) {
 
-					// Set tab class
-					$class = 'nav-tab';
-					if ( ! isset( $_GET['tab'] ) ) {
-						if ( 0 == $c ) {
-							$class .= ' nav-tab-active';
-						}
-					} else {
-						if ( isset( $_GET['tab'] ) && $section == $_GET['tab'] ) {
-							$class .= ' nav-tab-active';
-						}
+				// Set tab class
+				$class = 'nav-tab';
+				if ( ! isset( $_GET['tab'] ) ) {
+					if ( 0 == $c ) {
+						$class .= ' nav-tab-active';
 					}
-
-					// Set tab link
-					$tab_link = add_query_arg( array( 'tab' => $section ) );
-					if ( isset( $_GET['settings-updated'] ) ) {
-						$tab_link = remove_query_arg( 'settings-updated', $tab_link );
+				} else {
+					if ( isset( $_GET['tab'] ) && $section == $_GET['tab'] ) {
+						$class .= ' nav-tab-active';
 					}
-
-					// Output tab
-					$html .= '<a href="' . $tab_link . '" class="' . esc_attr( $class ) . '">' . esc_html( $data['title'] ) . '</a>' . "\n";
-
-					++$c;
 				}
 
-				$html .= '</h2>' . "\n";
+				// Set tab link
+				$tab_link = add_query_arg( array( 'tab' => $section ) );
+				if ( isset( $_GET['settings-updated'] ) ) {
+					$tab_link = remove_query_arg( 'settings-updated', $tab_link );
+				}
+
+				// Output tab
+				$html .= '<a href="' . $tab_link . '" class="' . esc_attr( $class ) . '">' . esc_html( $data['title'] ) . '</a>' . "\n";
+
+				++$c;
 			}
 
-			$html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
+			$html .= '</h2>' . "\n";
+		}
+
+		$html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
 
 
-				ob_start();
-				// Get settings fields
-				settings_fields( $this->parent->_token . '_settings' );
-				do_settings_sections( $this->parent->_token . '_settings' );
-				do_action($this->active_tab . '_after_settings_page_html');
-				$html .= ob_get_clean();
-				$html .= '<p class="submit">' . "\n";
-					$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
-					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'wp-edunext-marketing-site' ) ) . '" />' . "\n";
-				$html .= '</p>' . "\n";
-			$html .= '</form>' . "\n";
+		ob_start();
+		// Get settings page header
+		$this->parent->admin->render_settings_page_header($this->active_tab);
+		$this->parent->admin->show_advance_settings_toggle();
 
-			$html .= '<a class="footer-logo edunext col-12" href="https://www.edunext.co" target="_self">
-                      <img src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="eduNEXT - World class open edX services provider | www.edunext.co">
-                      </a>' . "\n";
+		// Add the WP settings section
+		settings_fields( $this->parent->_token . '_settings' );
+		do_settings_sections( $this->parent->_token . '_settings' );
+		do_action($this->active_tab . '_after_settings_page_html');
+
+
+		$html .= ob_get_clean();
+		$html .= '<p class="submit">' . "\n";
+		$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
+		$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'wp-edunext-marketing-site' ) ) . '" />' . "\n";
+		$html .= '</p>' . "\n";
+		$html .= '</form>' . "\n";
+
+		$html .= '<a class="footer-logo edunext col-12" href="https://www.edunext.co" target="_self">
+				 <img src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="eduNEXT - World class open edX services provider | www.edunext.co">
+				 </a>' . "\n";
 
 
 		$html .= '</div>' . "\n";
