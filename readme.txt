@@ -1,6 +1,6 @@
 === Open edX LMS and Wordpress integrator ===
 Contributors: eduNEXT
-Tags: wordpress, plugin, Open edX, LMS
+Tags: wordpress, Open edX, LMS
 Requires at least: 3.9
 Tested up to: 5.1.1
 Stable tag: 2.0.0
@@ -13,9 +13,9 @@ This plugin makes it easy to integrate a Wordpress site with an open edX LMS pro
 
 == Description ==
 
-This plugin helps you set up your Wordpress site as the front end site or marketing site for your online learning initiative powered by the Open edX platform.
+This plugin helps you set up your Wordpress site as the front-end site or marketing site for your online learning initiative powered by the Open edX platform.
 
-The idea behind this integration is to use the greater flexibiliy of Wordpress for the content management pages and leave the open edX only to be used once the user logs in to visit his dashboard or courses. 
+The idea behind this integration is to use the greater flexibility of Wordpress for the content management pages and leave the open edX only to be used once the user logs in to visit his dashboard or courses. 
 
 In these integrations, Wordpress will typically be used for:
 
@@ -32,11 +32,11 @@ The integration between open edX and Wordpress currently works at 3 different pl
 By adding a menu to your Wordpress site that allows users to log in / register to the Open edX site. Once the user has logged in, this menu becomes aware of the session and transforms to a user menu with all the options the Open edX user menu has.
 
 2) At the page / post content level to link posts with courses.
-By adding a Course button to a particular page or post, it can be used as a couse description page, where all the information of the course can be stored and from which the user can access their courses based on the course settings and the learner state.
+By adding a Course button to a particular page or post, it can be used as a course description page, where all the information of the course can be stored and from which the user can access their courses based on the course settings and the learner state.
 This button is added using a shortcode, and it takes care of rendering the correct action depending on the configuration that the course has for that particular user on the Open edX site.
 
 3) At the static pages level.
-Open edX includes some static pages for things like the Terms of Service, Privacy Policy, etc, but it has very little capabilities for manageing these web contents. The integration allows to host this content directly in wordpress and make sure that the trafic going to each of these static destinations reaches the right page.
+Open edX includes some static pages for things like the Terms of Service, Privacy Policy, Honor coude and others, but it has very little capabilities for managing these web contents. The integration allows to host this content directly in wordpress and make sure that the traffic going to each of these static destinations reaches the right page.
 
 Some additional integrations are currently under development. If you require a different kind of integration, or professional services to optimize your Open edX platform, contact eduNEXT at https://eduNEXT.co
 
@@ -71,17 +71,17 @@ To create an open edX menu:
 The list of menu items includes:
 
 - Login/User Menu:
-    If the user is logged in, the menu will display the name of the user with a link to the dashboard of the lms.
-    Otherwise it will display a link to login, with the label provided. To change the label, you can edit the menu item in place. Be sure to follow the convention <Label displayed for logged out user>/<This will be replaced by the user name>
+    If the user is logged in, the menu will display the name of the user with a link to the dashboard of the LMS.
+    Otherwise it will display a link to login, with the label provided. To change the label, you can edit the menu item in place. Be sure to follow the convention <Label displayed for logged-out user>/<This will be replaced by the user name>
 
 - Login/Dashboard:
-    If the user is logged in, the menu will display the configured label with a link to the dashboard of the lms.
-    Otherwise it will display a link to login, with the label provided. To change the label, you can edit the menu item in place. Be sure to follow the convention <Label displayed for logged out user>/<Label displayed for the logged out user>
+    If the user is logged in, the menu will display the configured label with a link to the dashboard of the LMS.
+    Otherwise it will display a link to login, with the label provided. To change the label, you can edit the menu item in place. Be sure to follow the convention <Label displayed for logged-out user>/<Label displayed for the logged out user>
 
-- Login Btn:
+- Login Button:
     A menu item, with a link to the login page. If the user is already logged in, nothing will appear.
 
-- Register Btn:
+- Register Button:
     A menu item, with a link to the register page. If the user is already logged in, nothing will appear.
 
 - User Menu:
@@ -107,16 +107,16 @@ The list of menu items includes:
 
 Buttons to enroll or in general take any action call on the courses are produced using the `edunext_enroll_button` shortcode.
 
-The most simple example is using the shortcode giving it the course_id of the course only. E.g.:
+The simplest example is using the shortcode giving it only the course_id. E.g.:
 
-    [edunext_enroll_button course_id="course-v1:edX+Demo+demo_course"]
+    [edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun"]
 
 
 To configure any of the settings per-button, you can also change the setting of any setting defined in the settings page specifically for a particular shortcode.
 
 E.g: To change the label from "Enroll" which is the default, to "Enroll in the course now" you can use:
 
-    [edunext_enroll_button course_id="course-v1:edX+Demo+demo_course" label_enroll="Enroll in the course now"]
+    [edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun" label_enroll="Enroll in the course now"]
 
 Here is a list of all the properties you can override:
 
