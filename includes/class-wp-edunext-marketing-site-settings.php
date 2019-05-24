@@ -148,7 +148,25 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'type'			=> 'text',
 					'default'		=> 'edunext-user-info',
 					'placeholder'	=> ''
-				)
+				),
+				array(
+					'id' 				=> 'enable_woocommerce_integration',
+					'label'				=> __( 'Enable Eox-core Woocommerce integrations' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers. Features: Checkout pre-filling', 'wp-edunext-marketing-site' ),
+					'type'				=> 'checkbox',
+					'default'			=> false,
+					'placeholder'		=> '',
+					'advanced_setting' 	=> true
+				),
+				array(
+					'id' 				=> 'enrollment_api_location',
+					'label'				=> __( 'Enrollment API Location' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers. Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'text',
+					'default'			=> '/api/enrollment/v1/',
+					'placeholder'		=> '',
+					'advanced_setting' 	=> true
+				)			
 			)
 		);
 
