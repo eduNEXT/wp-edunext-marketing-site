@@ -117,10 +117,24 @@ class WP_eduNEXT_Marketing_Site {
 		// Add attributes for menus items
 		add_action( 'init', array( 'Edx_Walker_Nav_Menu_Edit', 'setup' ) );
 
+		// Add the custom post types
+
+		$enrollment_cpt_options = array(
+			'public' => false,
+			'hierarchical' => false,
+			'show_ui' => true,
+			'show_in_menu' => false,
+			'show_in_nav_menus' => true,
+			'menu_icon' => 'dashicons-admin-post'
+		);
+		$this->register_post_type('openedx_enrollment', 'Open edX Enrollments', 'Open edX Enrollment', '', $enrollment_cpt_options);
+
+		// WooCommerce integration
 		if ( get_option('wpt_enable_woocommerce_integration') ) {
 			$this->woocommerce = new WP_eduNEXT_Woocommerce_Integration();
 		}
 
+		// Add wp-admin
 		if ( is_admin() ) {
 			// Load API for generic admin functions
 			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
