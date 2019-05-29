@@ -85,6 +85,22 @@ class WP_Openedx_Enrollment {
 		// Do something
 	}
 
+
+	/**
+	 * Filters the list of actions available on the list view below each object
+	 *
+	 * @return actions
+	 */
+    function remove_table_row_actions( $actions ){
+
+		unset($actions['edit']);
+		unset($actions['trash']);
+		unset($actions['view']);
+		unset($actions['inline hide-if-no-js']);
+
+        return $actions;
+    }
+
 	/**
 	 * Prepare the site to work with the Enrollment object as a CPT
 	 *
@@ -96,6 +112,9 @@ class WP_Openedx_Enrollment {
 		add_action( 'edit_form_after_title', array( $this, 'render_enrollment_info_form' ) );
 
 		add_action( 'add_meta_boxes' , array( $this, 'replace_admin_meta_boxes' ) );
+
+   		add_filter('post_row_actions', array( $this, 'remove_table_row_actions') );
+
 	}
 
 	/**
