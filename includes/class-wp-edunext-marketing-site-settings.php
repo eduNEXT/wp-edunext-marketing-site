@@ -162,8 +162,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 		);
 
 		$settings['navigation'] = array(
-			'title'					=> __( 'Open edX User Menu Settings', 'wp-edunext-marketing-site' ),
-			'description'			=> __( 'Visit "Appearance -> Menus" to build the Open edX user menu for your WP site.', 'wp-edunext-marketing-site' ),
+			'title'					=> __( 'Navigation Settings', 'wp-edunext-marketing-site' ),
 			'fields'				=> array(
 				array(
 					'id' 			=> 'advanced_login_location',
@@ -197,7 +196,6 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		$settings['enrollment'] = array(
 			'title'					=> __( 'Course buttons', 'wp-edunext-marketing-site' ),
-			'description'			=> __( 'Course buttons can be added via a Shortcode in any page or post and they will have a specific behaviour depending on the course settings in Open edX and the stated of authenticated user in the course.', 'wp-edunext-marketing-site' ),
 			'fields'				=> array(
 				// Button Generic
 				array(
