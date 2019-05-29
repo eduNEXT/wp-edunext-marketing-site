@@ -17,9 +17,6 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     public function __construct () {
         add_action( 'save_post', array( $this, 'save_meta_boxes' ), 10, 1 );
         add_action('admin_notices', array($this, 'show_notices'));
-
-        // Extra info
-        add_action( 'edit_form_after_title', array( $this, 'edit_form_after_title' ) );
     }
 
     /**
@@ -404,17 +401,4 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
         }
     }
 
-
-    /**
-     * Print coupon description textarea field.
-     *
-     * @param WP_Post $post Current post object.
-     */
-    public function edit_form_after_title( $post ) {
-        if ( 'openedx_enrollment' === $post->post_type ) {
-            ?>
-            <textarea id="openedx-enrollment-data" name="excerpt" placeholder=""><?php echo $post->post_excerpt;?></textarea>
-            <?php
-        }
-    }
 }

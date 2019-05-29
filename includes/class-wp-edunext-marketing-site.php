@@ -128,6 +128,7 @@ class WP_eduNEXT_Marketing_Site {
 		if ( is_admin() ) {
 			// Load API for generic admin functions
 			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
+			$this->openedx_enrollment->set_up_admin();
 		}
 
 		// Handle localisation

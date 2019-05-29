@@ -36,7 +36,7 @@ class WP_Openedx_Enrollment {
 			'show_ui' => true,
 			'show_in_menu' => false,
 			'show_in_nav_menus' => true,
-			'supports' => array( 'title', 'custom-fields', 'revisions'),
+			'supports' => array( 'title', 'revisions'),
 			'menu_icon' => 'dashicons-admin-post'
 		);
 		$this->parent->register_post_type('openedx_enrollment', 'Open edX Enrollments', 'Open edX Enrollment', '', $enrollment_cpt_options);
@@ -56,7 +56,113 @@ class WP_Openedx_Enrollment {
 
 		if ( $this->post_type != $post->post_type ) return;
 
+		// Update the $post metadata
+
+		update_post_meta( $post_id, 'course_id', sanitize_text_field( $_POST['oe_course_id'] ) );
+		update_post_meta( $post_id, 'bundle_id', sanitize_text_field( $_POST['oe_bundle_id'] ) );
+		update_post_meta( $post_id, 'email', sanitize_text_field( $_POST['oe_email'] ) );
+		update_post_meta( $post_id, 'username', sanitize_text_field( $_POST['oe_username'] ) );
+		update_post_meta( $post_id, 'mode', sanitize_text_field( $_POST['oe_mode'] ) );
+
+		// Cant deal with bools right now
+
+		// if ( isset( $_POST['oe_is_active'] ) ) {
+		// 	update_post_meta( $post_id, 'is_active', TRUE );
+		// } else {
+		// 	update_post_meta( $post_id, 'is_active', FALSE );
+		// }
+
+		// if ( isset( $_POST['oe_force'] ) ) {
+		// 	update_post_meta( $post_id, 'force', TRUE );
+		// } else {
+		// 	update_post_meta( $post_id, 'force', FALSE );
+		// }
+
 		// Here we can connect the API update logic
+
+	}
+
+	/**
+	 * Prepare the site to work with the Enrollment object as a CPT
+	 *
+	 * @return void
+	 */
+	function set_up_admin() {
+
+		// Extra info
+		add_action( 'edit_form_after_title', array( $this, 'edit_form_after_title' ) );
+	}
+
+	/**
+	 * Print openedx enrollment edit metabox
+	 *
+	 * @param WP_Post $post Current post object.
+	 */
+	public function edit_form_after_title( $post ) {
+
+		if ( $this->post_type != $post->post_type ) return;
+		$post_id = $post->ID;
+
+		?>
+		<div id="namediv" class="postbox">
+		<h2 class="">Open edX enrollment information</h2>
+		<fieldset>
+		<table class="form-table">
+			<tbody>
+				<tr>
+					<td class="first"><label for="openedx_enrollment_course_id">course_id</label></td>
+					<td>
+						<input type="text" id="openedx_enrollment_course_id" name="oe_course_id"
+						value="<?php echo(get_post_meta($post_id, 'course_id', true)); ?>">
+					</td>
+				</tr>
+				<tr>
+					<td class="first"><label for="openedx_enrollment_bundle_id">bundle_id</label></td>
+					<td>
+						<input type="text" id="openedx_enrollment_bundle_id" name="oe_bundle_id"
+						value="<?php echo(get_post_meta($post_id, 'bundle_id', true)); ?>">
+					</td>
+				</tr>
+				<tr>
+					<td class="first"><label for="openedx_enrollment_email">email</label></td>
+					<td>
+						<input type="email" id="openedx_enrollment_email" name="oe_email"
+						value="<?php echo(get_post_meta($post_id, 'email', true)); ?>">
+					</td>
+				</tr>
+				<tr>
+					<td class="first"><label for="openedx_enrollment_username">username</label></td>
+					<td>
+						<input type="text" id="openedx_enrollment_username" name="oe_username"
+						value="<?php echo(get_post_meta($post_id, 'username', true)); ?>">
+					</td>
+				</tr>
+				<tr>
+					<td class="first"><label for="openedx_enrollment_mode">mode</label></td>
+					<td>
+						<input type="text" id="openedx_enrollment_mode" name="oe_mode"
+						value="<?php echo(get_post_meta($post_id, 'mode', true)); ?>">
+					</td>
+				</tr>
+				<!--
+				<tr>
+					<td class="first"><label for="openedx_enrollment_is_active">is_active</label></td>
+					<td>
+						<input type="checkbox" id="openedx_enrollment_is_active" name="oe_is_active" style="width: auto;">
+					</td>
+				</tr>
+				<tr>
+					<td class="first"><label for="openedx_enrollment_force">force</label></td>
+					<td>
+						<input type="checkbox" id="openedx_enrollment_force" name="oe_force" style="width: auto;">
+					</td>
+				</tr>
+				 -->
+			</tbody>
+		</table>
+		</fieldset>
+		</div>
+		<?php
 	}
 
 	/**
