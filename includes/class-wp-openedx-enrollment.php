@@ -42,7 +42,68 @@ class WP_Openedx_Enrollment {
 		$this->parent->register_post_type('openedx_enrollment', 'Open edX Enrollment Requests', 'Open edX Enrollment Request', '', $enrollment_cpt_options);
 
 		// Register the CPT actions
+		$this->register_save_hook();
+
+		add_action( 'init', array( $this, 'register_status'), 10, 3 );
+	}
+
+	function register_save_hook() {
 		add_action( 'save_post', array( $this, 'save'), 10, 3 );
+	}
+
+	function unregister_save_hook() {
+		remove_action( 'save_post', array( $this, 'save'), 10, 3 );
+	}
+
+	/**
+	 * Creates specific status for the post type
+	 *
+	 * @return  void
+	 */
+	function register_status() {
+		register_post_status( 'eor-success', array(
+			'label' => __( 'Success', 'wp-edunext-marketing-site' ),
+			'public' => false,
+			'internal' => true,
+			'private' => true,
+			'exclude_from_search' => false,
+			'show_in_admin_all_list' => true,
+			'show_in_admin_status_list' => true,
+			'label_count' => _n_noop( 'Success <span class="count">(%s)</span>', 'Success <span class="count">(%s)</span>', 'wp-edunext-marketing-site' ),
+		) );
+		register_post_status( 'eor-pending', array(
+			'label' => __( 'Pending', 'wp-edunext-marketing-site' ),
+			'public' => false,
+			'internal' => true,
+			'private' => true,
+			'exclude_from_search' => false,
+			'show_in_admin_all_list' => true,
+			'show_in_admin_status_list' => true,
+			'label_count' => _n_noop( 'Pending <span class="count">(%s)</span>', 'Pending <span class="count">(%s)</span>', 'wp-edunext-marketing-site' ),
+		) );
+		register_post_status( 'eor-error', array(
+			'label' => __( 'Error', 'wp-edunext-marketing-site' ),
+			'public' => false,
+			'internal' => true,
+			'private' => true,
+			'exclude_from_search' => false,
+			'show_in_admin_all_list' => true,
+			'show_in_admin_status_list' => true,
+			'label_count' => _n_noop( 'Error <span class="count">(%s)</span>', 'Error <span class="count">(%s)</span>', 'wp-edunext-marketing-site' ),
+		) );
+	}
+
+	/**
+	 * Wrapper for the WP function that prevents an infinite cycle of hook recursion
+	 *
+	 * @param array $post The post info in an array.
+	 */
+	function wp_update_post( $post ) {
+		$this->unregister_save_hook();
+
+		wp_update_post( $post );
+
+		$this->register_save_hook();
 	}
 
 	/**
@@ -56,12 +117,31 @@ class WP_Openedx_Enrollment {
 
 		if ( $this->post_type != $post->post_type ) return;
 
-		// Update the $post metadata
+		$oer_course_id = sanitize_text_field( $_POST['oer_course_id'] );
+		$oer_email = sanitize_text_field( $_POST['oer_email'] );
+		$oer_username = sanitize_text_field( $_POST['oer_username'] );
+		$oer_mode = sanitize_text_field( $_POST['oer_mode'] );
 
-		update_post_meta( $post_id, 'course_id', sanitize_text_field( $_POST['oer_course_id'] ) );
-		update_post_meta( $post_id, 'email', sanitize_text_field( $_POST['oer_email'] ) );
-		update_post_meta( $post_id, 'username', sanitize_text_field( $_POST['oer_username'] ) );
-		update_post_meta( $post_id, 'mode', sanitize_text_field( $_POST['oer_mode'] ) );
+		// We need to have all 3 required params to continue
+		if ( ! $oer_course_id && ! $oer_username || ! $oer_mode ) return;
+
+		$post_update = array(
+			'ID' => $post_id,
+			'post_title' => $oer_course_id . ' | ' . $oer_username . ' | Mode: ' . $oer_mode ,
+		);
+		// Only update the post status if it has no custom status yet
+		if ( $post->post_status != 'eor-success'  && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
+			$post_update['post_status'] = 'eor-pending';
+		}
+		$this->wp_update_post($post_update);
+
+		// Update the $post metadata
+		update_post_meta( $post_id, 'course_id', $oer_course_id );
+		update_post_meta( $post_id, 'email', $oer_email );
+		update_post_meta( $post_id, 'username', $oer_username );
+		update_post_meta( $post_id, 'mode', $oer_mode );
+
+		// Handle the eox-core API actions
 
 		if ('oer_process' == $_POST['oer_action']) {
 			$this->process_request($post_id, $post, false);
