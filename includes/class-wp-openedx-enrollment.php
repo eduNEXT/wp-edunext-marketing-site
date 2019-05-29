@@ -59,7 +59,6 @@ class WP_Openedx_Enrollment {
 		// Update the $post metadata
 
 		update_post_meta( $post_id, 'course_id', sanitize_text_field( $_POST['oer_course_id'] ) );
-		update_post_meta( $post_id, 'bundle_id', sanitize_text_field( $_POST['oer_bundle_id'] ) );
 		update_post_meta( $post_id, 'email', sanitize_text_field( $_POST['oer_email'] ) );
 		update_post_meta( $post_id, 'username', sanitize_text_field( $_POST['oer_username'] ) );
 		update_post_meta( $post_id, 'mode', sanitize_text_field( $_POST['oer_mode'] ) );
@@ -157,13 +156,6 @@ class WP_Openedx_Enrollment {
 					<td>
 						<input type="text" id="openedx_enrollment_course_id" name="oer_course_id"
 						value="<?php echo(get_post_meta($post_id, 'course_id', true)); ?>">
-					</td>
-				</tr>
-				<tr>
-					<td class="first"><label for="openedx_enrollment_bundle_id">bundle_id</label></td>
-					<td>
-						<input type="text" id="openedx_enrollment_bundle_id" name="oer_bundle_id"
-						value="<?php echo(get_post_meta($post_id, 'bundle_id', true)); ?>">
 					</td>
 				</tr>
 				<tr>
