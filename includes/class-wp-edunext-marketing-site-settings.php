@@ -141,14 +141,21 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'placeholder'	=> ''
 				),
 				array(
-					'id' 				=> 'enable_woocommerce_integration',
-					'label'				=> __( 'Enable Eox-core Woocommerce integrations' , 'wp-edunext-marketing-site' ),
-					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers. Features: Checkout pre-filling', 'wp-edunext-marketing-site' ),
-					'type'				=> 'checkbox',
-					'default'			=> false,
-					'placeholder'		=> '',
-					'advanced_setting' 	=> true
-				),
+					'id' => 'eox_client_id',
+					'label' => __('Client id', 'wp-edunext-marketing-site') ,
+					'description' => __('Client id of the open edX instance API.', 'wp-edunext-marketing-site') ,
+					'type' => 'text',
+					'default' => '',
+					'placeholder' => ''
+				) ,
+				array(
+					'id' => 'eox_client_secret',
+					'label' => __('Client secret', 'wp-edunext-marketing-site') ,
+					'description' => __('Client secret of the open edX instance API.', 'wp-edunext-marketing-site') ,
+					'type' => 'text',
+					'default' => '',
+					'placeholder' => ''
+				) ,
 				array(
 					'id' 				=> 'enrollment_api_location',
 					'label'				=> __( 'Enrollment API Location' , 'wp-edunext-marketing-site' ),
@@ -501,6 +508,30 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'default'		=> '',
 					'placeholder'	=> '',
 				)
+			)
+		);
+
+		$settings['woocommerce'] = array(
+			'title'					=> __( 'Woocommerce Integration', 'wp-edunext-marketing-site' ),
+			'fields'				=> array(
+				array(
+					'id' 				=> 'enable_woocommerce_integration',
+					'label'				=> __( 'Enable Eox-core Woocommerce integrations' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers. Features: Checkout pre-filling', 'wp-edunext-marketing-site' ),
+					'type'				=> 'checkbox',
+					'default'			=> false,
+					'placeholder'		=> '',
+					'advanced_setting' 	=> true
+				),
+				array(
+					'id' => 'eox_client_wc_field_mappings',
+					'label' => __('User fields mappings', 'wp-edunext-marketing-site') ,
+					'description' => __('Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site') ,
+					'type' => 'text',
+					'default' => '',
+					'placeholder' => '{"wc_example": "example"}',
+					'advanced_setting' 	=> true
+				),
 			)
 		);
 

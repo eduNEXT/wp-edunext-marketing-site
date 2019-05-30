@@ -77,30 +77,6 @@ class WP_EoxCoreApi
 			'title' => __('EOX API', 'wp-edunext-marketing-site') ,
 			'description' => __('These settings modify the way to interact with the eox api.', 'wp-edunext-marketing-site') ,
 			'fields' => array(
-				array(
-					'id' => 'eox_client_id',
-					'label' => __('Client id', 'wp-edunext-marketing-site') ,
-					'description' => __('Client id of the open edX instance API.', 'wp-edunext-marketing-site') ,
-					'type' => 'text',
-					'default' => '',
-					'placeholder' => ''
-				) ,
-				array(
-					'id' => 'eox_client_secret',
-					'label' => __('Client secret', 'wp-edunext-marketing-site') ,
-					'description' => __('Client secret of the open edX instance API.', 'wp-edunext-marketing-site') ,
-					'type' => 'text',
-					'default' => '',
-					'placeholder' => ''
-				) ,
-				array(
-					'id' => 'eox_client_wc_field_mappings',
-					'label' => __('User fields mappings', 'wp-edunext-marketing-site') ,
-					'description' => __('Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site') ,
-					'type' => 'text',
-					'default' => '',
-					'placeholder' => '{"wc_example": "example"}'
-				)
 			)
 		);
 		return $settings;
