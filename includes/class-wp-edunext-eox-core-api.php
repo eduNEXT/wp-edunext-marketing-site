@@ -230,9 +230,20 @@ class WP_EoxCoreApi
 	public function create_enrollment($args) {
 		$data = wp_parse_args($args, $this->enroll_defaults);
 		$api_url = self::PATH_ENROLLMENT_API;
-		$ref = $data['username'];
+		$ref = $args['email'] ?: $args['username'] ?: '';
 		$success_message = 'Enrollment success!';
 		return $this->api_call($api_url, $data, $ref, $success_message);
+	}
+
+	/**
+	 * Function to execute the API calls required to get an enrollment
+	 */
+	public function get_enrollment($args) {
+		$api_url = self::PATH_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Enrollment fetched!';
+		$api_url .= '?' . http_build_query($args);
+		return $this->api_call($api_url, NULL, $ref, $success_message);
 	}
 
 	/**
@@ -321,6 +332,11 @@ class WP_EoxCoreApi
 		}
 		if (isset($json->non_field_errors)) {
 			foreach ($json->non_field_errors as $value) {
+				$errors[] = $value . ' (' . $ref . ')';
+			}
+		}
+		if (isset($json->errors)) {
+			foreach ($json->errors as $value) {
 				$errors[] = $value . ' (' . $ref . ')';
 			}
 		}

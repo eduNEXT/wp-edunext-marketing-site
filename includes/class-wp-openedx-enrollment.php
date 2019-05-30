@@ -158,7 +158,7 @@ class WP_Openedx_Enrollment {
 			$post_update['post_status'] = $this->process_request($post_id, $post, true);
 		}
 		if ('oer_sync' == $_POST['oer_action']) {
-			// Do the Sync
+			$this->sync_request( $post_id, $post);
 		}
 
 		$this->wp_update_post($post_update);
@@ -193,6 +193,31 @@ class WP_Openedx_Enrollment {
 		}
 	}
 
+	/**
+	 * Update post metadata when a post is synced.
+	 *
+	 * @param int $post_id The post ID.
+	 * @param post $post The post object.
+	 */
+	function sync_request( $post_id, $post) {
+		
+		$args = array(
+			'course_id' => get_post_meta($post_id, 'course_id', true),
+			'email' => get_post_meta($post_id, 'email', true),
+			'username' => get_post_meta($post_id, 'username', true),
+		);
+
+		$response = WP_EoxCoreApi()->get_enrollment($args);
+		if (is_wp_error($response)) {
+			update_post_meta($post_id, 'errors', $response->get_error_message());
+		} else {
+			delete_post_meta($post_id, 'errors');
+			update_post_meta($post_id, 'course_id', $response->course_id);
+			update_post_meta($post_id, 'username',  $response->user);
+			update_post_meta($post_id, 'mode',  $response->mode);
+			update_post_meta($post_id, 'is_active',  $response->is_active);
+		}
+	}
 
 	/**
 	 * Filters the list of actions available on the list view below each object
