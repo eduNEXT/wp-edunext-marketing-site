@@ -56,7 +56,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 		add_action( 'admin_init' , array( $this, 'register_settings' ) );
 
 		// Add settings page to menu
-		add_action( 'admin_menu' , array( $this, 'add_menu_item' ) );
+		add_action( 'admin_menu' , array( $this, 'add_admin_menu' ) );
+		add_action( 'admin_head', array( $this, 'menu_highlight' ) );
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ) , array( $this, 'add_settings_link' ) );
@@ -74,9 +75,30 @@ class WP_eduNEXT_Marketing_Site_Settings {
 	 * Add settings page to admin menu
 	 * @return void
 	 */
-	public function add_menu_item () {
-		$page = add_options_page( __( 'Open edX Wordpress Integrator', 'wp-edunext-marketing-site' ) , __( 'Open edX Wordpress Integrator', 'wp-edunext-marketing-site' ) , 'manage_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
+	public function add_admin_menu () {
+		$settings_page_slug = $this->parent->_token . '_settings';
+
+		$page = add_menu_page( __( 'Open edX WP-Integrator', 'wp-edunext-marketing-site' ) , __( 'Open edX WP-Integrator', 'wp-edunext-marketing-site' ) , 'manage_options' , $settings_page_slug ,  array( $this, 'settings_page' ) );
+
 		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
+
+		foreach ( $this->settings as $section => $data ) {
+			add_submenu_page( $this->parent->_token . '_settings' , $data['title'], $data['title'], 'manage_options', 'admin.php?page=' . $settings_page_slug . '&tab=' . $section, null );
+		}
+	}
+
+	/**
+	 * Highlights the correct top level admin menu item for post type add screens.
+	 */
+	public function menu_highlight() {
+		global $parent_file, $submenu_file, $post_type;
+
+		if ( $parent_file == $this->parent->_token . '_settings' ) {
+			if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
+				$tab .= $_GET['tab'];
+				$submenu_file = 'admin.php?page=' . $parent_file . '&tab=' . $tab;
+			}
+		}
 	}
 
 	/**
