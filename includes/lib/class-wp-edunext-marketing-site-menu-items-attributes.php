@@ -116,7 +116,7 @@ class Edx_Nav_Menu_Item_Custom_Fields {
 		return '_menu_item_' . $name;
 	}
 	/**
-	 * Inject the 
+	 * Inject the
 	 * @hook {action} save_post
 	 */
 	static function get_field( $item, $depth, $args ) {

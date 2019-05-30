@@ -5,9 +5,9 @@
 	<p><pre>[edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun"]</pre></p>
 
 <h4>Overriding properties for the button:</h4>
-	<p>To specify a custom class for the container, button or color you may use the attributes 
+	<p>To specify a custom class for the container, button or color you may use the attributes
 		<strong>button_class_generic</strong>, <strong>container_class_generic</strong>, <strong>color_class_generic</strong>
-	</p> 
+	</p>
 	<p>There are 5 alternative buttons. One of them will appear depending on the learner state and course settings:</p>
 	<ul>
 		<li><strong>• enroll </strong><i>the learner is not enrolled and the course is open for enrollments</i></li>
@@ -55,12 +55,12 @@ color_class_<strong>invitation_only</strong>="my-custom-color"]</pre></p>
 		<li>button_class_enrollment_closed</li>
 		<li>container_class_enrollment_closed</li>
 		<li>color_class_enrollment_closed</li>
-		
+
 		<li>hide_if</li>
 	</ul>
 <h4>Advanced usage:</h4>
 		<p>You may also use the attribute <strong>hide_if="not logged in"</strong> if you want to hide the button when the user is NOT logged in. Inversely you may use the attribute <strong>hide_if="logged in"</strong> if you want to hide the button when the user is logged in</p>
-		<p><pre>[edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun" hide_if="logged in"]</pre></p>		
+		<p><pre>[edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun" hide_if="logged in"]</pre></p>
 		<script>
 			jQuery(function ($) {
 				var $metabox = $('#exo-shortcode-help');

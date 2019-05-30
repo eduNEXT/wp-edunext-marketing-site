@@ -15,8 +15,8 @@
  * Author: Josh Fraser
  *
  * Contribution from Clive Verrall www.cliveverrall.com February 2016
- * 
- * // other contributions: 
+ *
+ * // other contributions:
  * //   - eric willis [list of honorifics](http://notes.ericwillis.com/2009/11/common-name-prefixes-titles-and-honorifics/)
  * //   - `TomThak` for raising issue #16 and providing [wikepedia resource](https://cs.wikipedia.org/wiki/Akademick%C3%BD_titul)
  * //   - `atla5` for closing the issue.
@@ -114,9 +114,9 @@ class FullNameParser {
           'BASS','BATheol','BBA','BBLS', 'BBS','BBus','BChem','BCJ','BCL','BCLD(SocSc)','BClinSci','BCom','BCombSt','BCommEdCommDev','BComp','BComSc','BCoun','BD','BDes','BE','BEcon','BEcon&Fin', 'M.P.P.M.', 'MPPM',
           'BEconSci', 'BEd','BEng','BES','BEng(Tech)','BFA','BFin','BFLS','BFST','BH','BHealthSc','BHSc','BHy','BJur','BL','BLE','BLegSc','BLib','BLing','BLitt','BLittCelt','BLS','BMedSc','BMet',
           'BMid', 'BMin','BMS','BMSc','BMSc','BMS','BMus','BMusEd','BMusPerf','BN', 'BNS','BNurs','BOptom','BPA','BPharm', 'BPhil', 'TTC', 'DIP', 'Tchg', 'BEd', 'MEd','ACIB', 'FCIM', 'FCIS', 'FCS', 'Fcs',
-          'Bachelor', 'O.C.', 'JP', 'C.Eng', 'C.P.A.', 'B.B.S.', 'MBE', 'GBE', 'KBE', 'DBE', 'CBE', 'OBE', 'MRICS',  'D.P.S.K.', 'D.P.P.J.', 'DPSK', 'DPPJ', 'B.B.A.', 'GBS', 'MIGEM', 'M.I.G.E.M.', 'FCIS',    
+          'Bachelor', 'O.C.', 'JP', 'C.Eng', 'C.P.A.', 'B.B.S.', 'MBE', 'GBE', 'KBE', 'DBE', 'CBE', 'OBE', 'MRICS',  'D.P.S.K.', 'D.P.P.J.', 'DPSK', 'DPPJ', 'B.B.A.', 'GBS', 'MIGEM', 'M.I.G.E.M.', 'FCIS',
           'BPhil(Ed)', 'BPhys','BPhysio','BPl','BRadiog','BSc', 'B.Sc', 'BScAgr','BSc(Dairy)','BSc(DomSc)','BScEc','BScEcon','BSc(Econ)','BSc(Eng)','BScFor','BSc(HealthSc)','BSc(Hort)', 'BBA', 'B.B.A.',
-          'BSc(MCRM)', 'BSc(Med)','BSc(Mid)','BSc(Min)','BSc(Psych)', 'BSc(Tech)','BSD', 'BSocSc','BSS','BStSu','BTchg','BTCP','BTech','BTechEd','BTh','BTheol','BTS','EdB','LittB','LLB','MA','MusB','ScBTech', 
+          'BSc(MCRM)', 'BSc(Med)','BSc(Mid)','BSc(Min)','BSc(Psych)', 'BSc(Tech)','BSD', 'BSocSc','BSS','BStSu','BTchg','BTCP','BTech','BTechEd','BTh','BTheol','BTS','EdB','LittB','LLB','MA','MusB','ScBTech',
           'CEng', 'FCA', 'CFA', 'Cfa', 'C.F.A.', 'LLB', 'LL.B', 'LLM', 'LL.M', 'CA(SA)', 'C.A.', 'CA','CPA',  'Solicitor',  'DMS', 'FIWO', 'CEnv', 'MICE', 'MIWEM', 'B.Com', 'BCom', 'BAcc', 'BA', 'BEc', 'MEc', 'HDip', 'B.Bus.', 'E.S.C.P.' )
     ),
     'vowels' => array('a','e','i','o','u')
@@ -187,7 +187,7 @@ class FullNameParser {
       # Get rid of consecutive spaces left by the removal
       $full_name = str_replace('  ', ' ', $full_name);
     }
-    
+
     # Grab a list of words from the remainder of the full name
     $unfiltered_name_parts = $this->break_words($full_name);
 

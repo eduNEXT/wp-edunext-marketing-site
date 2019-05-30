@@ -26,7 +26,7 @@ class WP_eduNEXT_Woocommerce_Integration {
     }
 
     /**
-     * Callback to pre-fill 
+     * Callback to pre-fill
      * @access public
      * @since  1.0.0
      * @param  string $value The value to show of the HTML input
