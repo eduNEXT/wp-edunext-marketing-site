@@ -15,7 +15,7 @@ This plugin makes it easy to integrate a Wordpress site with an open edX LMS pro
 
 This plugin helps you set up your Wordpress site as the front-end site or marketing site for your online learning initiative powered by the Open edX platform.
 
-The idea behind this integration is to use the greater flexibility of Wordpress for the content management pages and leave the open edX only to be used once the user logs in to visit his dashboard or courses. 
+The idea behind this integration is to use the greater flexibility of Wordpress for the content management pages and leave the open edX only to be used once the user logs in to visit his dashboard or courses.
 
 In these integrations, Wordpress will typically be used for:
 
@@ -149,7 +149,7 @@ Here is a list of all the properties you can override:
 - container_class_enrollment_closed
 - color_class_enrollment_closed
 
-- hide_if 
+- hide_if
 
 
 == Changelog ==

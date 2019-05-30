@@ -100,7 +100,7 @@ function handle_payment_successful_result( $order_id ) {
                 $is_course_item = True;
                 $ids = explode('|', $attr_course_id);
                 foreach ($ids as $id) {
-                    
+
                     $response = WP_EoxCoreApi()->create_enrollment([
                         'email' => $user->user_email,
                         $key => trim($id),
