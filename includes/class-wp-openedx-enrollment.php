@@ -171,15 +171,41 @@ class WP_Openedx_Enrollment {
 	 *
 	 * @return actions
 	 */
-    function remove_table_row_actions( $actions ){
+	function remove_table_row_actions( $actions ){
 
 		unset($actions['edit']);
 		unset($actions['trash']);
 		unset($actions['view']);
 		unset($actions['inline hide-if-no-js']);
 
-        return $actions;
-    }
+		return $actions;
+	}
+
+	/**
+	 * Adds the cpt columns to the list view
+	 *
+	 * @return array $column
+	 */
+	function add_columns_to_list_view( $column ) {
+		$column['status'] = 'Status';
+		return $column;
+	}
+
+	/**
+	 * Fills the values of the custom columns in the list view
+	 *
+	 * @return void
+	 */
+	function fill_custom_columns_in_list_view( $column_name, $post_id ) {
+		switch ($column_name) {
+			case 'status' :
+				if ( get_post( $post_id )->post_status == 'eor-success' ) echo '<b style="color:green;">Success</b>';
+				if ( get_post( $post_id )->post_status == 'eor-error' ) echo '<b style="color:red;">Error</b>';
+				if ( get_post( $post_id )->post_status == 'eor-pending' ) echo '<b style="color:orange;">Pending</b>';
+				break;
+			default:
+		}
+	}
 
 	/**
 	 * Prepare the site to work with the Enrollment object as a CPT
@@ -188,13 +214,14 @@ class WP_Openedx_Enrollment {
 	 */
 	function set_up_admin() {
 
-		// Extra info
+		// Edit view
 		add_action( 'edit_form_after_title', array( $this, 'render_enrollment_info_form' ) );
-
 		add_action( 'add_meta_boxes' , array( $this, 'replace_admin_meta_boxes' ) );
 
-   		add_filter('post_row_actions', array( $this, 'remove_table_row_actions') );
-
+		// List view
+		add_filter('post_row_actions', array( $this, 'remove_table_row_actions') );
+		add_filter( 'manage_posts_custom_column', array( $this, 'fill_custom_columns_in_list_view' ), 10, 3  ) ;
+		add_filter( 'manage_openedx_enrollment_posts_columns', array( $this, 'add_columns_to_list_view' ) ) ;
 	}
 
 	/**
