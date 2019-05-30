@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build_7:
+    docker:
+      - image: circleci/php:7.3.5
+    steps:
+      - checkout
+      - run: find . -type f -name "*.php" -exec php -l {} \;
+  lint:
+    docker:
+      - image: circleci/php:7.3.5
+    steps:
+      - checkout
+      - run: curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && php phpcs.phar -v .
+workflows:
+  version: 2
+  build_and_lint:
+    jobs:
+      - build_7
+      - lint
