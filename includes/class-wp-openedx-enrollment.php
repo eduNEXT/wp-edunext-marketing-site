@@ -134,13 +134,13 @@ class WP_Openedx_Enrollment {
 		if ( $post->post_status != 'eor-success'  && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
 			$post_update['post_status'] = 'eor-pending';
 		}
-		$this->wp_update_post($post_update);
 
 		// Update the $post metadata
 		update_post_meta( $post_id, 'course_id', $oer_course_id );
 		update_post_meta( $post_id, 'email', $oer_email );
 		update_post_meta( $post_id, 'username', $oer_username );
 		update_post_meta( $post_id, 'mode', $oer_mode );
+		update_post_meta( $post_id, 'errors', sanitize_text_field( $_POST['oer_errors'] ) );
 
 		if ($oer_request_type === 'enroll') {
 			update_post_meta( $post_id, 'is_active', true );
@@ -152,14 +152,16 @@ class WP_Openedx_Enrollment {
 		// Handle the eox-core API actions
 
 		if ('oer_process' == $_POST['oer_action']) {
-			$this->process_request($post_id, $post, false);
+			$post_update['post_status'] = $this->process_request($post_id, $post, false);
 		}
 		if ('oer_force' == $_POST['oer_action']) {
-			$this->process_request($post_id, $post, true);
+			$post_update['post_status'] = $this->process_request($post_id, $post, true);
 		}
 		if ('oer_sync' == $_POST['oer_action']) {
 			// Do the Sync
 		}
+
+		$this->wp_update_post($post_update);
 	}
 
 	/**
@@ -167,10 +169,28 @@ class WP_Openedx_Enrollment {
 	 *
 	 * @param int $post_id The post ID.
 	 * @param post $post The post object.
-	 * @param bool $force Does this order need procesing by force?
+	 * @param bool $force Does this order need processing by force?
+	 * @return string status of the processed request 
 	 */
 	function process_request( $post_id, $post, $force ) {
-		// Do something
+		
+		$args = array(
+			'course_id' => get_post_meta($post_id, 'course_id', true),
+			'email' => get_post_meta($post_id, 'email', true),
+			'username' => get_post_meta($post_id, 'username', true),
+			'mode' => get_post_meta($post_id, 'mode', true),
+			'is_active' => get_post_meta($post_id, 'is_active', true),
+			'force' => $force,
+		);
+
+		$response = WP_EoxCoreApi()->create_enrollment($args);
+		if (is_wp_error($response)) {
+			update_post_meta($post_id, 'errors', $response->get_error_message());
+			return 'eor-error';
+		} else {
+			delete_post_meta($post_id, 'errors');
+			return 'eor-success';
+		}
 	}
 
 
@@ -354,6 +374,17 @@ class WP_Openedx_Enrollment {
 
 					</td>
 				</tr>
+				
+				<?php if (get_post_meta($post_id, 'errors', true)): ?>
+				<!-- Temporal display of errors, TODO: move this to a polished div  -->
+				<tr>
+					<td class="first"><label for="openedx_enrollment_errors">errors</label></td>
+					<td>
+						<input type="text" id="openedx_enrollment_errors" name="oer_errors"
+						value="<?php echo(get_post_meta($post_id, 'errors', true)); ?>">
+					</td>
+				</tr>
+				<?php endif; ?>
 			</tbody>
 		</table>
 		</fieldset>
