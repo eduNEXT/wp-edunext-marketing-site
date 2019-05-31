@@ -629,7 +629,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-		$html .= '<h2>' . __( 'Open edX - Wordpress Integrator | by eduNEXT' , 'wp-edunext-marketing-site' ) . '</h2>' . "\n";
+		$html .= '<h2>' . __( 'Open edX - Wordpress Integrator | by ' , 'wp-edunext-marketing-site' ) . '<a href="https://www.edunext.co" target="_blank"><img src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="'. __('eduNEXT - World class Open edX services provider | www.edunext.co') . '"></a></h2>' . "\n";
 
 		$tab = '';
 		if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
@@ -691,10 +691,6 @@ class WP_eduNEXT_Marketing_Site_Settings {
 		$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'wp-edunext-marketing-site' ) ) . '" />' . "\n";
 		$html .= '</p>' . "\n";
 		$html .= '</form>' . "\n";
-
-		$html .= '<a class="footer-logo edunext col-12" href="https://www.edunext.co" target="_self">
-				 <img src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="eduNEXT - World class open edX services provider | www.edunext.co">
-				 </a>' . "\n";
 
 
 		$html .= '</div>' . "\n";
