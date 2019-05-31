@@ -229,7 +229,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				// Button Generic
 				array(
 					'id' 			=> 'header_generic',
-					'label'			=> __( 'Default settings for all buttons', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Default settings for ALL buttons', 'wp-edunext-marketing-site' ),
 					'description'	=> __( 'These settings can be applied to all buttons, and will be overwriten by the button specific settings in case they are also set.', 'wp-edunext-marketing-site' ),
 					'type'			=> '',
 					'default'		=> '',
@@ -245,7 +245,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 			=> 'color_class_generic',
-					'label'			=> __( 'Additional CSS classes for the link element of the button' , 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'Additional CSS classes for the link element of the buttons' , 'wp-edunext-marketing-site' ),
 					'description'	=> '',
 					'type'			=> 'text',
 					'default'		=> '',
@@ -270,8 +270,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				// #1 Enroll to course button
 				array(
 					'id' 			=> 'header_enroll',
-					'label'			=> __( 'Enroll to course', 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'This button will be visible when the course is available for enrollments and the user is not yet enrolled, or there is not a user session yet.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'ENROLL BUTTON', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button will trigger the enrollment in the course. It will be visible when the course is available for enrollments and the user is not yet enrolled, or there is not a user session yet.', 'wp-edunext-marketing-site' ),
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> ''
@@ -328,8 +328,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				// #2 Button Go To Course
 				array(
 					'id' 			=> 'header_go_to_course',
-					'label'			=> __( 'Go to course', 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'This button will be visible when the course is open and the user is already enrolled.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'GO TO COURSE BUTTON', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button will take the user to the course content. It will be visible when the course is open and the user is already enrolled.', 'wp-edunext-marketing-site' ),
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> ''
@@ -377,8 +377,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				// #3 Button Course Has Not started
 				array(
 					'id' 			=> 'header_course_has_not_started',
-					'label'			=> __( 'Course is closed', 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'This button will be visible when the course is closed based on the course start and end dated set in Open edX.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'COURSE IS CLOSED BUTTON', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button doesn\'t have any action. It will be visible when the course in Open edX is closed based on the course start and end dates.', 'wp-edunext-marketing-site' ),
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> ''
@@ -435,8 +435,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				// #4 Button Invitation Only
 				array(
 					'id' 			=> 'header_invitation_only',
-					'label'			=> __( 'Invitatin only', 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'This button will be visible when the course is set to be for enrollments by Invitation only in Open edX.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'INVITATION ONLY BUTTON', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button doesn\'t have any action. It will be visible when the course in Open edX is set to be for enrollments by Invitation only.', 'wp-edunext-marketing-site' ),
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> ''
@@ -446,7 +446,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'label'			=> __( 'Label' , 'wp-edunext-marketing-site' ),
 					'description'	=> '',
 					'type'			=> 'text',
-					'default'		=> __( 'This course by invitation only', 'wp-edunext-marketing-site' ),
+					'default'		=> __( 'This course is by invitation only', 'wp-edunext-marketing-site' ),
 					'placeholder'	=> ''
 				),
 				array(
@@ -484,8 +484,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				// #5 Button Enrollment Closed
 				array(
 					'id' 			=> 'header_enrollment_closed',
-					'label'			=> __( 'Enrollment closed', 'wp-edunext-marketing-site' ),
-					'description'	=> __( 'This button will be visible when the course is closed for enrollments as set by the enrollments start and end dated in Open edX.', 'wp-edunext-marketing-site' ),
+					'label'			=> __( 'ENROLLMENT CLOSED BUTTON', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'This button doesn\'t have any action and will be visible when the course in Open edX is closed for enrollments as set by the enrollments start and end dated.', 'wp-edunext-marketing-site' ),
 					'type'			=> '',
 					'default'		=> '',
 					'placeholder'	=> ''
@@ -538,8 +538,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 			'fields'				=> array(
 				array(
 					'id' 				=> 'enable_woocommerce_integration',
-					'label'				=> __( 'Enable Eox-core Woocommerce integrations' , 'wp-edunext-marketing-site' ),
-					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers. Features: Checkout pre-filling', 'wp-edunext-marketing-site' ),
+					'label'				=> __( 'Enable Checkout fields pre-filling' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers.', 'wp-edunext-marketing-site' ),
 					'type'				=> 'checkbox',
 					'default'			=> false,
 					'placeholder'		=> '',
@@ -547,8 +547,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' => 'eox_client_wc_field_mappings',
-					'label' => __('User fields mappings', 'wp-edunext-marketing-site') ,
-					'description' => __('Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site') ,
+					'label' => __('User Profile fields mapping', 'wp-edunext-marketing-site') ,
+					'description' => __('This is an advanced feature only supported for eduNEXT customers. Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce (chekout)', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site'),
 					'type' => 'text',
 					'default' => '',
 					'placeholder' => '{"wc_example": "example"}',
@@ -629,7 +629,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-		$html .= '<h2>' . __( 'Open edX Wordpress Integrator Settings | By eduNEXT' , 'wp-edunext-marketing-site' ) . '</h2>' . "\n";
+		$html .= '<h2>' . __( 'Open edX - Wordpress Integrator | by eduNEXT' , 'wp-edunext-marketing-site' ) . '</h2>' . "\n";
 
 		$tab = '';
 		if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
