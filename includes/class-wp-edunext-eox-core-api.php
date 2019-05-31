@@ -75,7 +75,7 @@ class WP_EoxCoreApi
 	public function add_admin_settings($settings) {
 		$settings['eoxapi'] = array(
 			'title' => __('EOX API', 'wp-edunext-marketing-site') ,
-			'description' => __('These settings modify the way to interact with the eox api.', 'wp-edunext-marketing-site') ,
+			'description' => __('', 'wp-edunext-marketing-site') ,
 			'fields' => array(
 			)
 		);
