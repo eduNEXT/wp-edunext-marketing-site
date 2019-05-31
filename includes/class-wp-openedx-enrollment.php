@@ -282,38 +282,58 @@ class WP_Openedx_Enrollment {
 		if ( $this->post_type != $post->post_type ) return;
 		$post_id = $post->ID;
 
+		$course_id = get_post_meta($post_id, 'course_id', true);
+		$email = get_post_meta($post_id, 'email', true);
+		$username = get_post_meta($post_id, 'username', true);
+		$mode = get_post_meta($post_id, 'mode', true);
+
+		$new_oer = false;
+		if ( !$course_id && !$email && !$username) $new_oer = true;
 		?>
 		<div id="namediv" class="postbox">
 		<h2 class="">Open edX enrollment request</h2>
 		<fieldset>
+		<input type="hidden" name="new_oer" value="<?php echo($new_oer) ?>">
 		<table class="form-table">
 			<tbody>
 				<tr>
-					<td class="first"><label for="openedx_enrollment_course_id">course_id</label></td>
+					<td class="first"><label for="openedx_enrollment_course_id">Course ID</label></td>
 					<td>
 						<input type="text" id="openedx_enrollment_course_id" name="oer_course_id"
-						value="<?php echo(get_post_meta($post_id, 'course_id', true)); ?>">
+						<?php if (!$new_oer) echo(" readonly"); ?>
+						value="<?php echo($course_id); ?>">
 					</td>
 				</tr>
 				<tr>
-					<td class="first"><label for="openedx_enrollment_email">email</label></td>
+					<td class="first"><label>User</label></td>
 					<td>
-						<input type="email" id="openedx_enrollment_email" name="oer_email"
-						value="<?php echo(get_post_meta($post_id, 'email', true)); ?>">
+						<div style="width: 49%; display: inline-table;">
+							<label for="openedx_enrollment_username">Username:</label>
+							<input type="text" id="openedx_enrollment_username" name="oer_username"
+							title="You only need to fill one. Either the email or username"
+							<?php if (!$new_oer) echo(" readonly"); ?>
+							value="<?php echo($username); ?>">
+						</div>
+						<div style="width: 49%; display: inline-table;">
+							<label for="openedx_enrollment_email">Email:</label>
+							<input type="email" id="openedx_enrollment_email" name="oer_email"
+							<?php if (!$new_oer) echo(" readonly"); ?>
+							title="You only need to fill one. Either the email or username"
+							value="<?php echo($email); ?>">
+						</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="first"><label for="openedx_enrollment_username">username</label></td>
+					<td class="first"><label for="openedx_enrollment_mode">Course Mode</label></td>
 					<td>
-						<input type="text" id="openedx_enrollment_username" name="oer_username"
-						value="<?php echo(get_post_meta($post_id, 'username', true)); ?>">
-					</td>
-				</tr>
-				<tr>
-					<td class="first"><label for="openedx_enrollment_mode">mode</label></td>
-					<td>
-						<input type="text" id="openedx_enrollment_mode" name="oer_mode"
-						value="<?php echo(get_post_meta($post_id, 'mode', true)); ?>">
+						<select id="openedx_enrollment_mode" name="oer_mode">
+							<option value="honor" <?php if ($mode == 'honor') echo('selected="selected"'); ?>><?php esc_html_e( 'Honor', 'wp-edunext-marketing-site' ); ?></option>
+							<option value="audit" <?php if ($mode == 'audit') echo('selected="selected"'); ?>><?php esc_html_e( 'Audit', 'wp-edunext-marketing-site' ); ?></option>
+							<option value="verified" <?php if ($mode == 'verified') echo('selected="selected"'); ?>><?php esc_html_e( 'Verified', 'wp-edunext-marketing-site' ); ?></option>
+							<option value="credit" <?php if ($mode == 'credit') echo('selected="selected"'); ?>><?php esc_html_e( 'Credit', 'wp-edunext-marketing-site' ); ?></option>
+							<option value="professional" <?php if ($mode == 'professional') echo('selected="selected"'); ?>><?php esc_html_e( 'Professional', 'wp-edunext-marketing-site' ); ?></option>
+							<option value="no-id-professional" <?php if ($mode == 'no-id-professional') echo('selected="selected"'); ?>><?php esc_html_e( 'No ID Professional', 'wp-edunext-marketing-site' ); ?></option>
+						</select>
 					</td>
 				</tr>
 				<tr>
