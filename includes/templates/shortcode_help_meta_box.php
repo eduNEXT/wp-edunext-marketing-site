@@ -1,4 +1,4 @@
-<p>As part of the Wordpress Open edX integrator, you can use a shortcode (edunext_enroll_button) to add a Course button to your pages or posts. This button will be linked to one of your Open edX courses and it will link your post or page will the course as required, according to the Open edX user session and the course settings.</p>
+<p>As part of the Wordpress Open edX integrator, you can use a Shortcode (edunext_enroll_button) to add a Course button to your pages or posts. This button will be linked to one of your Open edX courses and it will link your post or page will the course as required, according to the Open edX user session and the course settings.</p>
 
 <h4>Basic Usage:</h4>
 <p>In the most simple configuration, the button will behave and look as specified in the Open edX integrator plugin settings.</p>
@@ -18,7 +18,7 @@
 	</ul>
 	<p>There are some settings that can be customized for each button type, including the label, and some CSS classes to be used with the markup. This customizations can be done for all the Course buttons across the site from the Open edX integrator plugin settings page.</p>
 
-	<p>Additionally, the properties can be overwriten for a single button, by adding the desired property and value inside the shortcode. for example you want to customize how this particular button looks when in the case of "invitation_only" you may use this shortcode: </p>
+	<p>Additionally, the properties can be overwritten for a single button, by adding the desired property and value inside the Shortcode. for example you want to customize how this particular button looks when in the case of "invitation_only" you may use this Shortcode: </p>
 	<p><pre>[edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun"
 label_<strong>invitation_only</strong>="Sorry, invitation only!"
 button_class_<strong>invitation_only</strong>="my-custom-button"

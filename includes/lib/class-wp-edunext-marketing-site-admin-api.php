@@ -116,7 +116,9 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                 if ( $data && 'on' == $data ) {
                     $checked = 'checked="checked"';
                 }
-                $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked . '/>' . "\n";
+                $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked;
+                $html .= empty($field['advanced_setting']) ? '' : ' class="advanced_setting"';
+                $html .= '/>' . "\n";
             break;
 
             case 'checkbox_multi':

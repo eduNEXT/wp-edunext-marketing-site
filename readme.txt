@@ -1,8 +1,8 @@
 === Open edX LMS and Wordpress integrator ===
 Contributors: eduNEXT
 Tags: wordpress, Open edX, LMS
-Requires at least: 3.9
-Tested up to: 5.1.1
+Requires at least: 4.0
+Tested up to: 5.2
 Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -60,18 +60,31 @@ Some additional integrations are currently under development. If you require a d
 
 == Frequently Asked Questions ==
 
-= How to do the Open edX User Menu Configuration =
+= What does this integrator do? =
 
-To create an open edX menu:
+This plugin allows to:
+-Share the user session information between Open edX and Wordpress
+-Add an Open edX user menu to the Wordpress navigation structure
+-Add Course buttons to the Wordpress Posts or Pages that represent each course with the corresponding action and caption based on the on the Open edX course settings
+-Integrate Woocommerce as the ecommerce solution to sale access to open edX courses
+-Make use of the EOX-core API that extends the functionality of Open edX
+
+= How is the integration configured? =
+
+Changes have to be made in advance on the Open edX side and then the settings can be configured in the WP side using the plugin interface.
+
+= How to do the Open edX User Menu Configuration? =
+
+To create an Open edX menu:
 
 1. Go to Appearance > Menus
 2. On the accordion item called "Open edX WP Integrator", select from the list the menu-items you want to include in your menu. Press Add to Menu.
 3. Organize the items in your menu.
 
-The list of menu items includes:
+The list of menu items you can use includes:
 
 - Login/User Menu:
-    If the user is logged in, the menu will display the name of the user with a link to the dashboard of the LMS.
+    If the user is logged in, the menu will display the name of the user with a link to the user dashboard in the LMS.
     Otherwise it will display a link to login, with the label provided. To change the label, you can edit the menu item in place. Be sure to follow the convention <Label displayed for logged-out user>/<This will be replaced by the user name>
 
 - Login/Dashboard:
@@ -103,7 +116,7 @@ The list of menu items includes:
     A link to a page that will log the user out. If the user is not logged in, this item will not appear.
 
 
-= How to integrate access to Open edX Courses from the Wordpress pages or posts =
+= How to integrate access to Open edX Courses from the Wordpress pages or posts? =
 
 Buttons to enroll or in general take any action call on the courses are produced using the `edunext_enroll_button` shortcode.
 
@@ -111,45 +124,11 @@ The simplest example is using the shortcode giving it only the course_id. E.g.:
 
     [edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun"]
 
-
 To configure any of the settings per-button, you can also change the setting of any setting defined in the settings page specifically for a particular shortcode.
+In the Post / Page editor you\'ll be able to find a help box with all configuration possibilities for these shortcodes.
 
 E.g: To change the label from "Enroll" which is the default, to "Enroll in the course now" you can use:
-
     [edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun" label_enroll="Enroll in the course now"]
-
-Here is a list of all the properties you can override:
-
-- button_class_generic
-- container_class_generic
-- color_class_generic
-
-- label_enroll
-- button_class_enroll
-- container_class_enroll
-- color_class_enroll
-
-- label_go_to_course
-- button_class_go_to_course
-- container_class_go_to_course
-- color_class_go_to_course
-
-- label_course_has_not_started
-- button_class_course_has_not_started
-- container_class_course_has_not_started
-- color_class_course_has_not_started
-
-- label_invitation_only
-- button_class_invitation_only
-- container_class_invitation_only
-- color_class_invitation_only
-
-- label_enrollment_closed
-- button_class_enrollment_closed
-- container_class_enrollment_closed
-- color_class_enrollment_closed
-
-- hide_if
 
 
 == Changelog ==
@@ -158,6 +137,7 @@ Here is a list of all the properties you can override:
 * 2019-06-01
 * Improved internal documentation
 * Improved arrangement of the different settings
+* Added capabilities to store and manage Open edX enrollment requests
 
 
 = 1.5 =

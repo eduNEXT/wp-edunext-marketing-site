@@ -1,5 +1,8 @@
-<h1><?= __( 'General Open edX Integrator Settings' , 'wp-edunext-marketing-site' ) ?></h1>
-<h2><?= __( 'All the configurations and features of the integration will only work if the Website integration is also correctly configured in the Open edX side.', 'wp-edunext-marketing-site' ) ?></h2>
-
-<p><?= __( 'If you are using one of eduNEXT\'s Open edX cloud subscriptions, please request assistance to the eduNEXT support team to enable the integration. If you are running Open edX on your own, please refer to the Open edX documentation.', 'wp-edunext-marketing-site' ) ?></p>
-<p><?= __( 'We are showing only the basic settings to get Wordpress site integrated with your Open edX site.', 'wp-edunext-marketing-site' ) ?></p>
+<h1><?= __( 'Open edX - Wordpress Integration Settings' , 'wp-edunext-marketing-site' ) ?></h1>
+<p><?= __( 'In order to reach a Wordpress - Open edX integrated scenario, you need to make adjustments to the configurations in both Open edX and Wordpress.', 'wp-edunext-marketing-site' ) ?></p>
+<h2><?= __( 'On the Open edX side:', 'wp-edunext-marketing-site' ) ?></h2>
+<p><?= __( 'This integration will only work if the correct configurations are also applied in the Open edX side.', 'wp-edunext-marketing-site' ) ?></p>
+<p><?= __( 'If you are using one of eduNEXT\'s <strong><a href="https://www.edunext.co/cloud/?utm_source=WP&utm_medium=web&utm_campaign=integrator" target="_blank">Open edX cloud subscriptions</a></strong>, or <strong><a href="https://www.edunext.co/self-hosting/?utm_source=WP&utm_medium=web&utm_campaign=integrator" target="_blank">Open edX on premise support plans</a></strong> you can simply request assistance to the eduNEXT support team to make sure the integration is properly configured on the Open edX side.', 'wp-edunext-marketing-site' ) ?></p>
+<p><?= __( 'If you are running Open edX on your own, please refer to the Open edX documentation to apply the required changes to your configuration or get in touch with <strong><a href="https://www.edunext.co/consulting/?utm_source=WP&utm_medium=web&utm_campaign=integrator" target="_blank">eduNEXT</a></strong> to ask for professional support.', 'wp-edunext-marketing-site' ) ?></p>
+<h2><?= __( 'On the Wordpress side:', 'wp-edunext-marketing-site' ) ?></h2>
+<p><?= __( 'Wordpress will need to be aware of some of your Open edX configurations and should have a Client id and secret in order to make authorized requests to Open edX.  Fill in the settings below to let your Wordpress site know about the Open edX platform you\'ll be integrating with.', 'wp-edunext-marketing-site' ) ?></p>

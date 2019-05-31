@@ -54,7 +54,7 @@
 		<option value="exoapi-get-users">Get users info</option>
 	</select>
 	<div class="exoapi-get-users">
-		<h2>Get Open edx users info</h2>
+		<h2>Get Open edX users info</h2>
 		<p>
 			Write an array of users as JSON array:
 		</p>
@@ -65,7 +65,7 @@
 		<button class="button-secondary get-users-button">Execute API call</button>
 	</div>
 	<div class="exoapi-add-new-users">
-		<h2>Add new Open edx users</h2>
+		<h2>Add new Open edX users</h2>
 		<p>
 			Write the new users info using a JSON array:
 		</p>
