@@ -629,7 +629,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
 		// Build page HTML
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-		$html .= '<h2>' . __( 'Open edX - Wordpress Integrator | by ' , 'wp-edunext-marketing-site' ) . '<a href="https://www.edunext.co" target="_blank"><img src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="'. __('eduNEXT - World class Open edX services provider | www.edunext.co') . '"></a></h2>' . "\n";
+		$html .= '<h2>' . __( 'Open edX - Wordpress Integrator | by ' , 'wp-edunext-marketing-site' ) . '<a href="https://www.edunext.co?utm_source=WP&utm_medium=web&utm_campaign=integrator" target="_blank"><img src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="'. __('eduNEXT - World class Open edX services provider | www.edunext.co') . '"></a></h2>' . "\n";
 
 		$tab = '';
 		if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
