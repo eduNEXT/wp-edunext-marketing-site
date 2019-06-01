@@ -221,7 +221,8 @@ class WP_EoxCoreApi
 		$ref = '';
 		$api_url = self::PATH_USERINFO_API;
 		$success_message = 'Userinfo reading ok!';
-		return $this->api_call($api_url, $data, $ref, $success_message);
+		$method = 'GET';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
 	}
 
 	/**
@@ -232,7 +233,8 @@ class WP_EoxCoreApi
 		$api_url = self::PATH_ENROLLMENT_API;
 		$ref = $args['email'] ?: $args['username'] ?: '';
 		$success_message = 'Enrollment success!';
-		return $this->api_call($api_url, $data, $ref, $success_message);
+		$method = 'POST';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
 	}
 
 	/**
@@ -243,7 +245,32 @@ class WP_EoxCoreApi
 		$ref = $args['email'] ?: $args['username'] ?: '';
 		$success_message = 'Enrollment fetched!';
 		$api_url .= '?' . http_build_query($args);
-		return $this->api_call($api_url, NULL, $ref, $success_message);
+		$method = 'GET';
+		return $this->api_call($api_url, NULL, $ref, $success_message, $method);
+	}
+
+	/**
+	 * Function to execute the API calls required to update an enrollment
+	 */
+	public function update_enrollment($args) {
+		$data = wp_parse_args($args, $this->enroll_defaults);
+		$api_url = self::PATH_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Enrollment updated!';
+		$method = 'PUT';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
+	}
+
+	/**
+	 * Function to execute the API calls required to delete an enrollment
+	 */
+	public function delete_enrollment($args) {
+		$api_url = self::PATH_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Enrollment deleted!';
+		$api_url .= '?' . http_build_query($args);
+		$method = 'DELETE';
+		return $this->api_call($api_url, NULL, $ref, $success_message, $method);
 	}
 
 	/**
@@ -254,7 +281,8 @@ class WP_EoxCoreApi
 		$api_url = self::PATH_USER_API;
 		$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
 		$success_message = 'User creation success!';
-		return $this->api_call($api_url, $data, $ref, $success_message);
+		$method = 'POST';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
 	}
 
 	/**
@@ -266,26 +294,44 @@ class WP_EoxCoreApi
 		$ref = $args['email'] ?: $args['username'] ?: '';
 		$success_message = 'User fetching success!';
 		$api_url .= '?' . http_build_query($args);
-		return $this->api_call($api_url, NULL, $ref, $success_message);
+		$method = 'GET';
+		return $this->api_call($api_url, NULL, $ref, $success_message, $method);
 	}
 
 	/**
 	 * Generic api call method
 	 */
-	public function api_call($api_url, $data, $ref, $success_message) {
+	public function api_call($api_url, $data, $ref, $success_message, $method) {
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
 			$url = get_option('wpt_lms_base_url', '') . $api_url;
-			if (empty($data)) {
-				$response = wp_remote_get($url, array(
-					'headers' => 'Authorization: Bearer ' . $token
-				));
-			} else {
-				$response = wp_remote_post($url, array(
-					'headers' => 'Authorization: Bearer ' . $token,
-					'body' => $data
-				));
+			switch ($method) {
+				case 'GET':
+					$response = wp_remote_get($url, array(
+						'headers' => 'Authorization: Bearer ' . $token
+					));
+					break;
+				case 'POST':
+					$response = wp_remote_post($url, array(
+						'headers' => 'Authorization: Bearer ' . $token,
+						'body' => $data
+					));
+					break;
+				case 'PUT':
+					$response = wp_remote_request($url, array(
+						'headers' => 'Authorization: Bearer ' . $token,
+						'method' => $method,
+						'body' => $data
+					));	
+					break;
+				case 'DELETE':
+					$response = wp_remote_request($url, array(
+						'headers' => 'Authorization: Bearer ' . $token,
+						'method' => $method
+					));
+					break;
 			}
+
 			if (is_wp_error($response)) {
 				return $response;
 			}
