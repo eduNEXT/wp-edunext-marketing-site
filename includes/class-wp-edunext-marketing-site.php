@@ -94,6 +94,8 @@ class WP_eduNEXT_Marketing_Site {
 
 		$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
+		$this->openedx_enrollment = new WP_Openedx_Enrollment( $this );
+
 		register_activation_hook( $this->file, array( $this, 'install' ) );
 
 		// Load frontend JS & CSS
@@ -117,13 +119,16 @@ class WP_eduNEXT_Marketing_Site {
 		// Add attributes for menus items
 		add_action( 'init', array( 'Edx_Walker_Nav_Menu_Edit', 'setup' ) );
 
+		// WooCommerce integration
 		if ( get_option('wpt_enable_woocommerce_integration') ) {
 			$this->woocommerce = new WP_eduNEXT_Woocommerce_Integration();
 		}
 
+		// Add wp-admin
 		if ( is_admin() ) {
 			// Load API for generic admin functions
 			$this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
+			$this->openedx_enrollment->set_up_admin();
 		}
 
 		// Handle localisation
