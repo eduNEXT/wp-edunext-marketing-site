@@ -322,7 +322,7 @@ class WP_EoxCoreApi
 						'headers' => 'Authorization: Bearer ' . $token,
 						'method' => $method,
 						'body' => $data
-					));	
+					));
 					break;
 				case 'DELETE':
 					$response = wp_remote_request($url, array(
@@ -355,8 +355,12 @@ class WP_EoxCoreApi
 		$response_json = json_decode($response['body']);
 		$errors = array();
 
-		if (is_null($response_json) && $response['response']['code'] === 404) {
-			$errors[] = '404 - eox-core is likely not installed on the remote server';
+		if ($response['response']['code'] === 404) {
+			$error_msg = '';
+			if ( !is_null($response_json) ){
+				$error_msg = $response_json[0];
+			}
+			$errors[] = '404 - eox-core | ' . $error_msg;
 		}
 		else if (is_null($response_json)) {
 			$errors[] = 'non-json response, server returned status code ' . $response['response']['code'];
