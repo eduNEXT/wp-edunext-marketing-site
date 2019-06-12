@@ -153,13 +153,13 @@ class WP_Openedx_Enrollment {
 		// Handle the eox-core API actions
 
 		if ('oer_process' == $_POST['oer_action']) {
-			$this->process_request($post_id, $post, false);
+			$this->process_request($post_id, false);
 		}
 		if ('oer_force' == $_POST['oer_action']) {
-			$this->process_request($post_id, $post, true);
+			$this->process_request($post_id, true);
 		}
 		if ('oer_sync' == $_POST['oer_action']) {
-			$this->sync_request( $post_id, $post);
+			$this->sync_request( $post_id);
 		}
 	}
 
@@ -167,10 +167,9 @@ class WP_Openedx_Enrollment {
 	 * Save post metadata when a post is saved.
 	 *
 	 * @param int $post_id The post ID.
-	 * @param post $post The post object.
 	 * @param bool $force Does this order need processing by force?
 	 */
-	function process_request( $post_id, $post, $force ) {
+	function process_request( $post_id, $force ) {
 
 		$user_args = array(
 			'email' => get_post_meta($post_id, 'email', true),
@@ -180,11 +179,10 @@ class WP_Openedx_Enrollment {
 		$enrollment_args = array(
 			'course_id' => get_post_meta($post_id, 'course_id', true),
 			'mode' => get_post_meta($post_id, 'mode', true),
-			'is_active' => get_post_meta($post_id, 'is_active', true),
+			'is_active' => (get_post_meta($post_id, 'is_active', true)? 1: 0),
 			'force' => $force,
 		);
 
-		$status = 'eor-success';
 		$user = WP_EoxCoreApi()->get_user_info($user_args);
 
 		// If the user doesn't exist create pre-enrollment with the email provided
@@ -192,44 +190,39 @@ class WP_Openedx_Enrollment {
 			if (!empty($user_args['email'])) {
 				// WIP Create pre-enrollment
 				return;
-			} else if (empty($user_args['username'])){
-				// WIP
-				$status = 'eor-error';
-				update_post_meta($post_id, 'errors', 'You have to provide a username or email');
+			} else {
+				// TODO Polish error message display
+				update_post_meta($post_id, 'errors', 'You have to provide an email to create a pre-enrollment');
 				$this->wp_update_post( $post_update );
+				$this->update_post_status('eor-error', $post_id);
 				return;
 			}
 		}
 
-		$response = WP_EoxCoreApi()->create_enrollment( array_merge( $user_args, $enrollment_args ) );
-
-		if (is_wp_error($response)) {
-			update_post_meta($post_id, 'errors', $response->get_error_message());
-			$status = 'eor-error';
+		$request_args = array_merge($user_args, $enrollment_args);
+		$enrollment = WP_EoxCoreApi()->get_enrollment($request_args);
+		
+		// If the enrollment already exists update it
+		if (is_wp_error($enrollment)) {
+			$this->create_enrollment($post_id, $request_args);
 		} else {
-			delete_post_meta($post_id, 'errors');
+			$this->update_enrollment($post_id, $request_args);
 		}
-
-		$post_update = array(
-			'ID' => $post_id,
-			'post_status' => $status,
-		);
-		$this->wp_update_post($post_update);
 	}
 
 	/**
 	 * Update post metadata when a post is synced.
 	 *
 	 * @param int $post_id The post ID.
-	 * @param post $post The post object.
 	 */
-	function sync_request( $post_id, $post) {
+	function sync_request( $post_id) {
 
 		$args = array(
 			'course_id' => get_post_meta($post_id, 'course_id', true),
 			'email' => get_post_meta($post_id, 'email', true),
 			'username' => get_post_meta($post_id, 'username', true),
 		);
+		
 
 		$response = WP_EoxCoreApi()->get_enrollment($args);
 
@@ -237,11 +230,7 @@ class WP_Openedx_Enrollment {
 			update_post_meta($post_id, 'errors', $response->get_error_message());
 
 			# Update Status
-			$post_update = array(
-				'ID' => $post_id,
-				'post_status' => 'eor-error',
-			);
-			$this->wp_update_post($post_update);
+			$this->update_post_status('eor-error', $post_id);
 
 		} else {
 			delete_post_meta($post_id, 'errors');
@@ -249,31 +238,45 @@ class WP_Openedx_Enrollment {
 			// Only this fields can be updated
 			update_post_meta($post_id, 'mode',  $response->mode);
 			update_post_meta($post_id, 'is_active',  $response->is_active);
+			# Update Status
+			$this->update_post_status('eor-success', $post_id);
 		}
 	}
 
 
 	/**
-	 * Delete enrollment.
+	 * Create enrollment.
 	 *
-	 * @param int $post_id The post ID.
-	 * @param post $post The post object.
+	 * @param int $post_id The post ID
+	 * @param array $args The request parameters to be sent to the api
 	 */
-	function delete_enrollment( $post_id, $post) {
-		
-		$args = array(
-			'course_id' => get_post_meta($post_id, 'course_id', true),
-			'email' => get_post_meta($post_id, 'email', true),
-			'username' => get_post_meta($post_id, 'username', true),
-		);
+	function create_enrollment( $post_id, $args) {
 
-		$response = WP_EoxCoreApi()->delete_enrollment($args);
+		$response = WP_EoxCoreApi()->create_enrollment( $args );
+
 		if (is_wp_error($response)) {
 			update_post_meta($post_id, 'errors', $response->get_error_message());
+			$status = 'eor-error';
 		} else {
 			delete_post_meta($post_id, 'errors');
-			// TODO Delete post type
+			$status = 'eor-success';
 		}
+
+		$this->update_post_status($status, $post_id);
+	}
+
+	/**
+	 * Update post status
+	 * 
+	 * @param string $status The status of the request
+	 * @param int $post_id The post ID
+	 */
+	function update_post_status( $status, $post_id) {
+		$post_update = array(
+			'ID' => $post_id,
+			'post_status' => $status,
+		);
+		$this->wp_update_post($post_update);
 	}
 
 
@@ -281,27 +284,18 @@ class WP_Openedx_Enrollment {
 	 * Update enrollment.
 	 *
 	 * @param int $post_id The post ID.
-	 * @param post $post The post object.
+	 * @param array $args The request parameters to be sent to the api
 	 */
-	function update_enrollment( $post_id, $post) {
-		
-		$args = array(
-			'email' => get_post_meta($post_id, 'email', true),
-			'username' => get_post_meta($post_id, 'username', true),
-			'course_id' => get_post_meta($post_id, 'course_id', true),
-			'mode' => get_post_meta($post_id, 'mode', true),
-			'is_active' => get_post_meta($post_id, 'is_active', true),
-		);
-
+	function update_enrollment( $post_id, $args) {
 		$response = WP_EoxCoreApi()->update_enrollment($args);
 		if (is_wp_error($response)) {
 			update_post_meta($post_id, 'errors', $response->get_error_message());
+			$this->update_post_status('eor-error', $post_id);
 		} else {
 			delete_post_meta($post_id, 'errors');
-			update_post_meta($post_id, 'course_id', $response->course_id);
-			update_post_meta($post_id, 'username',  $response->user);
 			update_post_meta($post_id, 'mode',  $response->mode);
 			update_post_meta($post_id, 'is_active',  $response->is_active);
+			$this->update_post_status('eor-success', $post_id);
 		}
 	}
 
