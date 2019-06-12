@@ -34,7 +34,7 @@ class WP_Openedx_Enrollment {
 			'public' => false,
 			'hierarchical' => false,
 			'show_ui' => true,
-			'show_in_menu' => false,
+			'show_in_menu' => $this->parent->_token . '_settings',
 			'show_in_nav_menus' => true,
 			'supports' => array(''),
 			'menu_icon' => 'dashicons-admin-post'
@@ -239,9 +239,6 @@ class WP_Openedx_Enrollment {
 		add_filter('post_row_actions', array( $this, 'remove_table_row_actions') );
 		add_filter( 'manage_posts_custom_column', array( $this, 'fill_custom_columns_in_list_view' ), 10, 3  ) ;
 		add_filter( 'manage_openedx_enrollment_posts_columns', array( $this, 'add_columns_to_list_view' ) ) ;
-
-		// The direct menu link
-		add_action( 'admin_menu' , array( $this, 'add_menu_item' ) );
 	}
 
 	/**
@@ -251,14 +248,6 @@ class WP_Openedx_Enrollment {
 		remove_meta_box( 'submitdiv', $this->post_type, 'side' );
 
 		add_meta_box( 'openedx_enrollment_request_actions', sprintf( __( '%s actions', '' ), 'Open edX Enrollment Requests' ), array( $this, 'render_actions_box' ), $this->post_type, 'side', 'high' );
-	}
-
-	/**
-	 * Add settings page to admin menu
-	 * @return void
-	 */
-	public function add_menu_item () {
-		add_submenu_page( $this->parent->_token . '_settings' , __( 'Open edX Enrollment Requests', 'wp-edunext-marketing-site' ), __( 'Open edX Enrollment Requests', 'wp-edunext-marketing-site' ), 'manage_options', 'edit.php?post_type=openedx_enrollment', null );
 	}
 
 	/**
