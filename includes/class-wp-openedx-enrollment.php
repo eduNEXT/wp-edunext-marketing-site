@@ -121,6 +121,7 @@ class WP_Openedx_Enrollment {
 		$oer_email = sanitize_text_field( $_POST['oer_email'] );
 		$oer_username = sanitize_text_field( $_POST['oer_username'] );
 		$oer_mode = sanitize_text_field( $_POST['oer_mode'] );
+		$oer_request_type = sanitize_text_field( $_POST['oer_request_type'] );
 
 		// We need to have all 3 required params to continue
 		if ( ! $oer_course_id && ! $oer_username || ! $oer_mode ) return;
@@ -140,6 +141,13 @@ class WP_Openedx_Enrollment {
 		update_post_meta( $post_id, 'email', $oer_email );
 		update_post_meta( $post_id, 'username', $oer_username );
 		update_post_meta( $post_id, 'mode', $oer_mode );
+
+		if ($oer_request_type === 'enroll') {
+			update_post_meta( $post_id, 'is_active', true );
+		}
+		if ($oer_request_type === 'unenroll') {
+			update_post_meta( $post_id, 'is_active', false );
+		}
 
 		// Handle the eox-core API actions
 
@@ -187,7 +195,8 @@ class WP_Openedx_Enrollment {
 	 * @return array $column
 	 */
 	function add_columns_to_list_view( $column ) {
-		$column['status'] = 'Status';
+		$column['oer_status'] = 'Status';
+		$column['oer_type'] = 'Type';
 		return $column;
 	}
 
@@ -198,10 +207,18 @@ class WP_Openedx_Enrollment {
 	 */
 	function fill_custom_columns_in_list_view( $column_name, $post_id ) {
 		switch ($column_name) {
-			case 'status' :
+			case 'oer_status' :
 				if ( get_post( $post_id )->post_status == 'eor-success' ) echo '<b style="color:green;">Success</b>';
 				if ( get_post( $post_id )->post_status == 'eor-error' ) echo '<b style="color:red;">Error</b>';
 				if ( get_post( $post_id )->post_status == 'eor-pending' ) echo '<b style="color:orange;">Pending</b>';
+				break;
+			case 'oer_type' :
+				if ( get_post_meta($post_id, 'is_active', true) ) {
+					echo 'Enroll';
+				}
+				else {
+					echo 'Unenroll';
+				}
 				break;
 			default:
 		}
@@ -286,6 +303,7 @@ class WP_Openedx_Enrollment {
 		$email = get_post_meta($post_id, 'email', true);
 		$username = get_post_meta($post_id, 'username', true);
 		$mode = get_post_meta($post_id, 'mode', true);
+		$is_active = get_post_meta($post_id, 'is_active', true);
 
 		$new_oer = false;
 		if ( !$course_id && !$email && !$username) $new_oer = true;
@@ -337,9 +355,14 @@ class WP_Openedx_Enrollment {
 					</td>
 				</tr>
 				<tr>
-					<td class="first"><label for="openedx_enrollment_is_active">is_active</label></td>
+					<td class="first"><label for="openedx_enrollment_is_active">Request type</label></td>
 					<td>
-						<input type="checkbox" id="openedx_enrollment_is_active" name="oer_is_active" style="width: auto;">
+
+						<select id="openedx_enrollment_is_active" name="oer_request_type">
+							<option value="enroll" <?php if ($is_active or $new_oer) echo('selected="selected"'); ?>><?php esc_html_e( 'Enroll', 'wp-edunext-marketing-site' ); ?></option>
+							<option value="unenroll" <?php if (!$is_active and !$new_oer) echo('selected="selected"'); ?>><?php esc_html_e( 'Un-enroll', 'wp-edunext-marketing-site' ); ?></option>
+						</select>
+
 					</td>
 				</tr>
 			</tbody>
