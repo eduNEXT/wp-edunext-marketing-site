@@ -540,6 +540,15 @@ class WP_eduNEXT_Marketing_Site_Settings {
 			'fields'				=> array(
 				array(
 					'id' 				=> 'enable_woocommerce_integration',
+					'label'				=> __( 'Enable the woocommerce integration' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'Allows you to sell your courses using Woocommerce.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'checkbox',
+					'default'			=> false,
+					'placeholder'		=> '',
+					'advanced_setting' 	=> false
+				),
+				array(
+					'id' 				=> 'enable_woocommerce_prefill_v1',
 					'label'				=> __( 'Enable Checkout fields pre-filling' , 'wp-edunext-marketing-site' ),
 					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers.', 'wp-edunext-marketing-site' ),
 					'type'				=> 'checkbox',
@@ -551,9 +560,9 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'id' => 'eox_client_wc_field_mappings',
 					'label' => __('User Profile fields mapping', 'wp-edunext-marketing-site') ,
 					'description' => __('This is an advanced feature only supported for eduNEXT customers. Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce (chekout)', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site'),
-					'type' => 'text',
+					'type' => 'textarea',
 					'default' => '',
-					'placeholder' => '{"wc_example": "example"}',
+					'placeholder' => '{"woocommerce_field": "openedx_extended_profile_field" , "billing_company": "company", "billing_city": "city", ...}',
 					'advanced_setting' 	=> true
 				),
 			)

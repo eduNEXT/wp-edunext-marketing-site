@@ -20,13 +20,20 @@ class WP_eduNEXT_Woocommerce_Integration {
      * @since   1.0.0
      * @return  void
      */
-    public function __construct($value='')
-    {
-        add_action( 'woocommerce_checkout_get_value', array( $this, 'prefill_with_eox_core_data' ), 20, 2 );
+    public function __construct($value='') {
+
+        if ( get_option('wpt_enable_woocommerce_prefill_v1') ) {
+            add_action( 'woocommerce_checkout_get_value', array( $this, 'prefill_with_eox_core_data' ), 20, 2 );
+        }
     }
 
     /**
-     * Callback to pre-fill
+     * Callback to pre-fill.
+     * Turning on the wpt_enable_woocommerce_prefill_v1 advanced setting will cause that the checkout form uses
+     * this function to call the eox-core user API with the user's email. If it finds information that wordpress
+     * did not have before, then it will pre-fill it in the form.
+     * It is also possible to configure the mappings using an advanced field.
+     *
      * @access public
      * @since  1.0.0
      * @param  string $value The value to show of the HTML input

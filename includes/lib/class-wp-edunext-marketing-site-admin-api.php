@@ -108,7 +108,9 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
             break;
 
             case 'textarea':
-                $html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '">' . $data . '</textarea><br/>'. "\n";
+                $html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '"';
+                $html .= empty($field['advanced_setting']) ? '' : ' class="advanced_setting"';
+                $html .= '>' . $data . '</textarea><br/>'. "\n";
             break;
 
             case 'checkbox':
