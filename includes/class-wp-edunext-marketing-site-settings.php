@@ -548,6 +548,42 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'advanced_setting' 	=> false
 				),
 				array(
+					'id' 				=> 'woocommerce_action_to_connect',
+					'label'				=> __( 'Woocommerce trigger action' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'Which woocomerce action should be used to launch the enrollment.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'select',
+					'default'			=> '',
+					'options'			=> array( 'no_action_selected' => 'Nothing', 'woocommerce_payment_complete' => 'woocommerce_payment_complete', 'woocommerce_payment_complete_order_status' => 'woocommerce_payment_complete_order_status (recommended)', 'custom_string' => 'Use custom action in the next field' ),
+					'placeholder'		=> '',
+					'advanced_setting' 	=> false
+				),
+				array(
+					'id' 			=> 'custom_action_to_connect',
+					'label'			=> __( 'Write a custom action to trigger the enrollment', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Action that will be used for the add_action function. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> 'Optional only if you selected custom action'
+				),
+				array(
+					'id' 				=> 'oer_action_for_fulfillment',
+					'label'				=> __( 'Enrollment fulfillment action' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( '' ),
+					'type'				=> 'select',
+					'default'			=> '',
+					'options'			=> array( 'no_action_selected' => 'Nothing', 'process_request' => 'process_request (recommended)', 'process_request_force' => 'process_request_force', 'custom_fulfillment_function' => 'Use custom action in the next field' ),
+					'placeholder'		=> 'fulfillment',
+					'advanced_setting' 	=> false
+				),
+				array(
+					'id' 			=> 'custom_action_for_fulfillment',
+					'label'			=> __( 'Write a custom action that will be triggered when the payment is done', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Callback that will execute when the trigger action runs. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> 'Optional only if you selected custom function'
+				),
+				array(
 					'id' 				=> 'enable_woocommerce_prefill_v1',
 					'label'				=> __( 'Enable Checkout fields pre-filling' , 'wp-edunext-marketing-site' ),
 					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers.', 'wp-edunext-marketing-site' ),

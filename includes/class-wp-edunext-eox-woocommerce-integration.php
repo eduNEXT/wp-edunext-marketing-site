@@ -25,7 +25,37 @@ class WP_eduNEXT_Woocommerce_Integration {
         if ( get_option('wpt_enable_woocommerce_prefill_v1') ) {
             add_action( 'woocommerce_checkout_get_value', array( $this, 'prefill_with_eox_core_data' ), 20, 2 );
         }
+
+        $this->register_woocommerce_action_and_callback();
+
     }
+
+    /**
+     * Connects the woocomerce integration according to the flexible logic
+     *
+     * @return void
+     */
+    public function register_woocommerce_action_and_callback() {
+
+        $action_to_connect = get_option('wpt_woocommerce_action_to_connect');
+        if ( $action_to_connect == 'custom_string' ) {
+            $action_to_connect = get_option('wpt_custom_action_to_connect');
+        }
+
+        $fulfillment_function = get_option('wpt_oer_action_for_fulfillment');
+        if ( $fulfillment_function == 'custom_fulfillment_function' ) {
+            $fulfillment_function = get_option('wpt_custom_action_to_connect');
+            // WIP Connect custom
+            // add_action( $action_to_connect, array( $this, 'some_action' ), 20, 2 );
+            return;
+        }
+        if ( $fulfillment_function == 'no_action_selected' ) {
+            // Silence is golden
+            return;
+        }
+        add_action( $action_to_connect, array( $this, 'enrollment_'$fulfillment_function ), 20, 2 );
+    }
+
 
     /**
      * Callback to pre-fill.
@@ -103,4 +133,23 @@ class WP_eduNEXT_Woocommerce_Integration {
         }
         return $value;
     }
+
+    /**
+     * Possible action to perform
+     * @access  public
+     * @since   1.0.0
+     * @return  void
+     */
+    public function enrollment_process_request() {
+    }
+
+    /**
+     * Possible action to perform
+     * @access  public
+     * @since   1.0.0
+     * @return  void
+     */
+    public function enrollment_process_request_force() {
+    }
+
 }
