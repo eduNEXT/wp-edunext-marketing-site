@@ -188,17 +188,16 @@ class WP_Openedx_Enrollment {
 		// If the user doesn't exist create pre-enrollment with the email provided
 		if (is_wp_error($user)) {
 			if (!empty($user_args['email'])) {
-				// WIP Create pre-enrollment
+				update_post_meta($post_id, 'errors', 'The user provided does not exist, a pre-enrollment with the email provided was created instead. ');
 				return;
 			} else {
 				// TODO Polish error message display
-				update_post_meta($post_id, 'errors', 'You have to provide an email to create a pre-enrollment');
+				update_post_meta($post_id, 'errors', 'A valid username or email is needed.');
 				$this->wp_update_post( $post_update );
 				$this->update_post_status('eor-error', $post_id);
 				return;
 			}
 		}
-
 		$request_args = array_merge($user_args, $enrollment_args);
 		$enrollment = WP_EoxCoreApi()->get_enrollment($request_args);
 		

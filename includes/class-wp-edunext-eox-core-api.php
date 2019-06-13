@@ -305,33 +305,21 @@ class WP_EoxCoreApi
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
 			$url = get_option('wpt_lms_base_url', '') . $api_url;
-			switch ($method) {
-				case 'GET':
-					$response = wp_remote_get($url, array(
-						'headers' => 'Authorization: Bearer ' . $token
-					));
-					break;
-				case 'POST':
-					$response = wp_remote_post($url, array(
-						'headers' => 'Authorization: Bearer ' . $token,
-						'body' => $data
-					));
-					break;
-				case 'PUT':
-					$response = wp_remote_request($url, array(
-						'headers' => 'Authorization: Bearer ' . $token,
-						'method' => $method,
-						'body' => $data
-					));
-					break;
-				case 'DELETE':
-					$response = wp_remote_request($url, array(
-						'headers' => 'Authorization: Bearer ' . $token,
-						'method' => $method
-					));
-					break;
+			$headers = array(
+				'Authorization' => 'Bearer ' . $token,
+				'Content-Type' => 'application/json',
+			);
+
+			$request = array(
+				'headers' => $headers,
+				'method' => $method,
+			);
+
+			if ( $method === 'PUT' or $method === 'POST') {
+				$request['body'] = json_encode(array_filter($data));
 			}
 
+			$response = wp_remote_request($url, $request);
 			if (is_wp_error($response)) {
 				return $response;
 			}
@@ -349,7 +337,7 @@ class WP_EoxCoreApi
 			return $token;
 		}
 	}
-
+	
 	public function get_response_errors($response, $ref)
 	{
 		$response_json = json_decode($response['body']);
@@ -375,28 +363,32 @@ class WP_EoxCoreApi
 	/**
 	 *
 	 */
-	public function handle_api_errors($json, $ref) {
+	public function handle_api_errors($json) {
 		$errors = [];
 		if (isset($json->detail)) {
-			$errors[] = $json->detail . ' (' . $ref . ')';
+			$errors[] = $json->detail;
 		}
 		if (isset($json->non_field_errors)) {
 			foreach ($json->non_field_errors as $value) {
-				$errors[] = $value . ' (' . $ref . ')';
+				$errors[] = $value;
 			}
 		}
 		if (isset($json->errors)) {
 			foreach ($json->errors as $value) {
-				$errors[] = $value . ' (' . $ref . ')';
+				$errors[] = $value;
 			}
 		}
 		$valid_error_keys = array_merge(array_keys($this->user_defaults), array_keys($this->enroll_defaults));
 		foreach ($valid_error_keys as $key) {
 			if (isset($json->$key)) {
 				foreach ($json->$key as $value) {
-					$errors[] = ucfirst($key) . ': ' . $value . ' <i>(' . $ref . ')</i>';
+					$errors[] = ucfirst($key) . ': ' . $value;
 				}
 			}
+		}
+
+		if (empty(array_filter($errors))) {
+			$errors = $json;
 		}
 		return $errors;
 	}
