@@ -26,7 +26,7 @@ class WP_eduNEXT_Woocommerce_Integration {
             add_action( 'woocommerce_checkout_get_value', array( $this, 'prefill_with_eox_core_data' ), 20, 2 );
         }
 
-        $this->register_woocommerce_action_and_callback();
+        $this->register_woocommerce_actions_and_callback();
 
     }
 
@@ -35,25 +35,28 @@ class WP_eduNEXT_Woocommerce_Integration {
      *
      * @return void
      */
-    public function register_woocommerce_action_and_callback() {
+    public function register_woocommerce_actions_and_callback() {
 
-        $action_to_connect = get_option('wpt_woocommerce_action_to_connect');
-        if ( $action_to_connect == 'custom_string' ) {
-            $action_to_connect = get_option('wpt_custom_action_to_connect');
-        }
-
+        $actions_to_connect_array = get_option('wpt_woocommerce_action_to_connect');
         $fulfillment_function = get_option('wpt_oer_action_for_fulfillment');
+        $is_global_action = false;
+
         if ( $fulfillment_function == 'custom_fulfillment_function' ) {
-            $fulfillment_function = get_option('wpt_custom_action_to_connect');
-            // WIP Connect custom
-            // add_action( $action_to_connect, array( $this, 'some_action' ), 20, 2 );
-            return;
+            $is_global_action = true;
         }
-        if ( $fulfillment_function == 'no_action_selected' ) {
-            // Silence is golden
-            return;
+
+        foreach ($actions_to_connect_array as $key => $action) {
+            if ( $action == 'custom_string' ) {
+                $action = get_option('wpt_custom_action_to_connect');
+            }
+
+            if ( $is_global_action ) {
+                add_action( $action, get_option('wpt_custom_action_for_fulfillment'), 20, 2 );
+            }
+            else {
+                add_action( $action, array( $this, 'enrollment_' . $fulfillment_function ), 20, 2 );
+            }
         }
-        add_action( $action_to_connect, array( $this, 'enrollment_'$fulfillment_function ), 20, 2 );
     }
 
 

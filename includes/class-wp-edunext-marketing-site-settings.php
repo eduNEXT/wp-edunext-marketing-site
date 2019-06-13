@@ -551,9 +551,9 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'id' 				=> 'woocommerce_action_to_connect',
 					'label'				=> __( 'Woocommerce trigger action' , 'wp-edunext-marketing-site' ),
 					'description'		=> __( 'Which woocomerce action should be used to launch the enrollment.', 'wp-edunext-marketing-site' ),
-					'type'				=> 'select',
+					'type'				=> 'checkbox_multi',
 					'default'			=> '',
-					'options'			=> array( 'no_action_selected' => 'Nothing', 'woocommerce_payment_complete' => 'woocommerce_payment_complete', 'woocommerce_payment_complete_order_status' => 'woocommerce_payment_complete_order_status (recommended)', 'custom_string' => 'Use custom action in the next field' ),
+					'options'			=> array( 'woocommerce_payment_complete' => 'woocommerce_payment_complete', 'woocommerce_payment_complete_order_status' => 'woocommerce_payment_complete_order_status (recommended)', 'custom_string' => 'Use custom action in the next field' ),
 					'placeholder'		=> '',
 					'advanced_setting' 	=> false
 				),
