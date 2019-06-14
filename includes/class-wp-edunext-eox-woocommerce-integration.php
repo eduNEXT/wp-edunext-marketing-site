@@ -38,24 +38,12 @@ class WP_eduNEXT_Woocommerce_Integration {
     public function register_woocommerce_actions_and_callback() {
 
         $actions_to_connect_array = get_option('wpt_woocommerce_action_to_connect');
-        $fulfillment_function = get_option('wpt_oer_action_for_fulfillment');
-        $is_global_action = false;
-
-        if ( $fulfillment_function == 'custom_fulfillment_function' ) {
-            $is_global_action = true;
-        }
 
         foreach ($actions_to_connect_array as $key => $action) {
             if ( $action == 'custom_string' ) {
                 $action = get_option('wpt_custom_action_to_connect');
             }
-
-            if ( $is_global_action ) {
-                add_action( $action, get_option('wpt_custom_action_for_fulfillment'), 20, 2 );
-            }
-            else {
-                add_action( $action, array( $this, 'enrollment_' . $fulfillment_function ), 20, 2 );
-            }
+            add_action( $action, array( $this, 'process_woo_order' ), 20, 2 );
         }
     }
 
@@ -143,7 +131,8 @@ class WP_eduNEXT_Woocommerce_Integration {
      * @since   1.0.0
      * @return  void
      */
-    public function enrollment_process_request() {
+    public function fulfillment_action_process_request() {
+        wp_die("fulfillment_action_process_request");
     }
 
     /**
@@ -152,7 +141,59 @@ class WP_eduNEXT_Woocommerce_Integration {
      * @since   1.0.0
      * @return  void
      */
-    public function enrollment_process_request_force() {
+    public function fulfillment_action_process_request_force() {
+        wp_die("fulfillment_action_process_request_force");
+    }
+
+    /**
+     * Possible action to perform
+     * @access  public
+     * @since   1.0.0
+     * @return  void
+     */
+    public function process_woo_order( $order_or_status, $order_or_null = null ) {
+
+        // Get the parameters right coming from payment_complete or order_status
+        $order_id = $order_or_status;
+        if ( $order_or_null ) {
+            $order_id = $order_or_null;
+        }
+        $order = new WC_Order($order_id);
+
+        // We need to get the User info first
+        $billing_email = $order->get_billing_email();  //  this is what comes from the form
+        $wp_user_email = $order->get_user()->email;  //  this the wp-user that made the purchase
+        // $custom_field_email = $order->get_billing_email());  //  this comes from a custom field
+
+        foreach ($order->get_items() as $key => $item) {
+
+            $product = $item->get_product();
+
+            $course_id = $product->get_attribute('course_id');
+            $bundle_id = $product->get_attribute('bundle_id');
+            $course_mode = $product->get_attribute('course_mode');
+            if (empty($course_mode)) {
+                $course_mode = 'audit';
+            }
+
+            // Time to create the EOR POST
+
+            $fulfillment_action = $product->get_attribute('fulfillment_action');
+            if (empty($fulfillment_action)) {
+                $fulfillment_action = get_option('wpt_oer_action_for_fulfillment');
+                if ( $fulfillment_action == 'custom_fulfillment_function' ) {
+                    $fulfillment_action = get_option('wpt_custom_action_for_fulfillment');
+                }
+            }
+
+            // Put this in a try catch and test if the local_action exist, otherwise call globally
+            $local_action = 'fulfillment_action_' . $fulfillment_action;
+            $this->$local_action();
+
+        }
+
+
+        wp_die("the end of process_woo_order");
     }
 
 }

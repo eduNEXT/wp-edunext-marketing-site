@@ -553,7 +553,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'description'		=> __( 'Which woocomerce action should be used to launch the enrollment.', 'wp-edunext-marketing-site' ),
 					'type'				=> 'checkbox_multi',
 					'default'			=> '',
-					'options'			=> array( 'woocommerce_payment_complete' => 'woocommerce_payment_complete', 'woocommerce_payment_complete_order_status' => 'woocommerce_payment_complete_order_status (recommended)', 'custom_string' => 'Use custom action in the next field' ),
+					'options'			=> array( 'woocommerce_payment_complete' => 'woocommerce_payment_complete', 'woocommerce_payment_complete_order_status' => 'woocommerce_payment_complete_order_status', 'custom_string' => 'Use custom action in the next field' ),
 					'placeholder'		=> '',
 					'advanced_setting' 	=> false
 				),
@@ -567,12 +567,12 @@ class WP_eduNEXT_Marketing_Site_Settings {
 				),
 				array(
 					'id' 				=> 'oer_action_for_fulfillment',
-					'label'				=> __( 'Enrollment fulfillment action' , 'wp-edunext-marketing-site' ),
-					'description'		=> __( '' ),
+					'label'				=> __( 'Default enrollment fulfillment action' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'The process that will fulfill the enrollment. You can change at the product using the fulfillment_action variable.' ),
 					'type'				=> 'select',
 					'default'			=> '',
 					'options'			=> array( 'no_action_selected' => 'Nothing', 'process_request' => 'process_request (recommended)', 'process_request_force' => 'process_request_force', 'custom_fulfillment_function' => 'Use custom action in the next field' ),
-					'placeholder'		=> 'fulfillment',
+					'placeholder'		=> '',
 					'advanced_setting' 	=> false
 				),
 				array(
