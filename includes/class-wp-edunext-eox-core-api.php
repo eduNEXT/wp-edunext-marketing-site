@@ -13,6 +13,7 @@ class WP_EoxCoreApi
 	const PATH_USER_API = '/eox-core/api/' . self::API_VERSION . '/user/';
 	const PATH_ENROLLMENT_API = '/eox-core/api/' . self::API_VERSION . '/enrollment/';
 	const PATH_USERINFO_API = '/eox-core/api/' . self::API_VERSION . '/userinfo';
+	const PATH_PRE_ENROLLMENT_API = '/eox-core/api/' . self::API_VERSION . '/pre-enrollment/';
 
 	/**
 	 * Default values used to create a new edxapp user
@@ -27,11 +28,19 @@ class WP_EoxCoreApi
 	);
 
 	/**
-	 * Default values used to create a new enrollemnt
+	 * Default values used to create a new enrollment
 	 */
 	private $enroll_defaults = array(
 		'username' => '',
 		'mode' => '',
+		'course_id' => '',
+	);
+
+	/**
+	 * Default values used to create a new pre-enrollment
+	 */
+	private $pre_enroll_defaults = array(
+		'email' => '',
 		'course_id' => '',
 	);
 
@@ -274,6 +283,18 @@ class WP_EoxCoreApi
 	}
 
 	/**
+	 * Function to execute the API calls required to make a new pre-enrollment
+	 */
+	public function create_pre_enrollment($args) {
+		$data = wp_parse_args($args, $this->pre_enroll_defaults);
+		$api_url = self::PATH_PRE_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Pre-enrollment success!';
+		$method = 'POST';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
+	}
+
+	/**
 	 * Function to execute the API calls required to make a new edxapp user
 	 */
 	public function create_user($args) {
@@ -318,7 +339,6 @@ class WP_EoxCoreApi
 			if ( $method === 'PUT' or $method === 'POST') {
 				$request['body'] = json_encode(array_filter($data));
 			}
-
 			$response = wp_remote_request($url, $request);
 			if (is_wp_error($response)) {
 				return $response;
@@ -343,14 +363,7 @@ class WP_EoxCoreApi
 		$response_json = json_decode($response['body']);
 		$errors = array();
 
-		if ($response['response']['code'] === 404) {
-			$error_msg = '';
-			if ( !is_null($response_json) ){
-				$error_msg = $response_json[0];
-			}
-			$errors[] = '404 - eox-core | ' . $error_msg;
-		}
-		else if (is_null($response_json)) {
+		if (is_null($response_json)) {
 			$errors[] = 'non-json response, server returned status code ' . $response['response']['code'];
 		}
 		else if ($response['response']['code'] !== 200) {

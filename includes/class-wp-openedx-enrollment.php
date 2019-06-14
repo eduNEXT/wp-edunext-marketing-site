@@ -183,12 +183,13 @@ class WP_Openedx_Enrollment {
 			'force' => $force,
 		);
 
+		$request_args = array_merge($user_args, $enrollment_args);
 		$user = WP_EoxCoreApi()->get_user_info($user_args);
-
+		
 		// If the user doesn't exist create pre-enrollment with the email provided
 		if (is_wp_error($user)) {
 			if (!empty($user_args['email'])) {
-				update_post_meta($post_id, 'errors', 'The user provided does not exist, a pre-enrollment with the email provided was created instead. ');
+				$this->create_pre_enrollment($post_id, $request_args);
 				return;
 			} else {
 				// TODO Polish error message display
@@ -198,7 +199,7 @@ class WP_Openedx_Enrollment {
 				return;
 			}
 		}
-		$request_args = array_merge($user_args, $enrollment_args);
+		
 		$enrollment = WP_EoxCoreApi()->get_enrollment($request_args);
 		
 		// If the enrollment already exists update it
@@ -261,6 +262,25 @@ class WP_Openedx_Enrollment {
 			$status = 'eor-success';
 		}
 
+		$this->update_post_status($status, $post_id);
+	}
+
+	/**
+	 * Create pre-enrollment.
+	 *
+	 * @param int $post_id The post ID
+	 * @param array $args The request parameters to be sent to the api
+	 */
+	function create_pre_enrollment( $post_id, $args) {
+		$response = WP_EoxCoreApi()->create_pre_enrollment( $args );
+
+		if (is_wp_error($response)) {
+			update_post_meta($post_id, 'errors', $response->get_error_message());
+			$status = 'eor-error';
+		} else {
+			update_post_meta($post_id, 'errors', 'The user provided does not exist, a pre-enrollment with the email provided was created instead. ');
+			$status = 'eor-success';
+		}
 		$this->update_post_status($status, $post_id);
 	}
 
