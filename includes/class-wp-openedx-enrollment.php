@@ -171,25 +171,13 @@ class WP_Openedx_Enrollment {
 	 */
 	function process_request( $post_id, $force ) {
 
-		$user_args = array(
-			'email' => get_post_meta($post_id, 'email', true),
-			'username' => get_post_meta($post_id, 'username', true),
-		);
-
-		$enrollment_args = array(
-			'course_id' => get_post_meta($post_id, 'course_id', true),
-			'mode' => get_post_meta($post_id, 'mode', true),
-			'is_active' => (get_post_meta($post_id, 'is_active', true)? 1: 0),
-			'force' => $force,
-		);
-
-		$request_args = array_merge($user_args, $enrollment_args);
-		$user = WP_EoxCoreApi()->get_user_info($user_args);
+		$user = $this->get_user($post_id);
 		
 		// If the user doesn't exist create pre-enrollment with the email provided
 		if (is_wp_error($user)) {
 			if (!empty($user_args['email'])) {
-				$this->create_pre_enrollment($post_id, $request_args);
+				$pre_enrollment_args= $this->prepare_args($post_id, 'pre-enrollment');
+				$this->create_pre_enrollment($post_id, $pre_enrollment_args);
 				return;
 			} else {
 				// TODO Polish error message display
@@ -199,15 +187,66 @@ class WP_Openedx_Enrollment {
 				return;
 			}
 		}
-		
-		$enrollment = WP_EoxCoreApi()->get_enrollment($request_args);
+		$enrollment_args= $this->prepare_args($post_id, 'enrollment');
+		$enrollment_args['force'] = $force;
+
+		$enrollment = WP_EoxCoreApi()->get_enrollment($enrollment_args);
 		
 		// If the enrollment already exists update it
 		if (is_wp_error($enrollment)) {
-			$this->create_enrollment($post_id, $request_args);
+			$this->create_enrollment($post_id, $enrollment_args);
 		} else {
-			$this->update_enrollment($post_id, $request_args);
+			$this->update_enrollment($post_id, $enrollment_args);
 		}
+	}
+
+	/**
+	 * Prepare args to be passed to the api calls
+	 * @param int post_id  The post ID
+	 * @param string type The args type to be prepared (user, enrollment, ..)
+	 * @param bool force in the case of post
+	 * 
+	 * @return array args args ready to be pass
+	 */
+	function prepare_args( $post_id, $type) {
+
+		$args = array();
+		$user_args = array(
+			'email' => get_post_meta($post_id, 'email', true),
+			'username' => get_post_meta($post_id, 'username', true),
+		);
+
+		$enrollment_args = array(
+			'course_id' => get_post_meta($post_id, 'course_id', true),
+		);
+		
+		$enrollment_opts_args = array(
+			'mode' => get_post_meta($post_id, 'mode', true),
+			'is_active' => (get_post_meta($post_id, 'is_active', true)? 1: 0),
+		);
+
+		switch ($type) {
+			case 'user':
+				return $user_args;
+			case 'enrollment':
+				return array_merge($user_args, $enrollment_args, $enrollment_opts_args);
+			case 'pre-enrollment' or 'basic enrollment':
+				return array_merge($user_args, $enrollment_args);
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Get user from eox_core api
+	 * 
+	 * @param int $post_id
+	 * 
+	 * @return user
+	 */
+	function get_user( $post_id ) {
+		$user_args= $this->prepare_args($post_id, 'user');
+		return WP_EoxCoreApi()->get_user_info($user_args);
 	}
 
 	/**
@@ -217,13 +256,7 @@ class WP_Openedx_Enrollment {
 	 */
 	function sync_request( $post_id) {
 
-		$args = array(
-			'course_id' => get_post_meta($post_id, 'course_id', true),
-			'email' => get_post_meta($post_id, 'email', true),
-			'username' => get_post_meta($post_id, 'username', true),
-		);
-		
-
+		$args = $this->prepare_args($post_id, 'basic enrollment');
 		$response = WP_EoxCoreApi()->get_enrollment($args);
 
 		if (is_wp_error($response)) {
