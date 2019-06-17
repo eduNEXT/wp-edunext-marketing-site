@@ -124,7 +124,8 @@ class WP_Openedx_Enrollment {
 		$oer_request_type = sanitize_text_field( $_POST['oer_request_type'] );
 
 		// We need to have all 3 required params to continue
-		if ( ! $oer_course_id && ! $oer_username || ! $oer_mode ) return;
+		$oer_user_reference = $oer_email || $oer_username;
+		if ( ! $oer_course_id || ! $oer_user_reference || ! $oer_mode ) return;
 
 		$post_update = array(
 			'ID' => $post_id,
@@ -141,7 +142,6 @@ class WP_Openedx_Enrollment {
 		update_post_meta( $post_id, 'email', $oer_email );
 		update_post_meta( $post_id, 'username', $oer_username );
 		update_post_meta( $post_id, 'mode', $oer_mode );
-		update_post_meta( $post_id, 'errors', sanitize_text_field( $_POST['oer_errors'] ) );
 
 		if ($oer_request_type === 'enroll') {
 			update_post_meta( $post_id, 'is_active', true );
@@ -169,12 +169,13 @@ class WP_Openedx_Enrollment {
 	 * @param int $post_id The post ID.
 	 * @param bool $force Does this order need processing by force?
 	 */
-	function process_request( $post_id, $force ) {
+	function process_request( $post_id, $force, $do_pre_enroll = true ) {
 
-		$user = $this->get_user($post_id);
-		
+		$user_args= $this->prepare_args($post_id, 'user');
+		$user = WP_EoxCoreApi()->get_user_info($user_args);
+
 		// If the user doesn't exist create pre-enrollment with the email provided
-		if (is_wp_error($user)) {
+		if (is_wp_error($user) && $do_pre_enroll) {
 			if (!empty($user_args['email'])) {
 				$pre_enrollment_args= $this->prepare_args($post_id, 'pre-enrollment');
 				$this->create_pre_enrollment($post_id, $pre_enrollment_args);
@@ -191,7 +192,7 @@ class WP_Openedx_Enrollment {
 		$enrollment_args['force'] = $force;
 
 		$enrollment = WP_EoxCoreApi()->get_enrollment($enrollment_args);
-		
+
 		// If the enrollment already exists update it
 		if (is_wp_error($enrollment)) {
 			$this->create_enrollment($post_id, $enrollment_args);
@@ -205,7 +206,7 @@ class WP_Openedx_Enrollment {
 	 * @param int post_id  The post ID
 	 * @param string type The args type to be prepared (user, enrollment, ..)
 	 * @param bool force in the case of post
-	 * 
+	 *
 	 * @return array args args ready to be pass
 	 */
 	function prepare_args( $post_id, $type) {
@@ -219,7 +220,7 @@ class WP_Openedx_Enrollment {
 		$enrollment_args = array(
 			'course_id' => get_post_meta($post_id, 'course_id', true),
 		);
-		
+
 		$enrollment_opts_args = array(
 			'mode' => get_post_meta($post_id, 'mode', true),
 			'is_active' => (get_post_meta($post_id, 'is_active', true)? 1: 0),
@@ -235,18 +236,6 @@ class WP_Openedx_Enrollment {
 		}
 
 		return $args;
-	}
-
-	/**
-	 * Get user from eox_core api
-	 * 
-	 * @param int $post_id
-	 * 
-	 * @return user
-	 */
-	function get_user( $post_id ) {
-		$user_args= $this->prepare_args($post_id, 'user');
-		return WP_EoxCoreApi()->get_user_info($user_args);
 	}
 
 	/**
@@ -311,7 +300,7 @@ class WP_Openedx_Enrollment {
 			update_post_meta($post_id, 'errors', $response->get_error_message());
 			$status = 'eor-error';
 		} else {
-			update_post_meta($post_id, 'errors', 'The user provided does not exist, a pre-enrollment with the email provided was created instead. ');
+			update_post_meta($post_id, 'errors', 'The provided user does not exist. A pre-enrollment with the provided email was created instead. ');
 			$status = 'eor-success';
 		}
 		$this->update_post_status($status, $post_id);
@@ -319,7 +308,7 @@ class WP_Openedx_Enrollment {
 
 	/**
 	 * Update post status
-	 * 
+	 *
 	 * @param string $status The status of the request
 	 * @param int $post_id The post ID
 	 */
@@ -351,7 +340,7 @@ class WP_Openedx_Enrollment {
 		}
 	}
 
-	
+
 	/**
 	 * Filters the list of actions available on the list view below each object
 	 *
@@ -536,12 +525,16 @@ class WP_Openedx_Enrollment {
 				<?php if (get_post_meta($post_id, 'errors', true)): ?>
 				<!-- Temporal display of errors, TODO: move this to a polished div  -->
 				<tr>
-					<td class="first"><label for="openedx_enrollment_errors">errors</label></td>
+					<td class="first"><label for="openedx_enrollment_errors">Errors</label></td>
 					<td>
-						<input type="text" id="openedx_enrollment_errors" name="oer_errors"
-						value="<?php echo(get_post_meta($post_id, 'errors', true)); ?>">
+						<p><?php echo(get_post_meta($post_id, 'errors', true)); ?></p>
 					</td>
 				</tr>
+				<?php else: ?>
+					<td class="first"><label for="openedx_enrollment_errors">Operation log</label></td>
+					<td>
+						<p>No errors ocurred processing this request</p>
+					</td>
 				<?php endif; ?>
 			</tbody>
 		</table>
