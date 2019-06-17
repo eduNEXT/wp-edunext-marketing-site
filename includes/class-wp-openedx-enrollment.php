@@ -152,11 +152,20 @@ class WP_Openedx_Enrollment {
 
 		// Handle the eox-core API actions
 
+		if ('save_no_process' == $_POST['oer_action']) {
+			update_post_meta( $post_id, 'edited', true );
+		}
 		if ('oer_process' == $_POST['oer_action']) {
 			$this->process_request($post_id, false);
 		}
 		if ('oer_force' == $_POST['oer_action']) {
 			$this->process_request($post_id, true);
+		}
+		if ('oer_no_pre' == $_POST['oer_action']) {
+			$this->process_request($post_id, false, false);
+		}
+		if ('oer_no_pre_force' == $_POST['oer_action']) {
+			$this->process_request($post_id, true, false);
 		}
 		if ('oer_sync' == $_POST['oer_action']) {
 			$this->sync_request( $post_id);
@@ -364,6 +373,7 @@ class WP_Openedx_Enrollment {
 	function add_columns_to_list_view( $column ) {
 		$column['oer_status'] = 'Status';
 		$column['oer_type'] = 'Type';
+		$column['date'] = 'Date created';
 		$column['oer_messages'] = 'Messages';
 		return $column;
 	}
@@ -430,19 +440,20 @@ class WP_Openedx_Enrollment {
 		?>
 		<ul class="enrollment_actions submitbox">
 
+			<label for="actions-select"><?php esc_html_e( 'Choose an action...', 'wp-edunext-marketing-site' ); ?></label>
 			<li class="wide" id="actions">
-				<select name="oer_action">
-					<option value=""><?php esc_html_e( 'Choose an action...', 'wp-edunext-marketing-site' ); ?></option>
-					<option value="oer_process"><?php esc_html_e( 'Process', 'wp-edunext-marketing-site' ); ?></option>
+				<select name="oer_action" id="actions-select">
+					<option value="save_no_process"><?php esc_html_e( 'Save without processing', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_sync"><?php esc_html_e( 'Synchronize (pull information)', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_process" selected><?php esc_html_e( 'Process request', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_no_pre"><?php esc_html_e( 'Process no pre-enrollment', 'wp-edunext-marketing-site' ); ?></option>
 					<option value="oer_force"><?php esc_html_e( 'Process --force', 'wp-edunext-marketing-site' ); ?></option>
-					<option value="oer_sync"><?php esc_html_e( 'Synchronize (pull)', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_no_pre_force"><?php esc_html_e( 'Process no pre-enrollment --force', 'wp-edunext-marketing-site' ); ?></option>
 				</select>
-				<button class="button wc-reload"><span><?php esc_html_e( 'Apply', 'wp-edunext-marketing-site' ); ?></span></button>
 			</li>
 
 			<li class="wide">
-				<button type="submit" class="button save_order button-primary" name="save" value="save_no_process"><?php esc_html_e( 'Save without processing', 'wp-edunext-marketing-site' ); ?>
-				</button>
+				<button class="button save_order button-primary"><span><?php esc_html_e( 'Apply action', 'wp-edunext-marketing-site' ); ?></span></button>
 			</li>
 
 		</ul>
@@ -540,6 +551,14 @@ class WP_Openedx_Enrollment {
 						<p>No errors ocurred processing this request</p>
 					</td>
 				<?php endif; ?>
+
+				<tr>
+					<td class="first"><label>General info</label></td>
+					<td>
+						<p>Edited: <?php if(get_post_meta($post_id, 'edited', true)) echo "yes"; else echo "no"; ?></p>
+						<p>Last edited: <?php echo(get_the_modified_time( '', $post_id ) . ' ' . get_the_modified_date( '', $post_id )); ?></p>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 		</fieldset>
