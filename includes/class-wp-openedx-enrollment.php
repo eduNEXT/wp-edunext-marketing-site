@@ -269,6 +269,17 @@ class WP_Openedx_Enrollment {
 			// Only this fields can be updated
 			update_post_meta($post_id, 'mode',  $response->mode);
 			update_post_meta($post_id, 'is_active',  $response->is_active);
+
+			// This fields should be updated if emtpy
+			if ( !get_post_meta($post_id, 'username', true) ){
+				update_post_meta($post_id, 'username',  $response->username);
+			}
+			if ( !get_post_meta($post_id, 'email', true) ){
+				$user_args= $this->prepare_args($post_id, 'user');
+				$user = WP_EoxCoreApi()->get_user_info($user_args);
+				update_post_meta($post_id, 'email',  $user->email);
+			}
+
 			# Update Status
 			$this->update_post_status('eor-success', $post_id);
 		}
