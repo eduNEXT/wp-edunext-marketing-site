@@ -124,7 +124,8 @@ class WP_Openedx_Enrollment {
 		$oer_request_type = sanitize_text_field( $_POST['oer_request_type'] );
 
 		// We need to have all 3 required params to continue
-		if ( ! $oer_course_id && ! $oer_username || ! $oer_mode ) return;
+		$oer_user_reference = $oer_email || $oer_username;
+		if ( ! $oer_course_id || ! $oer_user_reference || ! $oer_mode ) return;
 
 		$post_update = array(
 			'ID' => $post_id,
@@ -151,14 +152,23 @@ class WP_Openedx_Enrollment {
 
 		// Handle the eox-core API actions
 
+		if ('save_no_process' == $_POST['oer_action']) {
+			update_post_meta( $post_id, 'edited', true );
+		}
 		if ('oer_process' == $_POST['oer_action']) {
-			$this->process_request($post_id, $post, false);
+			$this->process_request($post_id, false);
 		}
 		if ('oer_force' == $_POST['oer_action']) {
-			$this->process_request($post_id, $post, true);
+			$this->process_request($post_id, true);
+		}
+		if ('oer_no_pre' == $_POST['oer_action']) {
+			$this->process_request($post_id, false, false);
+		}
+		if ('oer_no_pre_force' == $_POST['oer_action']) {
+			$this->process_request($post_id, true, false);
 		}
 		if ('oer_sync' == $_POST['oer_action']) {
-			// Do the Sync
+			$this->sync_request( $post_id);
 		}
 	}
 
@@ -166,11 +176,188 @@ class WP_Openedx_Enrollment {
 	 * Save post metadata when a post is saved.
 	 *
 	 * @param int $post_id The post ID.
-	 * @param post $post The post object.
-	 * @param bool $force Does this order need procesing by force?
+	 * @param bool $force Does this order need processing by force?
 	 */
-	function process_request( $post_id, $post, $force ) {
-		// Do something
+	function process_request( $post_id, $force, $do_pre_enroll = true ) {
+
+		$user_args= $this->prepare_args($post_id, 'user');
+		$user = WP_EoxCoreApi()->get_user_info($user_args);
+
+		// If the user doesn't exist create pre-enrollment with the email provided
+		if (is_wp_error($user) && $do_pre_enroll) {
+			if (!empty($user_args['email'])) {
+				$pre_enrollment_args= $this->prepare_args($post_id, 'pre-enrollment');
+				$this->create_pre_enrollment($post_id, $pre_enrollment_args);
+				return;
+			} else {
+				// TODO Polish error message display
+				update_post_meta($post_id, 'errors', 'A valid username or email is needed.');
+				$this->wp_update_post( $post_update );
+				$this->update_post_status('eor-error', $post_id);
+				return;
+			}
+		}
+		$enrollment_args= $this->prepare_args($post_id, 'enrollment');
+		$enrollment_args['force'] = $force;
+
+		$enrollment = WP_EoxCoreApi()->get_enrollment($enrollment_args);
+
+		// If the enrollment already exists update it
+		if (is_wp_error($enrollment)) {
+			$this->create_enrollment($post_id, $enrollment_args);
+		} else {
+			$this->update_enrollment($post_id, $enrollment_args);
+		}
+	}
+
+	/**
+	 * Prepare args to be passed to the api calls
+	 * @param int post_id  The post ID
+	 * @param string type The args type to be prepared (user, enrollment, ..)
+	 * @param bool force in the case of post
+	 *
+	 * @return array args args ready to be pass
+	 */
+	function prepare_args( $post_id, $type) {
+
+		$args = array();
+		$user_args = array(
+			'email' => get_post_meta($post_id, 'email', true),
+			'username' => get_post_meta($post_id, 'username', true),
+		);
+
+		$enrollment_args = array(
+			'course_id' => get_post_meta($post_id, 'course_id', true),
+		);
+
+		$enrollment_opts_args = array(
+			'mode' => get_post_meta($post_id, 'mode', true),
+			'is_active' => (get_post_meta($post_id, 'is_active', true)? 1: 0),
+		);
+
+		switch ($type) {
+			case 'user':
+				return $user_args;
+			case 'enrollment':
+				return array_merge($user_args, $enrollment_args, $enrollment_opts_args);
+			case 'pre-enrollment' or 'basic enrollment':
+				return array_merge($user_args, $enrollment_args);
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Update post metadata when a post is synced.
+	 *
+	 * @param int $post_id The post ID.
+	 */
+	function sync_request( $post_id) {
+
+		$args = $this->prepare_args($post_id, 'basic enrollment');
+		$response = WP_EoxCoreApi()->get_enrollment($args);
+
+		if (is_wp_error($response)) {
+			update_post_meta($post_id, 'errors', $response->get_error_message());
+
+			# Update Status
+			$this->update_post_status('eor-error', $post_id);
+
+		} else {
+			delete_post_meta($post_id, 'errors');
+
+			// Only this fields can be updated
+			update_post_meta($post_id, 'mode',  $response->mode);
+			update_post_meta($post_id, 'is_active',  $response->is_active);
+
+			// This fields should be updated if emtpy
+			if ( !get_post_meta($post_id, 'username', true) ){
+				update_post_meta($post_id, 'username',  $response->username);
+			}
+			if ( !get_post_meta($post_id, 'email', true) ){
+				$user_args= $this->prepare_args($post_id, 'user');
+				$user = WP_EoxCoreApi()->get_user_info($user_args);
+				update_post_meta($post_id, 'email',  $user->email);
+			}
+
+			# Update Status
+			$this->update_post_status('eor-success', $post_id);
+		}
+	}
+
+
+	/**
+	 * Create enrollment.
+	 *
+	 * @param int $post_id The post ID
+	 * @param array $args The request parameters to be sent to the api
+	 */
+	function create_enrollment( $post_id, $args) {
+
+		$response = WP_EoxCoreApi()->create_enrollment( $args );
+
+		if (is_wp_error($response)) {
+			update_post_meta($post_id, 'errors', $response->get_error_message());
+			$status = 'eor-error';
+		} else {
+			delete_post_meta($post_id, 'errors');
+			$status = 'eor-success';
+		}
+
+		$this->update_post_status($status, $post_id);
+	}
+
+	/**
+	 * Create pre-enrollment.
+	 *
+	 * @param int $post_id The post ID
+	 * @param array $args The request parameters to be sent to the api
+	 */
+	function create_pre_enrollment( $post_id, $args) {
+		$response = WP_EoxCoreApi()->create_pre_enrollment( $args );
+
+		if (is_wp_error($response)) {
+			update_post_meta($post_id, 'errors', $response->get_error_message());
+			$status = 'eor-error';
+		} else {
+			update_post_meta($post_id, 'errors', 'The provided user does not exist. A pre-enrollment with the provided email was created instead. ');
+			$status = 'eor-success';
+		}
+		$this->update_post_status($status, $post_id);
+	}
+
+	/**
+	 * Update post status
+	 *
+	 * @param string $status The status of the request
+	 * @param int $post_id The post ID
+	 */
+	function update_post_status( $status, $post_id) {
+		$post_update = array(
+			'ID' => $post_id,
+			'post_status' => $status,
+		);
+		$this->wp_update_post($post_update);
+	}
+
+
+	/**
+	 * Update enrollment.
+	 *
+	 * @param int $post_id The post ID.
+	 * @param array $args The request parameters to be sent to the api
+	 */
+	function update_enrollment( $post_id, $args) {
+		$response = WP_EoxCoreApi()->update_enrollment($args);
+		if (is_wp_error($response)) {
+			update_post_meta($post_id, 'errors', $response->get_error_message());
+			$this->update_post_status('eor-error', $post_id);
+		} else {
+			delete_post_meta($post_id, 'errors');
+			update_post_meta($post_id, 'mode',  $response->mode);
+			update_post_meta($post_id, 'is_active',  $response->is_active);
+			$this->update_post_status('eor-success', $post_id);
+		}
 	}
 
 
@@ -197,6 +384,8 @@ class WP_Openedx_Enrollment {
 	function add_columns_to_list_view( $column ) {
 		$column['oer_status'] = 'Status';
 		$column['oer_type'] = 'Type';
+		$column['date'] = 'Date created';
+		$column['oer_messages'] = 'Messages';
 		return $column;
 	}
 
@@ -219,6 +408,9 @@ class WP_Openedx_Enrollment {
 				else {
 					echo 'Unenroll';
 				}
+				break;
+			case 'oer_messages' :
+				echo(get_post_meta($post_id, 'errors', true));
 				break;
 			default:
 		}
@@ -259,19 +451,20 @@ class WP_Openedx_Enrollment {
 		?>
 		<ul class="enrollment_actions submitbox">
 
+			<label for="actions-select"><?php esc_html_e( 'Choose an action...', 'wp-edunext-marketing-site' ); ?></label>
 			<li class="wide" id="actions">
-				<select name="oer_action">
-					<option value=""><?php esc_html_e( 'Choose an action...', 'wp-edunext-marketing-site' ); ?></option>
-					<option value="oer_process"><?php esc_html_e( 'Process', 'wp-edunext-marketing-site' ); ?></option>
+				<select name="oer_action" id="actions-select">
+					<option value="save_no_process"><?php esc_html_e( 'Save without processing', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_sync"><?php esc_html_e( 'Synchronize (pull information)', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_process" selected><?php esc_html_e( 'Process request', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_no_pre"><?php esc_html_e( 'Process no pre-enrollment', 'wp-edunext-marketing-site' ); ?></option>
 					<option value="oer_force"><?php esc_html_e( 'Process --force', 'wp-edunext-marketing-site' ); ?></option>
-					<option value="oer_sync"><?php esc_html_e( 'Synchronize (pull)', 'wp-edunext-marketing-site' ); ?></option>
+					<option value="oer_no_pre_force"><?php esc_html_e( 'Process no pre-enrollment --force', 'wp-edunext-marketing-site' ); ?></option>
 				</select>
-				<button class="button wc-reload"><span><?php esc_html_e( 'Apply', 'wp-edunext-marketing-site' ); ?></span></button>
 			</li>
 
 			<li class="wide">
-				<button type="submit" class="button save_order button-primary" name="save" value="save_no_process"><?php esc_html_e( 'Save without processing', 'wp-edunext-marketing-site' ); ?>
-				</button>
+				<button class="button save_order button-primary"><span><?php esc_html_e( 'Apply action', 'wp-edunext-marketing-site' ); ?></span></button>
 			</li>
 
 		</ul>
@@ -352,6 +545,29 @@ class WP_Openedx_Enrollment {
 							<option value="unenroll" <?php if (!$is_active and !$new_oer) echo('selected="selected"'); ?>><?php esc_html_e( 'Un-enroll', 'wp-edunext-marketing-site' ); ?></option>
 						</select>
 
+					</td>
+				</tr>
+
+				<?php if (get_post_meta($post_id, 'errors', true)): ?>
+				<!-- Temporal display of errors, TODO: move this to a polished div  -->
+				<tr>
+					<td class="first"><label for="openedx_enrollment_errors">Errors</label></td>
+					<td>
+						<p><?php echo(get_post_meta($post_id, 'errors', true)); ?></p>
+					</td>
+				</tr>
+				<?php else: ?>
+					<td class="first"><label for="openedx_enrollment_errors">Operation log</label></td>
+					<td>
+						<p>No errors ocurred processing this request</p>
+					</td>
+				<?php endif; ?>
+
+				<tr>
+					<td class="first"><label>General info</label></td>
+					<td>
+						<p>Edited: <?php if(get_post_meta($post_id, 'edited', true)) echo "yes"; else echo "no"; ?></p>
+						<p>Last edited: <?php echo(get_the_modified_time( '', $post_id ) . ' ' . get_the_modified_date( '', $post_id )); ?></p>
 					</td>
 				</tr>
 			</tbody>

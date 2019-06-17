@@ -13,6 +13,7 @@ class WP_EoxCoreApi
 	const PATH_USER_API = '/eox-core/api/' . self::API_VERSION . '/user/';
 	const PATH_ENROLLMENT_API = '/eox-core/api/' . self::API_VERSION . '/enrollment/';
 	const PATH_USERINFO_API = '/eox-core/api/' . self::API_VERSION . '/userinfo';
+	const PATH_PRE_ENROLLMENT_API = '/eox-core/api/' . self::API_VERSION . '/pre-enrollment/';
 
 	/**
 	 * Default values used to create a new edxapp user
@@ -27,11 +28,19 @@ class WP_EoxCoreApi
 	);
 
 	/**
-	 * Default values used to create a new enrollemnt
+	 * Default values used to create a new enrollment
 	 */
 	private $enroll_defaults = array(
 		'username' => '',
 		'mode' => '',
+		'course_id' => '',
+	);
+
+	/**
+	 * Default values used to create a new pre-enrollment
+	 */
+	private $pre_enroll_defaults = array(
+		'email' => '',
 		'course_id' => '',
 	);
 
@@ -221,7 +230,8 @@ class WP_EoxCoreApi
 		$ref = '';
 		$api_url = self::PATH_USERINFO_API;
 		$success_message = 'Userinfo reading ok!';
-		return $this->api_call($api_url, $data, $ref, $success_message);
+		$method = 'GET';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
 	}
 
 	/**
@@ -230,9 +240,58 @@ class WP_EoxCoreApi
 	public function create_enrollment($args) {
 		$data = wp_parse_args($args, $this->enroll_defaults);
 		$api_url = self::PATH_ENROLLMENT_API;
-		$ref = $data['username'];
+		$ref = $args['email'] ?: $args['username'] ?: '';
 		$success_message = 'Enrollment success!';
-		return $this->api_call($api_url, $data, $ref, $success_message);
+		$method = 'POST';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
+	}
+
+	/**
+	 * Function to execute the API calls required to get an enrollment
+	 */
+	public function get_enrollment($args) {
+		$api_url = self::PATH_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Enrollment fetched!';
+		$api_url .= '?' . http_build_query($args);
+		$method = 'GET';
+		return $this->api_call($api_url, NULL, $ref, $success_message, $method);
+	}
+
+	/**
+	 * Function to execute the API calls required to update an enrollment
+	 */
+	public function update_enrollment($args) {
+		$data = wp_parse_args($args, $this->enroll_defaults);
+		$api_url = self::PATH_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Enrollment updated!';
+		$method = 'PUT';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
+	}
+
+	/**
+	 * Function to execute the API calls required to delete an enrollment
+	 */
+	public function delete_enrollment($args) {
+		$api_url = self::PATH_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Enrollment deleted!';
+		$api_url .= '?' . http_build_query($args);
+		$method = 'DELETE';
+		return $this->api_call($api_url, NULL, $ref, $success_message, $method);
+	}
+
+	/**
+	 * Function to execute the API calls required to make a new pre-enrollment
+	 */
+	public function create_pre_enrollment($args) {
+		$data = wp_parse_args($args, $this->pre_enroll_defaults);
+		$api_url = self::PATH_PRE_ENROLLMENT_API;
+		$ref = $args['email'] ?: $args['username'] ?: '';
+		$success_message = 'Pre-enrollment success!';
+		$method = 'POST';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
 	}
 
 	/**
@@ -243,7 +302,8 @@ class WP_EoxCoreApi
 		$api_url = self::PATH_USER_API;
 		$ref = $data['email'] ?: $data['username'] ?: $data['fullname'];
 		$success_message = 'User creation success!';
-		return $this->api_call($api_url, $data, $ref, $success_message);
+		$method = 'POST';
+		return $this->api_call($api_url, $data, $ref, $success_message, $method);
 	}
 
 	/**
@@ -255,26 +315,31 @@ class WP_EoxCoreApi
 		$ref = $args['email'] ?: $args['username'] ?: '';
 		$success_message = 'User fetching success!';
 		$api_url .= '?' . http_build_query($args);
-		return $this->api_call($api_url, NULL, $ref, $success_message);
+		$method = 'GET';
+		return $this->api_call($api_url, NULL, $ref, $success_message, $method);
 	}
 
 	/**
 	 * Generic api call method
 	 */
-	public function api_call($api_url, $data, $ref, $success_message) {
+	public function api_call($api_url, $data, $ref, $success_message, $method) {
 		$token = $this->get_access_token();
 		if (!is_wp_error($token)) {
 			$url = get_option('wpt_lms_base_url', '') . $api_url;
-			if (empty($data)) {
-				$response = wp_remote_get($url, array(
-					'headers' => 'Authorization: Bearer ' . $token
-				));
-			} else {
-				$response = wp_remote_post($url, array(
-					'headers' => 'Authorization: Bearer ' . $token,
-					'body' => $data
-				));
+			$headers = array(
+				'Authorization' => 'Bearer ' . $token,
+				'Content-Type' => 'application/json',
+			);
+
+			$request = array(
+				'headers' => $headers,
+				'method' => $method,
+			);
+
+			if ( $method === 'PUT' or $method === 'POST') {
+				$request['body'] = json_encode(array_filter($data));
 			}
+			$response = wp_remote_request($url, $request);
 			if (is_wp_error($response)) {
 				return $response;
 			}
@@ -292,16 +357,13 @@ class WP_EoxCoreApi
 			return $token;
 		}
 	}
-
+	
 	public function get_response_errors($response, $ref)
 	{
 		$response_json = json_decode($response['body']);
 		$errors = array();
 
-		if (is_null($response_json) && $response['response']['code'] === 404) {
-			$errors[] = '404 - eox-core is likely not installed on the remote server';
-		}
-		else if (is_null($response_json)) {
+		if (is_null($response_json)) {
 			$errors[] = 'non-json response, server returned status code ' . $response['response']['code'];
 		}
 		else if ($response['response']['code'] !== 200) {
@@ -314,23 +376,32 @@ class WP_EoxCoreApi
 	/**
 	 *
 	 */
-	public function handle_api_errors($json, $ref) {
+	public function handle_api_errors($json) {
 		$errors = [];
 		if (isset($json->detail)) {
-			$errors[] = $json->detail . ' (' . $ref . ')';
+			$errors[] = $json->detail;
 		}
 		if (isset($json->non_field_errors)) {
 			foreach ($json->non_field_errors as $value) {
-				$errors[] = $value . ' (' . $ref . ')';
+				$errors[] = $value;
+			}
+		}
+		if (isset($json->errors)) {
+			foreach ($json->errors as $value) {
+				$errors[] = $value;
 			}
 		}
 		$valid_error_keys = array_merge(array_keys($this->user_defaults), array_keys($this->enroll_defaults));
 		foreach ($valid_error_keys as $key) {
 			if (isset($json->$key)) {
 				foreach ($json->$key as $value) {
-					$errors[] = ucfirst($key) . ': ' . $value . ' <i>(' . $ref . ')</i>';
+					$errors[] = ucfirst($key) . ': ' . $value;
 				}
 			}
+		}
+
+		if (empty(array_filter($errors))) {
+			$errors = $json;
 		}
 		return $errors;
 	}
