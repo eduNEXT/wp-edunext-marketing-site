@@ -364,6 +364,7 @@ class WP_Openedx_Enrollment {
 	function add_columns_to_list_view( $column ) {
 		$column['oer_status'] = 'Status';
 		$column['oer_type'] = 'Type';
+		$column['oer_messages'] = 'Messages';
 		return $column;
 	}
 
@@ -386,6 +387,9 @@ class WP_Openedx_Enrollment {
 				else {
 					echo 'Unenroll';
 				}
+				break;
+			case 'oer_messages' :
+				echo(get_post_meta($post_id, 'errors', true));
 				break;
 			default:
 		}
