@@ -215,18 +215,23 @@ class WP_Openedx_Enrollment {
         }
         if ( 'oer_process' == $oer_action ) {
             $this->process_request( $post_id, false );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_force' == $oer_action ) {
             $this->process_request( $post_id, true );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_no_pre' == $oer_action ) {
             $this->process_request( $post_id, false, false );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_no_pre_force' == $oer_action ) {
             $this->process_request( $post_id, true, false );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_sync' == $oer_action ) {
             $this->sync_request( $post_id );
+            update_post_meta( $post_id, 'edited', false );
         }
     }
 
