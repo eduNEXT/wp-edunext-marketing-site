@@ -177,6 +177,8 @@ class WP_Openedx_Enrollment {
      */
     function save_eor( $post, $oerarr, $oer_action ) {
 
+        $post_id = $post->ID;
+
         $oer_course_id    = $oerarr['oer_course_id'];
         $oer_email        = $oerarr['oer_email'];
         $oer_username     = $oerarr['oer_username'];
@@ -202,7 +204,6 @@ class WP_Openedx_Enrollment {
             update_post_meta( $post_id, 'is_active', false );
         }
 
-        $post_id = $post->ID;
         // Only update the post status if it has no custom status yet
         if ( $post->post_status != 'eor-success' && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
             $this->update_post_status( 'eor-pending', $post_id );
