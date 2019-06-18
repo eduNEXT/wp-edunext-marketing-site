@@ -131,6 +131,28 @@ class WP_Openedx_Enrollment {
     }
 
     /**
+     * Creates a new post in the database and runs it through the save.
+     *
+     * @param array $oerarr An array containing the eor info.
+     * @param string $oer_action The API action to perform once the wp process is done.
+     *
+     * @return object $post The post object.
+     */
+    function insert_new( $oerarr, $oer_action = '' ) {
+        $this->unregister_save_hook();
+
+        $new_oer = array(
+            'post_content'  => 'Created automatically by woocommerce to fullfill an order.',
+            'post_type' => 'openedx_enrollment',
+        );
+        $post_id = wp_insert_post( $new_oer );
+        $post = get_post( $post_id );
+
+        $this->save_eor( $post, $oerarr, $oer_action );
+        return $post;
+    }
+
+    /**
      * Save openedx request based on the incomming args.
      *
      * @param post $post The post object.
@@ -138,6 +160,7 @@ class WP_Openedx_Enrollment {
      * @param string $oer_action The API action to perform once the wp process is done.
      */
     function save_eor( $post, $oerarr, $oer_action ) {
+
         $oer_course_id = $oerarr['oer_course_id'];
         $oer_email = $oerarr['oer_email'];
         $oer_username = $oerarr['oer_username'];
@@ -147,17 +170,6 @@ class WP_Openedx_Enrollment {
 		// We need to have all 3 required params to continue
 		$oer_user_reference = $oer_email || $oer_username;
 		if ( ! $oer_course_id || ! $oer_user_reference || ! $oer_mode ) return;
-
-        $post_id = $post->ID;
-		$post_update = array(
-			'ID' => $post_id,
-			'post_title' => $oer_course_id . ' | ' . $oer_username . ' | Mode: ' . $oer_mode ,
-		);
-		// Only update the post status if it has no custom status yet
-		if ( $post->post_status != 'eor-success'  && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
-			$post_update['post_status'] = 'eor-pending';
-		}
-		$this->wp_update_post($post_update);
 
 		// Update the $post metadata
 		update_post_meta( $post_id, 'course_id', $oer_course_id );
@@ -172,8 +184,13 @@ class WP_Openedx_Enrollment {
 			update_post_meta( $post_id, 'is_active', false );
 		}
 
-		// Handle the eox-core API actions
+        $post_id = $post->ID;
+		// Only update the post status if it has no custom status yet
+		if ( $post->post_status != 'eor-success'  && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
+            $this->update_post_status('eor-pending', $post_id);
+		}
 
+		// Handle the eox-core API actions
 		if ('save_no_process' == $oer_action ) {
 			update_post_meta( $post_id, 'edited', true );
 		}
@@ -323,6 +340,10 @@ class WP_Openedx_Enrollment {
 			$status = 'eor-error';
 		} else {
 			delete_post_meta($post_id, 'errors');
+            // This field should be updated if emtpy
+            if ( !get_post_meta($post_id, 'username', true) ){
+                update_post_meta($post_id, 'username',  $response->username);
+            }
 			$status = 'eor-success';
 		}
 
@@ -355,10 +376,17 @@ class WP_Openedx_Enrollment {
 	 * @param int $post_id The post ID
 	 */
 	function update_post_status( $status, $post_id) {
+
+        $oer_course_id = get_post_meta($post_id, 'course_id', true);
+        $oer_username = get_post_meta($post_id, 'username', true);
+        $oer_mode = get_post_meta($post_id, 'mode', true);
+
 		$post_update = array(
 			'ID' => $post_id,
 			'post_status' => $status,
+            'post_title' => $oer_course_id . ' | ' . $oer_username . ' | Mode: ' . $oer_mode ,
 		);
+
 		$this->wp_update_post($post_update);
 	}
 
