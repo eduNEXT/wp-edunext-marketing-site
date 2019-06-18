@@ -162,8 +162,14 @@ class WP_eduNEXT_Woocommerce_Integration {
 
             $product = $item->get_product();
 
-            $course_id   = $product->get_attribute( 'course_id' );
-            $bundle_id   = $product->get_attribute( 'bundle_id' );
+            $course_id = $product->get_attribute( 'course_id' );
+            $bundle_id = $product->get_attribute( 'bundle_id' );
+
+            if ( ! $course_id && ! $bundle_id ) {
+                // This product does not require any work from us.
+                break;
+            }
+
             $course_mode = $product->get_attribute( 'course_mode' );
             if ( empty( $course_mode ) ) {
                 $course_mode = 'audit';
