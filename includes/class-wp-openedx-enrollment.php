@@ -295,7 +295,7 @@ class WP_Openedx_Enrollment {
 
         $enrollment_opts_args = array(
             'mode'      => get_post_meta( $post_id, 'mode', true ),
-            'is_active' => ( get_post_meta( $post_id, 'is_active', true ) ? 1 : 0 ),
+            'is_active' => ( get_post_meta( $post_id, 'is_active', true ) ? true : false ),
         );
 
         switch ( $type ) {
