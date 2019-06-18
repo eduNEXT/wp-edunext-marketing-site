@@ -1,4 +1,4 @@
-<p>As part of the Wordpress Open edX integrator, you can use a Shortcode (edunext_enroll_button) to add a Course button to your pages or posts. This button will be linked to one of your Open edX courses and it will link your post or page will the course as required, according to the Open edX user session and the course settings.</p>
+<p>As part of the WordPress Open edX integrator, you can use a Shortcode (edunext_enroll_button) to add a Course button to your pages or posts. This button will be linked to one of your Open edX courses and it will link your post or page will the course as required, according to the Open edX user session and the course settings.</p>
 
 <h4>Basic Usage:</h4>
 <p>In the most simple configuration, the button will behave and look as specified in the Open edX integrator plugin settings.</p>

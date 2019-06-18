@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Example Project" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+
+  <description>A custom set of rules to check for a WPized WordPress project</description>
+
+  <!-- Exclude WP Core folders and files from being checked. -->
+  <exclude-pattern>/docroot/wp-admin/*</exclude-pattern>
+  <exclude-pattern>/docroot/wp-includes/*</exclude-pattern>
+  <exclude-pattern>/docroot/wp-*.php</exclude-pattern>
+  <exclude-pattern>/docroot/index.php</exclude-pattern>
+  <exclude-pattern>/docroot/xmlrpc.php</exclude-pattern>
+  <exclude-pattern>/docroot/wp-content/plugins/*</exclude-pattern>
+
+  <!-- Exclude the Composer Vendor directory. -->
+  <exclude-pattern>/vendor/*</exclude-pattern>
+
+  <!-- Exclude the Node Modules directory. -->
+  <exclude-pattern>/node_modules/*</exclude-pattern>
+
+  <!-- Exclude minified Javascript files. -->
+  <exclude-pattern>*.min.js</exclude-pattern>
+
+  <!-- Exclude the code standard when installed locally. -->
+  <exclude-pattern>/wpcs/*</exclude-pattern>
+
+  <!-- Include the WordPress-Extra standard. -->
+  <rule ref="WordPress-Extra">
+    <!--
+    This following rules are excluded because we dont like them.
+    -->
+    <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+    <exclude name="WordPress.PHP.YodaConditions"/>
+    <!--
+    This following rules are only excluded so that we get the linter running.
+    we need to get our game together and correct them.
+    -->
+    <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found"/>
+    <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed"/>
+    <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed"/>
+    <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassAfterLastUsed"/>
+    <exclude name="Generic.Commenting.DocComment.Empty"/>
+    <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+    <exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
+    <exclude name="Generic.Commenting.Todo.TaskFound"/>
+    <exclude name="Generic.Files.OneObjectStructurePerFile.MultipleFound"/>
+    <exclude name="PEAR.NamingConventions.ValidClassName.Invalid"/>
+    <exclude name="PSR2.Classes.PropertyDeclaration.ScopeMissing"/>
+    <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+    <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+    <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+    <exclude name="Squiz.Commenting.FileComment.Missing"/>
+    <exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
+    <exclude name="Squiz.Commenting.FileComment.SpacingAfterOpen"/>
+    <exclude name="Squiz.Commenting.FileComment.WrongStyle"/>
+    <exclude name="Squiz.Commenting.FunctionComment.InvalidReturnVoid"/>
+    <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+    <exclude name="Squiz.Commenting.FunctionComment.MissingParamName"/>
+    <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+    <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+    <exclude name="Squiz.Commenting.FunctionComment.ParamNameNoMatch"/>
+    <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+    <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+    <exclude name="Squiz.Commenting.VariableComment.Missing"/>
+    <exclude name="Squiz.Commenting.VariableComment.MissingVar"/>
+    <exclude name="Squiz.Operators.ValidLogicalOperators.NotAllowed"/>
+    <exclude name="Squiz.PHP.CommentedOutCode.Found"/>
+    <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
+    <exclude name="Squiz.Scope.MethodScope.Missing"/>
+    <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.StartFile"/>
+    <exclude name="WordPress.CodeAnalysis.AssignmentInCondition.Found"/>
+    <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+    <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+    <exclude name="WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound"/>
+    <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound"/>
+    <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound"/>
+    <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound"/>
+    <exclude name="WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid"/>
+    <exclude name="WordPress.PHP.DevelopmentFunctions.error_log_error_log"/>
+    <exclude name="WordPress.PHP.StrictComparisons.LooseComparison"/>
+    <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict"/>
+    <exclude name="WordPress.Security.EscapeOutput"/>
+    <exclude name="WordPress.Security.NonceVerification.Missing"/>
+    <exclude name="WordPress.Security.NonceVerification.Recommended"/>
+    <exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found"/>
+    <exclude name="WordPress.WP.AlternativeFunctions.json_encode_json_encode"/>
+    <exclude name="WordPress.WP.EnqueuedResourceParameters.NotInFooter"/>
+    <exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited"/>
+    <exclude name="WordPress.WP.I18n.MismatchedPlaceholders"/>
+    <exclude name="WordPress.WP.I18n.MissingArgDomain"/>
+    <exclude name="WordPress.WP.I18n.MissingTranslatorsComment"/>
+    <exclude name="WordPress.WP.I18n.MixedOrderedPlaceholdersText"/>
+    <exclude name="WordPress.WP.I18n.NoEmptyStrings"/>
+    <exclude name="WordPress.WP.I18n.NonSingularStringLiteralContext"/>
+    <exclude name="WordPress.WP.I18n.NonSingularStringLiteralText"/>
+    <exclude name="WordPress.WP.I18n.TextDomainMismatch"/>
+    <exclude name="WordPress.WP.I18n.TooManyFunctionArgs"/>
+  </rule>
+
+  <!-- Let's also check that everything is properly documented. -->
+  <rule ref="WordPress-Docs"/>
+
+  <!-- Add in some extra rules from other standards. -->
+  <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+  <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+  <rule ref="Generic.Commenting.Todo"/>
+
+  <!--
+  To get the optimal benefits of using WPCS, we should add a couple of
+  custom properties.
+  Adjust the values of these properties to fit our needs.
+
+  For information on additional custom properties available, check out
+  the wiki:
+  https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
+  -->
+  <config name="minimum_supported_wp_version" value="4.9"/>
+
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <property name="text_domain" type="array">
+        <element value="wp-edunext-marketing-site"/>
+        <element value="library-textdomain"/>
+      </property>
+    </properties>
+  </rule>
+
+  <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+    <properties>
+      <property name="prefixes" type="array">
+        <element value="wp_edunext_"/>
+        <element value="edunext_"/>
+      </property>
+    </properties>
+  </rule>
+
+</ruleset>
