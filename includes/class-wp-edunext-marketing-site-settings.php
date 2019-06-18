@@ -571,7 +571,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'description'		=> __( 'The process that will fulfill the enrollment. You can change at the product using the fulfillment_action variable.' ),
 					'type'				=> 'select',
 					'default'			=> '',
-					'options'			=> array( 'no_action_selected' => 'Nothing', 'process_request' => 'process_request (recommended)', 'process_request_force' => 'process_request_force', 'custom_fulfillment_function' => 'Use custom action in the next field' ),
+					'options'			=> array( 'do_nothing' => 'Nothing', 'oer_process' => 'Process request (recommended)', 'oer_force' => 'Process request --force', 'oer_no_pre' => 'Process request with no pre-enrollment', 'oer_no_pre_force' => 'Process request with no pre-enrollment --force', 'custom_fulfillment_function' => 'Use custom action in the next field' ),
 					'placeholder'		=> '',
 					'advanced_setting' 	=> false
 				),

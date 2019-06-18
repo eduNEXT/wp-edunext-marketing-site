@@ -15,12 +15,21 @@ class WP_eduNEXT_Woocommerce_Integration {
     public $eox_user_info;
 
     /**
+     * The main plugin object.
+     * @var     object
+     * @access  public
+     * @since   1.9.0
+     */
+    public $parent = null;
+
+    /**
      * Constructor function.
      * @access  public
      * @since   1.0.0
      * @return  void
      */
-    public function __construct($value='') {
+    public function __construct( $parent ) {
+        $this->parent = $parent;
 
         if ( get_option('wpt_enable_woocommerce_prefill_v1') ) {
             add_action( 'woocommerce_checkout_get_value', array( $this, 'prefill_with_eox_core_data' ), 20, 2 );
@@ -31,7 +40,7 @@ class WP_eduNEXT_Woocommerce_Integration {
     }
 
     /**
-     * Connects the woocomerce integration according to the flexible logic
+     * Connects the woocommerce integration according to the flexible logic
      *
      * @return void
      */
@@ -131,26 +140,6 @@ class WP_eduNEXT_Woocommerce_Integration {
      * @since   1.0.0
      * @return  void
      */
-    public function fulfillment_action_process_request() {
-        wp_die("fulfillment_action_process_request");
-    }
-
-    /**
-     * Possible action to perform
-     * @access  public
-     * @since   1.0.0
-     * @return  void
-     */
-    public function fulfillment_action_process_request_force() {
-        wp_die("fulfillment_action_process_request_force");
-    }
-
-    /**
-     * Possible action to perform
-     * @access  public
-     * @since   1.0.0
-     * @return  void
-     */
     public function process_woo_order( $order_or_status, $order_or_null = null ) {
 
         // Get the parameters right coming from payment_complete or order_status
@@ -176,8 +165,6 @@ class WP_eduNEXT_Woocommerce_Integration {
                 $course_mode = 'audit';
             }
 
-            // Time to create the EOR POST
-
             $fulfillment_action = $product->get_attribute('fulfillment_action');
             if (empty($fulfillment_action)) {
                 $fulfillment_action = get_option('wpt_oer_action_for_fulfillment');
@@ -186,14 +173,40 @@ class WP_eduNEXT_Woocommerce_Integration {
                 }
             }
 
-            // Put this in a try catch and test if the local_action exist, otherwise call globally
-            $local_action = 'fulfillment_action_' . $fulfillment_action;
-            $this->$local_action();
+            // Time to create the OER POST
+            $oer_action = 'custom_action';
+            if ('do_nothing' == $fulfillment_action ) {
+                $oer_action = '';
+            }
+            if ('oer_process' == $fulfillment_action ) {
+                $oer_action = 'oer_process';
+            }
+            if ('oer_force' == $fulfillment_action ) {
+                $oer_action = 'oer_force';
+            }
+            if ('oer_no_pre' == $fulfillment_action ) {
+                $oer_action = 'oer_no_pre';
+            }
+            if ('oer_no_pre_force' == $fulfillment_action ) {
+                $oer_action = 'oer_no_pre_force';
+            }
+            if ('oer_sync' == $fulfillment_action ) {
+                $oer_action = 'oer_sync';
+            }
 
+            $oerarr = array(
+                'oer_course_id' => sanitize_text_field( $course_id ),
+                'bundle_id' => sanitize_text_field( $bundle_id ),
+                'oer_mode' => sanitize_text_field( $course_mode ),
+                'oer_email' => sanitize_text_field( $billing_email ),
+                'oer_username' => null,
+                'oer_request_type' => 'enroll',
+            );
+            $post = $this->parent->openedx_enrollment->insert_new( $oerarr, $oer_action);
+
+            if ( $oer_action == 'custom_action') {
+                // Call $fulfillment_action as a global passing the $oearr and the $post.
+            }
         }
-
-
-        wp_die("the end of process_woo_order");
     }
-
 }
