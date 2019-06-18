@@ -15,18 +15,55 @@ class WP_eduNEXT_Woocommerce_Integration {
     public $eox_user_info;
 
     /**
+     * The main plugin object.
+     * @var     object
+     * @access  public
+     * @since   1.9.0
+     */
+    public $parent = null;
+
+    /**
      * Constructor function.
      * @access  public
      * @since   1.0.0
      * @return  void
      */
-    public function __construct($value='')
-    {
-        add_action( 'woocommerce_checkout_get_value', array( $this, 'prefill_with_eox_core_data' ), 20, 2 );
+    public function __construct( $parent ) {
+        $this->parent = $parent;
+
+        if ( get_option('wpt_enable_woocommerce_prefill_v1') ) {
+            add_action( 'woocommerce_checkout_get_value', array( $this, 'prefill_with_eox_core_data' ), 20, 2 );
+        }
+
+        $this->register_woocommerce_actions_and_callback();
+
     }
 
     /**
-     * Callback to pre-fill
+     * Connects the woocommerce integration according to the flexible logic
+     *
+     * @return void
+     */
+    public function register_woocommerce_actions_and_callback() {
+
+        $actions_to_connect_array = get_option('wpt_woocommerce_action_to_connect');
+
+        foreach ($actions_to_connect_array as $key => $action) {
+            if ( $action == 'custom_string' ) {
+                $action = get_option('wpt_custom_action_to_connect');
+            }
+            add_action( $action, array( $this, 'process_woo_order' ), 20, 2 );
+        }
+    }
+
+
+    /**
+     * Callback to pre-fill.
+     * Turning on the wpt_enable_woocommerce_prefill_v1 advanced setting will cause that the checkout form uses
+     * this function to call the eox-core user API with the user's email. If it finds information that wordpress
+     * did not have before, then it will pre-fill it in the form.
+     * It is also possible to configure the mappings using an advanced field.
+     *
      * @access public
      * @since  1.0.0
      * @param  string $value The value to show of the HTML input
@@ -95,5 +132,81 @@ class WP_eduNEXT_Woocommerce_Integration {
 
         }
         return $value;
+    }
+
+    /**
+     * Possible action to perform
+     * @access  public
+     * @since   1.0.0
+     * @return  void
+     */
+    public function process_woo_order( $order_or_status, $order_or_null = null ) {
+
+        // Get the parameters right coming from payment_complete or order_status
+        $order_id = $order_or_status;
+        if ( $order_or_null ) {
+            $order_id = $order_or_null;
+        }
+        $order = new WC_Order($order_id);
+
+        // We need to get the User info first
+        $billing_email = $order->get_billing_email();  //  this is what comes from the form
+        $wp_user_email = $order->get_user()->email;  //  this the wp-user that made the purchase
+        // $custom_field_email = $order->get_billing_email());  //  this comes from a custom field
+
+        foreach ($order->get_items() as $key => $item) {
+
+            $product = $item->get_product();
+
+            $course_id = $product->get_attribute('course_id');
+            $bundle_id = $product->get_attribute('bundle_id');
+            $course_mode = $product->get_attribute('course_mode');
+            if (empty($course_mode)) {
+                $course_mode = 'audit';
+            }
+
+            $fulfillment_action = $product->get_attribute('fulfillment_action');
+            if (empty($fulfillment_action)) {
+                $fulfillment_action = get_option('wpt_oer_action_for_fulfillment');
+                if ( $fulfillment_action == 'custom_fulfillment_function' ) {
+                    $fulfillment_action = get_option('wpt_custom_action_for_fulfillment');
+                }
+            }
+
+            // Time to create the OER POST
+            $oer_action = 'custom_action';
+            if ('do_nothing' == $fulfillment_action ) {
+                $oer_action = '';
+            }
+            if ('oer_process' == $fulfillment_action ) {
+                $oer_action = 'oer_process';
+            }
+            if ('oer_force' == $fulfillment_action ) {
+                $oer_action = 'oer_force';
+            }
+            if ('oer_no_pre' == $fulfillment_action ) {
+                $oer_action = 'oer_no_pre';
+            }
+            if ('oer_no_pre_force' == $fulfillment_action ) {
+                $oer_action = 'oer_no_pre_force';
+            }
+            if ('oer_sync' == $fulfillment_action ) {
+                $oer_action = 'oer_sync';
+            }
+
+            $oerarr = array(
+                'oer_course_id' => sanitize_text_field( $course_id ),
+                'bundle_id' => sanitize_text_field( $bundle_id ),
+                'oer_mode' => sanitize_text_field( $course_mode ),
+                'oer_email' => sanitize_text_field( $billing_email ),
+                'oer_username' => null,
+                'oer_request_type' => 'enroll',
+            );
+            $post = $this->parent->openedx_enrollment->insert_new( $oerarr, $oer_action);
+
+            if ( $oer_action == 'custom_action') {
+                // Call $fulfillment_action as a global passing the $oearr and the $post.
+            }
+        }
     }
 }

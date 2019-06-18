@@ -540,6 +540,51 @@ class WP_eduNEXT_Marketing_Site_Settings {
 			'fields'				=> array(
 				array(
 					'id' 				=> 'enable_woocommerce_integration',
+					'label'				=> __( 'Enable the woocommerce integration' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'Allows you to sell your courses using Woocommerce.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'checkbox',
+					'default'			=> false,
+					'placeholder'		=> '',
+					'advanced_setting' 	=> false
+				),
+				array(
+					'id' 				=> 'woocommerce_action_to_connect',
+					'label'				=> __( 'Woocommerce trigger action' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'Which woocomerce action should be used to launch the enrollment.', 'wp-edunext-marketing-site' ),
+					'type'				=> 'checkbox_multi',
+					'default'			=> '',
+					'options'			=> array( 'woocommerce_payment_complete' => 'woocommerce_payment_complete', 'woocommerce_payment_complete_order_status' => 'woocommerce_payment_complete_order_status', 'custom_string' => 'Use custom action in the next field' ),
+					'placeholder'		=> '',
+					'advanced_setting' 	=> false
+				),
+				array(
+					'id' 			=> 'custom_action_to_connect',
+					'label'			=> __( 'Write a custom action to trigger the enrollment', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Action that will be used for the add_action function. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> 'Optional only if you selected custom action'
+				),
+				array(
+					'id' 				=> 'oer_action_for_fulfillment',
+					'label'				=> __( 'Default enrollment fulfillment action' , 'wp-edunext-marketing-site' ),
+					'description'		=> __( 'The process that will fulfill the enrollment. You can change at the product using the fulfillment_action variable.' ),
+					'type'				=> 'select',
+					'default'			=> '',
+					'options'			=> array( 'do_nothing' => 'Nothing', 'oer_process' => 'Process request (recommended)', 'oer_force' => 'Process request --force', 'oer_no_pre' => 'Process request with no pre-enrollment', 'oer_no_pre_force' => 'Process request with no pre-enrollment --force', 'custom_fulfillment_function' => 'Use custom action in the next field' ),
+					'placeholder'		=> '',
+					'advanced_setting' 	=> false
+				),
+				array(
+					'id' 			=> 'custom_action_for_fulfillment',
+					'label'			=> __( 'Write a custom action that will be triggered when the payment is done', 'wp-edunext-marketing-site' ),
+					'description'	=> __( 'Callback that will execute when the trigger action runs. Only change this if you know exactly what you are doing.' ),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> 'Optional only if you selected custom function'
+				),
+				array(
+					'id' 				=> 'enable_woocommerce_prefill_v1',
 					'label'				=> __( 'Enable Checkout fields pre-filling' , 'wp-edunext-marketing-site' ),
 					'description'		=> __( 'This is an advanced feature only supported for eduNEXT customers.', 'wp-edunext-marketing-site' ),
 					'type'				=> 'checkbox',
@@ -551,9 +596,9 @@ class WP_eduNEXT_Marketing_Site_Settings {
 					'id' => 'eox_client_wc_field_mappings',
 					'label' => __('User Profile fields mapping', 'wp-edunext-marketing-site') ,
 					'description' => __('This is an advanced feature only supported for eduNEXT customers. Mapping of user fields for pre-filling, from Open-edX (extended_profile) to Woocommerce (chekout)', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site'),
-					'type' => 'text',
+					'type' => 'textarea',
 					'default' => '',
-					'placeholder' => '{"wc_example": "example"}',
+					'placeholder' => '{"woocommerce_field": "openedx_extended_profile_field" , "billing_company": "company", "billing_city": "city", ...}',
 					'advanced_setting' 	=> true
 				),
 			)

@@ -121,7 +121,7 @@ class WP_eduNEXT_Marketing_Site {
 
 		// WooCommerce integration
 		if ( get_option('wpt_enable_woocommerce_integration') ) {
-			$this->woocommerce = new WP_eduNEXT_Woocommerce_Integration();
+			$this->woocommerce = new WP_eduNEXT_Woocommerce_Integration( $this );
 		}
 
 		// Add wp-admin
