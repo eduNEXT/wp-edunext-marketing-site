@@ -14,7 +14,7 @@
 }
 
 #exo-shortcode-help li {
-	margin-left: 5px;
+    margin-left: 5px;
 }
 
 #exo-shortcode-help i {
@@ -24,11 +24,11 @@
 
 @keyframes big_for_a_moment {
     0% {
-    	opacity: 0;
+        opacity: 0;
         transform: scale(1.2);
     }
     100% {
-    	opacity: 1;
+        opacity: 1;
         transform: scale(1);
     }
 }

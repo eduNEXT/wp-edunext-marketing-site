@@ -1,31 +1,34 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Where notices to be shown to the user are stored
      */
-    private $notices = array();
+    private $notices       = array();
     private $error_notices = array();
 
 
     /**
      * Constructor function
      */
-    public function __construct () {
+    public function __construct() {
         add_action( 'save_post', array( $this, 'save_meta_boxes' ), 10, 1 );
-        add_action('admin_notices', array($this, 'show_notices'));
+        add_action( 'admin_notices', array( $this, 'show_notices' ) );
     }
 
     /**
      * Generate HTML for displaying fields
+     *
      * @param  array   $field Field data
      * @param  boolean $echo  Whether to echo the field HTML or return it
      * @return void
      */
-    public function display_field ( $data = array(), $post = false, $echo = true ) {
+    public function display_field( $data = array(), $post = false, $echo = true ) {
 
         // Get field info
         if ( isset( $data['field'] ) ) {
@@ -46,24 +49,22 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
             // Get saved field data
             $option_name .= $field['id'];
-            $option = get_post_meta( $post->ID, $field['id'], true );
+            $option       = get_post_meta( $post->ID, $field['id'], true );
 
             // Get data to display in field
             if ( isset( $option ) ) {
                 $data = $option;
             }
-
         } else {
 
             // Get saved option
             $option_name .= $field['id'];
-            $option = get_option( $option_name );
+            $option       = get_option( $option_name );
 
             // Get data to display in field
             if ( isset( $option ) ) {
                 $data = $option;
             }
-
         }
 
         // Show default data if no option saved and default is supplied
@@ -75,7 +76,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
         $html = '';
 
-        switch( $field['type'] ) {
+        switch ( $field['type'] ) {
 
             case 'text':
             case 'url':
@@ -84,9 +85,9 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                 $html .= 'name="' . esc_attr( $option_name ) . '" ';
                 $html .= 'placeholder="' . esc_attr( $field['placeholder'] ) . '" ';
                 $html .= 'value="' . esc_attr( $data ) . '" ';
-                $html .= empty($field['advanced_setting']) ? '' : ' class="advanced_setting"';
+                $html .= empty( $field['advanced_setting'] ) ? '' : ' class="advanced_setting"';
                 $html .= '/>' . "\n";
-            break;
+                break;
 
             case 'password':
             case 'number':
@@ -101,17 +102,17 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     $max = ' max="' . esc_attr( $field['max'] ) . '"';
                 }
                 $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="' . esc_attr( $data ) . '"' . $min . '' . $max . '/>' . "\n";
-            break;
+                break;
 
             case 'text_secret':
                 $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="text" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" value="" />' . "\n";
-            break;
+                break;
 
             case 'textarea':
                 $html .= '<textarea id="' . esc_attr( $field['id'] ) . '" rows="5" cols="50" name="' . esc_attr( $option_name ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '"';
-                $html .= empty($field['advanced_setting']) ? '' : ' class="advanced_setting"';
-                $html .= '>' . $data . '</textarea><br/>'. "\n";
-            break;
+                $html .= empty( $field['advanced_setting'] ) ? '' : ' class="advanced_setting"';
+                $html .= '>' . $data . '</textarea><br/>' . "\n";
+                break;
 
             case 'checkbox':
                 $checked = '';
@@ -119,9 +120,9 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     $checked = 'checked="checked"';
                 }
                 $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked;
-                $html .= empty($field['advanced_setting']) ? '' : ' class="advanced_setting"';
+                $html .= empty( $field['advanced_setting'] ) ? '' : ' class="advanced_setting"';
                 $html .= '/>' . "\n";
-            break;
+                break;
 
             case 'checkbox_multi':
                 foreach ( $field['options'] as $k => $v ) {
@@ -131,7 +132,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     }
                     $html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '" class="checkbox_multi"><input type="checkbox" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
                 }
-            break;
+                break;
 
             case 'radio':
                 foreach ( $field['options'] as $k => $v ) {
@@ -141,7 +142,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     }
                     $html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
                 }
-            break;
+                break;
 
             case 'select':
                 $html .= '<select name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '">';
@@ -153,7 +154,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     $html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
                 }
                 $html .= '</select> ';
-            break;
+                break;
 
             case 'select_multi':
                 $html .= '<select name="' . esc_attr( $option_name ) . '[]" id="' . esc_attr( $field['id'] ) . '" multiple="multiple">';
@@ -165,7 +166,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     $html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
                 }
                 $html .= '</select> ';
-            break;
+                break;
 
             case 'image':
                 $image_thumb = '';
@@ -173,10 +174,10 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     $image_thumb = wp_get_attachment_thumb_url( $data );
                 }
                 $html .= '<img id="' . $option_name . '_preview" class="image_preview" src="' . $image_thumb . '" /><br/>' . "\n";
-                $html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' . __( 'Upload an image' , 'wp-edunext-marketing-site' ) . '" data-uploader_button_text="' . __( 'Use image' , 'wp-edunext-marketing-site' ) . '" class="image_upload_button button" value="'. __( 'Upload new image' , 'wp-edunext-marketing-site' ) . '" />' . "\n";
-                $html .= '<input id="' . $option_name . '_delete" type="button" class="image_delete_button button" value="'. __( 'Remove image' , 'wp-edunext-marketing-site' ) . '" />' . "\n";
+                $html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' . __( 'Upload an image', 'wp-edunext-marketing-site' ) . '" data-uploader_button_text="' . __( 'Use image', 'wp-edunext-marketing-site' ) . '" class="image_upload_button button" value="' . __( 'Upload new image', 'wp-edunext-marketing-site' ) . '" />' . "\n";
+                $html .= '<input id="' . $option_name . '_delete" type="button" class="image_delete_button button" value="' . __( 'Remove image', 'wp-edunext-marketing-site' ) . '" />' . "\n";
                 $html .= '<input id="' . $option_name . '" class="image_data_field" type="hidden" name="' . $option_name . '" value="' . $data . '"/><br/>' . "\n";
-            break;
+                break;
 
             case 'color':
                 ?><div class="color-picker" style="position:relative;">
@@ -184,23 +185,27 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                     <div style="position:absolute;background:#FFF;z-index:99;border-radius:100%;" class="colorpicker"></div>
                 </div>
                 <?php
-            break;
+                break;
 
             case 'editor':
-                wp_editor($data, $option_name, array(
-                    'textarea_name' => $option_name
-                ) );
-            break;
+                wp_editor(
+                    $data,
+                    $option_name,
+                    array(
+                        'textarea_name' => $option_name,
+                    )
+                );
+                break;
 
         }
 
-        switch( $field['type'] ) {
+        switch ( $field['type'] ) {
 
             case 'checkbox_multi':
             case 'radio':
             case 'select_multi':
                 $html .= '<br/><span class="description">' . $field['description'] . '</span>';
-            break;
+                break;
 
             default:
                 if ( ! $post ) {
@@ -212,7 +217,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                 if ( ! $post ) {
                     $html .= '</label>' . "\n";
                 }
-            break;
+                break;
         }
 
         if ( ! $echo ) {
@@ -225,24 +230,26 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Render a settings page header with an explanation of the available options
+     *
      * @return void
      */
-    public function render_settings_page_header ($active_tab = '') {
-        $template = dirname(__DIR__) . '/templates/' . $active_tab . '_settings_custom_header_html.php';
-        if (file_exists($template)){
-            include($template);
+    public function render_settings_page_header( $active_tab = '' ) {
+        $template = dirname( __DIR__ ) . '/templates/' . $active_tab . '_settings_custom_header_html.php';
+        if ( file_exists( $template ) ) {
+            include $template;
         }
     }
 
     /**
      * Render a settings page header with an explanation of the available options
+     *
      * @return void
      */
-    public function show_advance_settings_toggle () {
+    public function show_advance_settings_toggle() {
         ?>
         <div class="advanced_settings_toggle">
             <label>
-                <input type="checkbox" id="toggle_advanced_settings" name="toggle_advanced_settings"><?= __('Show advanced settings', 'wp-edunext-marketing-site')?>
+                <input type="checkbox" id="toggle_advanced_settings" name="toggle_advanced_settings"><?php echo __( 'Show advanced settings', 'wp-edunext-marketing-site' ); ?>
             </label>
             <script>
             jQuery( document ).ready(function() {
@@ -264,16 +271,23 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Validate form field
+     *
      * @param  string $data Submitted value
      * @param  string $type Type of field to validate
      * @return string       Validated value
      */
-    public function validate_field ( $data = '', $type = 'text' ) {
+    public function validate_field( $data = '', $type = 'text' ) {
 
-        switch( $type ) {
-            case 'text': $data = esc_attr( $data ); break;
-            case 'url': $data = esc_url( $data ); break;
-            case 'email': $data = is_email( $data ); break;
+        switch ( $type ) {
+            case 'text':
+                $data = esc_attr( $data );
+                break;
+            case 'url':
+                $data = esc_url( $data );
+                break;
+            case 'email':
+                $data = is_email( $data );
+                break;
         }
 
         return $data;
@@ -281,6 +295,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Add meta box to the dashboard
+     *
      * @param string $id            Unique ID for metabox
      * @param string $title         Display title of metabox
      * @param array  $post_types    Post types to which this metabox applies
@@ -289,7 +304,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
      * @param array  $callback_args Any axtra arguments that will be passed to the display function for this metabox
      * @return void
      */
-    public function add_meta_box ( $id = '', $title = '', $post_types = array(), $context = 'advanced', $priority = 'default', $callback_args = null ) {
+    public function add_meta_box( $id = '', $title = '', $post_types = array(), $context = 'advanced', $priority = 'default', $callback_args = null ) {
 
         // Get post type(s)
         if ( ! is_array( $post_types ) ) {
@@ -304,21 +319,26 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Display metabox content
+     *
      * @param  object $post Post object
      * @param  array  $args Arguments unique to this metabox
      * @return void
      */
-    public function meta_box_content ( $post, $args ) {
+    public function meta_box_content( $post, $args ) {
 
         $fields = apply_filters( $post->post_type . '_custom_fields', array(), $post->post_type );
 
-        if ( ! is_array( $fields ) || 0 == count( $fields ) ) return;
+        if ( ! is_array( $fields ) || 0 == count( $fields ) ) {
+            return;
+        }
 
         echo '<div class="custom-field-panel">' . "\n";
 
         foreach ( $fields as $field ) {
 
-            if ( ! isset( $field['metabox'] ) ) continue;
+            if ( ! isset( $field['metabox'] ) ) {
+                continue;
+            }
 
             if ( ! is_array( $field['metabox'] ) ) {
                 $field['metabox'] = array( $field['metabox'] );
@@ -327,7 +347,6 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
             if ( in_array( $args['id'], $field['metabox'] ) ) {
                 $this->display_meta_box_field( $field, $post );
             }
-
         }
 
         echo '</div>' . "\n";
@@ -336,13 +355,16 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Dispay field in metabox
+     *
      * @param  array  $field Field data
      * @param  object $post  Post object
      * @return void
      */
-    public function display_meta_box_field ( $field = array(), $post ) {
+    public function display_meta_box_field( $field = array(), $post ) {
 
-        if ( ! is_array( $field ) || 0 == count( $field ) ) return;
+        if ( ! is_array( $field ) || 0 == count( $field ) ) {
+            return;
+        }
 
         $field = '<p class="form-field"><label for="' . $field['id'] . '">' . $field['label'] . '</label>' . $this->display_field( $field, $post, false ) . '</p>' . "\n";
 
@@ -351,18 +373,23 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Save metabox fields
+     *
      * @param  integer $post_id Post ID
      * @return void
      */
-    public function save_meta_boxes ( $post_id = 0 ) {
+    public function save_meta_boxes( $post_id = 0 ) {
 
-        if ( ! $post_id ) return;
+        if ( ! $post_id ) {
+            return;
+        }
 
         $post_type = get_post_type( $post_id );
 
         $fields = apply_filters( $post_type . '_custom_fields', array(), $post_type );
 
-        if ( ! is_array( $fields ) || 0 == count( $fields ) ) return;
+        if ( ! is_array( $fields ) || 0 == count( $fields ) ) {
+            return;
+        }
 
         foreach ( $fields as $field ) {
             if ( isset( $_REQUEST[ $field['id'] ] ) ) {
@@ -376,16 +403,16 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      *
      */
-    public function add_notice($type, $message) {
+    public function add_notice( $type, $message ) {
         $notice = array(
-            'type' => $type,
-            'message' => $message
+            'type'    => $type,
+            'message' => $message,
         );
-        if ($type === 'error') {
-            error_log($notice);
-            array_push($this->error_notices, $notice);
+        if ( $type === 'error' ) {
+            error_log( $notice );
+            array_push( $this->error_notices, $notice );
         } else {
-            array_push($this->notices, $notice);
+            array_push( $this->notices, $notice );
         }
     }
 
@@ -393,11 +420,11 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
      *
      */
     public function show_notices() {
-        $notices = array_merge($this->notices, $this->error_notices);
-        foreach ($notices as $message) {
+        $notices = array_merge( $this->notices, $this->error_notices );
+        foreach ( $notices as $message ) {
             ?>
-            <div class="<?= $message['type'] ?> notice">
-                    <p><?= __($message['message'], 'eox-core-api') ?></p>
+            <div class="<?php echo $message['type']; ?> notice">
+                    <p><?php echo __( $message['message'], 'eox-core-api' ); ?></p>
             </div>
             <?php
         }
