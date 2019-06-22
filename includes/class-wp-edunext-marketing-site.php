@@ -151,10 +151,10 @@ class WP_eduNEXT_Marketing_Site {
     /**
      * Wrapper function to register a new post type
      *
-     * @param  string $post_type   Post type name
-     * @param  string $plural      Post type item plural name
-     * @param  string $single      Post type item single name
-     * @param  string $description Description of post type
+     * @param  string $post_type   Post type name.
+     * @param  string $plural      Post type item plural name.
+     * @param  string $single      Post type item single name.
+     * @param  string $description Description of post type.
      * @return object              Post type class object
      */
     public function register_post_type( $post_type = '', $plural = '', $single = '', $description = '', $options = array() ) {
@@ -171,10 +171,10 @@ class WP_eduNEXT_Marketing_Site {
     /**
      * Wrapper function to register a new taxonomy
      *
-     * @param  string $taxonomy   Taxonomy name
-     * @param  string $plural     Taxonomy single name
-     * @param  string $single     Taxonomy plural name
-     * @param  array  $post_types Post types to which this taxonomy applies
+     * @param  string $taxonomy   Taxonomy name.
+     * @param  string $plural     Taxonomy single name.
+     * @param  string $single     Taxonomy plural name.
+     * @param  array  $post_types Post types to which this taxonomy applies.
      * @return object             Taxonomy class object
      */
     public function register_taxonomy( $taxonomy = '', $plural = '', $single = '', $post_types = array(), $taxonomy_args = array() ) {
@@ -275,7 +275,7 @@ class WP_eduNEXT_Marketing_Site {
      *
      * @access  public
      * @since   1.0.0
-     * @return  void
+     * @return  button The enroll button ready to be render
      */
     public function edunext_enroll_button( $atts ) {
 

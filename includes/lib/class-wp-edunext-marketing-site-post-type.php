@@ -127,7 +127,7 @@ class WP_eduNEXT_Marketing_Site_Post_Type {
     /**
      * Set up admin messages for post type
      *
-     * @param  array $messages Default message
+     * @param  array $messages Default message.
      * @return array           Modified messages
      */
     public function updated_messages( $messages = array() ) {
@@ -153,8 +153,8 @@ class WP_eduNEXT_Marketing_Site_Post_Type {
     /**
      * Set up bulk admin messages for post type
      *
-     * @param  array $bulk_messages Default bulk messages
-     * @param  array $bulk_counts   Counts of selected posts in each status
+     * @param  array $bulk_messages Default bulk messages.
+     * @param  array $bulk_counts   Counts of selected posts in each status.
      * @return array                Modified messages
      */
     public function bulk_updated_messages( $bulk_messages = array(), $bulk_counts = array() ) {

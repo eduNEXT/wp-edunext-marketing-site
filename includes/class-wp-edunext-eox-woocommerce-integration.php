@@ -71,8 +71,8 @@ class WP_eduNEXT_Woocommerce_Integration {
      *
      * @access public
      * @since  1.0.0
-     * @param  string $value The value to show of the HTML input
-     * @param  string $input Description of post type
+     * @param  string $value The value to show of the HTML input.
+     * @param  string $input Description of post type.
      * @return string
      */
     public function prefill_with_eox_core_data( $value, $input ) {
