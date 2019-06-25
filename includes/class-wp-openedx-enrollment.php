@@ -263,6 +263,10 @@ class WP_Openedx_Enrollment {
         $enrollment_args          = $this->prepare_args( $post_id, 'enrollment' );
         $enrollment_args['force'] = $force;
 
+        // When we reach this line we already have the user as a response from the API.
+        // Better use that username in case anything from before does not match
+        $enrollment_args['username'] = $user->username;
+
         $enrollment = WP_EoxCoreApi()->get_enrollment( $enrollment_args );
 
         // If the enrollment already exists update it
@@ -284,10 +288,10 @@ class WP_Openedx_Enrollment {
     function prepare_args( $post_id, $type ) {
 
         $args      = array();
-        $user_args = array(
+        $user_args = array_filter(array(
             'email'    => get_post_meta( $post_id, 'email', true ),
             'username' => get_post_meta( $post_id, 'username', true ),
-        );
+        ));
 
         $enrollment_args = array(
             'course_id' => get_post_meta( $post_id, 'course_id', true ),
@@ -302,6 +306,8 @@ class WP_Openedx_Enrollment {
             case 'user':
                 return $user_args;
             case 'enrollment':
+                // By the API design enrollment operations work on usernames.
+                unset( $user_args['email'] );
                 return array_merge( $user_args, $enrollment_args, $enrollment_opts_args );
             case 'pre-enrollment' or 'basic enrollment':
                 return array_merge( $user_args, $enrollment_args );
