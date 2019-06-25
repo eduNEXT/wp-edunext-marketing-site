@@ -233,7 +233,7 @@ class WP_Openedx_Enrollment {
      * Save post metadata when a post is saved.
      *
      * @param int  $post_id The post ID.
-     * @param bool $force Does this order need processing by force?
+     * @param bool $force Does this order need processing by force?.
      */
     function process_request( $post_id, $force, $do_pre_enroll = true ) {
 
@@ -270,9 +270,8 @@ class WP_Openedx_Enrollment {
     /**
      * Prepare args to be passed to the api calls
      *
-     * @param int post_id  The post ID
-     * @param string type The args type to be prepared (user, enrollment, ..)
-     * @param bool force in the case of post
+     * @param int    $post_id  The post ID.
+     * @param string $type The args type to be prepared (user, enrollment, ..).
      *
      * @return array args args ready to be pass
      */
@@ -347,8 +346,8 @@ class WP_Openedx_Enrollment {
     /**
      * Create enrollment.
      *
-     * @param int   $post_id The post ID
-     * @param array $args The request parameters to be sent to the api
+     * @param int   $post_id The post ID.
+     * @param array $args The request parameters to be sent to the api.
      */
     function create_enrollment( $post_id, $args ) {
 
@@ -372,8 +371,8 @@ class WP_Openedx_Enrollment {
     /**
      * Create pre-enrollment.
      *
-     * @param int   $post_id The post ID
-     * @param array $args The request parameters to be sent to the api
+     * @param int   $post_id The post ID.
+     * @param array $args The request parameters to be sent to the api.
      */
     function create_pre_enrollment( $post_id, $args ) {
         $response = WP_EoxCoreApi()->create_pre_enrollment( $args );
@@ -391,8 +390,8 @@ class WP_Openedx_Enrollment {
     /**
      * Update post status
      *
-     * @param string $status The status of the request
-     * @param int    $post_id The post ID
+     * @param string $status The status of the request.
+     * @param int    $post_id The post ID.
      */
     function update_post_status( $status, $post_id ) {
 
@@ -414,7 +413,7 @@ class WP_Openedx_Enrollment {
      * Update enrollment.
      *
      * @param int   $post_id The post ID.
-     * @param array $args The request parameters to be sent to the api
+     * @param array $args The request parameters to be sent to the api.
      */
     function update_enrollment( $post_id, $args ) {
         $response = WP_EoxCoreApi()->update_enrollment( $args );
@@ -508,6 +507,8 @@ class WP_Openedx_Enrollment {
     }
 
     /**
+     * Replace admin meta boxes
+     *
      * @return void
      */
     function replace_admin_meta_boxes() {

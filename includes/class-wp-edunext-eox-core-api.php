@@ -65,7 +65,7 @@ class WP_EoxCoreApi {
 
 
     /**
-     *
+     * Hook actions for initial setup of the plugin
      */
     function __construct() {
         if ( is_admin() ) {
@@ -371,7 +371,10 @@ class WP_EoxCoreApi {
     }
 
     /**
+     * Handle the errors generated in eox-core api to be properly displayed to the client
      *
+     * @param array $json The api response in json format.
+     * @return array errors The errors parsed from the response
      */
     public function handle_api_errors( $json ) {
         $errors = [];

@@ -133,7 +133,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
     /**
      * Add settings link to plugin list table
      *
-     * @param  array $links Existing links
+     * @param  array $links Existing links.
      * @return array        Modified links
      */
     public function add_settings_link( $links ) {

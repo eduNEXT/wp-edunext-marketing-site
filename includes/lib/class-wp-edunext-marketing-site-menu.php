@@ -71,7 +71,7 @@ class WP_Base_Custom_Link_Object {
     public $url = '#';
 
         /**
-         * target attribute for the <a> tag
+         * Target attribute for the <a> tag
          *
          * @var     string
          * @access  public

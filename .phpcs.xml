@@ -38,9 +38,6 @@
     <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed"/>
     <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed"/>
     <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundInExtendedClassAfterLastUsed"/>
-    <exclude name="Generic.Commenting.DocComment.Empty"/>
-    <exclude name="Generic.Commenting.DocComment.MissingShort"/>
-    <exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
     <exclude name="Generic.Commenting.Todo.TaskFound"/>
     <exclude name="Generic.Files.OneObjectStructurePerFile.MultipleFound"/>
     <exclude name="PEAR.NamingConventions.ValidClassName.Invalid"/>
@@ -50,15 +47,10 @@
     <exclude name="Squiz.Commenting.ClassComment.Missing"/>
     <exclude name="Squiz.Commenting.FileComment.Missing"/>
     <exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
-    <exclude name="Squiz.Commenting.FileComment.SpacingAfterOpen"/>
     <exclude name="Squiz.Commenting.FileComment.WrongStyle"/>
-    <exclude name="Squiz.Commenting.FunctionComment.InvalidReturnVoid"/>
     <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
-    <exclude name="Squiz.Commenting.FunctionComment.MissingParamName"/>
     <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
-    <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
     <exclude name="Squiz.Commenting.FunctionComment.ParamNameNoMatch"/>
-    <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
     <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
     <exclude name="Squiz.Commenting.VariableComment.Missing"/>
     <exclude name="Squiz.Commenting.VariableComment.MissingVar"/>

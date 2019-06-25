@@ -24,9 +24,8 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      * Generate HTML for displaying fields
      *
-     * @param  array   $field Field data
-     * @param  boolean $echo  Whether to echo the field HTML or return it
-     * @return void
+     * @param  array   $field Field data.
+     * @param  boolean $echo  Whether to echo the field HTML or return it.
      */
     public function display_field( $data = array(), $post = false, $echo = true ) {
 
@@ -272,8 +271,8 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      * Validate form field
      *
-     * @param  string $data Submitted value
-     * @param  string $type Type of field to validate
+     * @param  string $data Submitted value.
+     * @param  string $type Type of field to validate.
      * @return string       Validated value
      */
     public function validate_field( $data = '', $type = 'text' ) {
@@ -296,12 +295,12 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      * Add meta box to the dashboard
      *
-     * @param string $id            Unique ID for metabox
-     * @param string $title         Display title of metabox
-     * @param array  $post_types    Post types to which this metabox applies
-     * @param string $context       Context in which to display this metabox ('advanced' or 'side')
-     * @param string $priority      Priority of this metabox ('default', 'low' or 'high')
-     * @param array  $callback_args Any axtra arguments that will be passed to the display function for this metabox
+     * @param string $id            Unique ID for metabox.
+     * @param string $title         Display title of metabox.
+     * @param array  $post_types    Post types to which this metabox applies.
+     * @param string $context       Context in which to display this metabox ('advanced' or 'side').
+     * @param string $priority      Priority of this metabox ('default', 'low' or 'high').
+     * @param array  $callback_args Any axtra arguments that will be passed to the display function for this metabox.
      * @return void
      */
     public function add_meta_box( $id = '', $title = '', $post_types = array(), $context = 'advanced', $priority = 'default', $callback_args = null ) {
@@ -320,8 +319,8 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      * Display metabox content
      *
-     * @param  object $post Post object
-     * @param  array  $args Arguments unique to this metabox
+     * @param  object $post Post object.
+     * @param  array  $args Arguments unique to this metabox.
      * @return void
      */
     public function meta_box_content( $post, $args ) {
@@ -356,8 +355,8 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      * Dispay field in metabox
      *
-     * @param  array  $field Field data
-     * @param  object $post  Post object
+     * @param  array  $field Field data.
+     * @param  object $post  Post object.
      * @return void
      */
     public function display_meta_box_field( $field = array(), $post ) {
@@ -374,7 +373,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      * Save metabox fields
      *
-     * @param  integer $post_id Post ID
+     * @param  integer $post_id Post ID.
      * @return void
      */
     public function save_meta_boxes( $post_id = 0 ) {
@@ -401,7 +400,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     }
 
     /**
-     *
+     * Add notice
      */
     public function add_notice( $type, $message ) {
         $notice = array(
@@ -417,7 +416,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     }
 
     /**
-     *
+     * Show notice
      */
     public function show_notices() {
         $notices = array_merge( $this->notices, $this->error_notices );
