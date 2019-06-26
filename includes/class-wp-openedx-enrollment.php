@@ -288,10 +288,12 @@ class WP_Openedx_Enrollment {
     function prepare_args( $post_id, $type ) {
 
         $args      = array();
-        $user_args = array_filter(array(
-            'email'    => get_post_meta( $post_id, 'email', true ),
-            'username' => get_post_meta( $post_id, 'username', true ),
-        ));
+        $user_args = array_filter(
+            array(
+                'email'    => get_post_meta( $post_id, 'email', true ),
+                'username' => get_post_meta( $post_id, 'username', true ),
+            )
+        );
 
         $enrollment_args = array(
             'course_id' => get_post_meta( $post_id, 'course_id', true ),
