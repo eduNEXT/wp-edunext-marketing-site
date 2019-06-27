@@ -20,5 +20,13 @@ release-zip:
 	cp -r assets/ edunext-openedx-integrator/
 	cp -r includes/ edunext-openedx-integrator/
 	cp -r lang/ edunext-openedx-integrator/
+
+build-pro: | release-zip
+	cd  edunext-openedx-integrator/includes && ln -sf ../../pro/* . && ls -l ../../pro/* .
+	zip edunext-openedx-integrator.zip -r edunext-openedx-integrator
+	rm -fr edunext-openedx-integrator
+
+build-lite: | release-zip
+	cd  edunext-openedx-integrator/includes && ln -sf ../../lite/* . && ls -l ../../lite/* .
 	zip edunext-openedx-integrator.zip -r edunext-openedx-integrator
 	rm -fr edunext-openedx-integrator
