@@ -177,6 +177,8 @@ class WP_Openedx_Enrollment {
      */
     function save_eor( $post, $oerarr, $oer_action ) {
 
+        $post_id = $post->ID;
+
         $oer_course_id    = $oerarr['oer_course_id'];
         $oer_email        = $oerarr['oer_email'];
         $oer_username     = $oerarr['oer_username'];
@@ -202,7 +204,6 @@ class WP_Openedx_Enrollment {
             update_post_meta( $post_id, 'is_active', false );
         }
 
-        $post_id = $post->ID;
         // Only update the post status if it has no custom status yet
         if ( $post->post_status != 'eor-success' && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
             $this->update_post_status( 'eor-pending', $post_id );
@@ -214,18 +215,23 @@ class WP_Openedx_Enrollment {
         }
         if ( 'oer_process' == $oer_action ) {
             $this->process_request( $post_id, false );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_force' == $oer_action ) {
             $this->process_request( $post_id, true );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_no_pre' == $oer_action ) {
             $this->process_request( $post_id, false, false );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_no_pre_force' == $oer_action ) {
             $this->process_request( $post_id, true, false );
+            update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_sync' == $oer_action ) {
             $this->sync_request( $post_id );
+            update_post_meta( $post_id, 'edited', false );
         }
     }
 
@@ -257,6 +263,10 @@ class WP_Openedx_Enrollment {
         $enrollment_args          = $this->prepare_args( $post_id, 'enrollment' );
         $enrollment_args['force'] = $force;
 
+        // When we reach this line we already have the user as a response from the API.
+        // Better use that username in case anything from before does not match
+        $enrollment_args['username'] = $user->username;
+
         $enrollment = WP_EoxCoreApi()->get_enrollment( $enrollment_args );
 
         // If the enrollment already exists update it
@@ -278,9 +288,11 @@ class WP_Openedx_Enrollment {
     function prepare_args( $post_id, $type ) {
 
         $args      = array();
-        $user_args = array(
-            'email'    => get_post_meta( $post_id, 'email', true ),
-            'username' => get_post_meta( $post_id, 'username', true ),
+        $user_args = array_filter(
+            array(
+                'email'    => get_post_meta( $post_id, 'email', true ),
+                'username' => get_post_meta( $post_id, 'username', true ),
+            )
         );
 
         $enrollment_args = array(
@@ -289,13 +301,15 @@ class WP_Openedx_Enrollment {
 
         $enrollment_opts_args = array(
             'mode'      => get_post_meta( $post_id, 'mode', true ),
-            'is_active' => ( get_post_meta( $post_id, 'is_active', true ) ? 1 : 0 ),
+            'is_active' => ( get_post_meta( $post_id, 'is_active', true ) ? true : false ),
         );
 
         switch ( $type ) {
             case 'user':
                 return $user_args;
             case 'enrollment':
+                // By the API design enrollment operations work on usernames.
+                unset( $user_args['email'] );
                 return array_merge( $user_args, $enrollment_args, $enrollment_opts_args );
             case 'pre-enrollment' or 'basic enrollment':
                 return array_merge( $user_args, $enrollment_args );

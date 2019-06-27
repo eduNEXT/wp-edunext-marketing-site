@@ -336,7 +336,7 @@ class WP_EoxCoreApi {
             );
 
             if ( $method === 'PUT' or $method === 'POST' ) {
-                $request['body'] = json_encode( array_filter( $data ) );
+                $request['body'] = json_encode( $data );
             }
             $response = wp_remote_request( $url, $request );
             if ( is_wp_error( $response ) ) {
