@@ -25,7 +25,7 @@ class WP_EoxCoreApi {
 
 
     /**
-     *
+     * Hook actions for initial setup of the plugin
      */
     function __construct() {
         if ( is_admin() ) {

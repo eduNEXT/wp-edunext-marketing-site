@@ -214,21 +214,234 @@ class WP_Openedx_Enrollment {
             update_post_meta( $post_id, 'edited', true );
         }
         if ( 'oer_process' == $oer_action ) {
+            $this->process_request( $post_id, false );
             update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_force' == $oer_action ) {
+            $this->process_request( $post_id, true );
             update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_no_pre' == $oer_action ) {
+            $this->process_request( $post_id, false, false );
             update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_no_pre_force' == $oer_action ) {
+            $this->process_request( $post_id, true, false );
             update_post_meta( $post_id, 'edited', false );
         }
         if ( 'oer_sync' == $oer_action ) {
+            $this->sync_request( $post_id );
             update_post_meta( $post_id, 'edited', false );
         }
     }
+
+    /**
+     * Save post metadata when a post is saved.
+     *
+     * @param int  $post_id The post ID.
+     * @param bool $force Does this order need processing by force?.
+     */
+    function process_request( $post_id, $force, $do_pre_enroll = true ) {
+
+        $user_args = $this->prepare_args( $post_id, 'user' );
+        $user      = WP_EoxCoreApi()->get_user_info( $user_args );
+
+        // If the user doesn't exist create pre-enrollment with the email provided
+        if ( is_wp_error( $user ) && $do_pre_enroll ) {
+            if ( ! empty( $user_args['email'] ) ) {
+                $pre_enrollment_args = $this->prepare_args( $post_id, 'pre-enrollment' );
+                $this->create_pre_enrollment( $post_id, $pre_enrollment_args );
+                return;
+            } else {
+                // TODO Polish error message display
+                update_post_meta( $post_id, 'errors', 'A valid username or email is needed.' );
+                $this->wp_update_post( $post_update );
+                $this->update_post_status( 'eor-error', $post_id );
+                return;
+            }
+        }
+        $enrollment_args          = $this->prepare_args( $post_id, 'enrollment' );
+        $enrollment_args['force'] = $force;
+
+        // When we reach this line we already have the user as a response from the API.
+        // Better use that username in case anything from before does not match
+        $enrollment_args['username'] = $user->username;
+
+        $enrollment = WP_EoxCoreApi()->get_enrollment( $enrollment_args );
+
+        // If the enrollment already exists update it
+        if ( is_wp_error( $enrollment ) ) {
+            $this->create_enrollment( $post_id, $enrollment_args );
+        } else {
+            $this->update_enrollment( $post_id, $enrollment_args );
+        }
+    }
+
+    /**
+     * Prepare args to be passed to the api calls
+     *
+     * @param int    $post_id  The post ID.
+     * @param string $type The args type to be prepared (user, enrollment, ..).
+     *
+     * @return array args args ready to be pass
+     */
+    function prepare_args( $post_id, $type ) {
+
+        $args      = array();
+        $user_args = array_filter(
+            array(
+                'email'    => get_post_meta( $post_id, 'email', true ),
+                'username' => get_post_meta( $post_id, 'username', true ),
+            )
+        );
+
+        $enrollment_args = array(
+            'course_id' => get_post_meta( $post_id, 'course_id', true ),
+        );
+
+        $enrollment_opts_args = array(
+            'mode'      => get_post_meta( $post_id, 'mode', true ),
+            'is_active' => ( get_post_meta( $post_id, 'is_active', true ) ? true : false ),
+        );
+
+        switch ( $type ) {
+            case 'user':
+                return $user_args;
+            case 'enrollment':
+                // By the API design enrollment operations work on usernames.
+                unset( $user_args['email'] );
+                return array_merge( $user_args, $enrollment_args, $enrollment_opts_args );
+            case 'pre-enrollment' or 'basic enrollment':
+                return array_merge( $user_args, $enrollment_args );
+        }
+
+        return $args;
+    }
+
+    /**
+     * Update post metadata when a post is synced.
+     *
+     * @param int $post_id The post ID.
+     */
+    function sync_request( $post_id ) {
+
+        $args     = $this->prepare_args( $post_id, 'basic enrollment' );
+        $response = WP_EoxCoreApi()->get_enrollment( $args );
+
+        if ( is_wp_error( $response ) ) {
+            update_post_meta( $post_id, 'errors', $response->get_error_message() );
+
+            // Update Status
+            $this->update_post_status( 'eor-error', $post_id );
+
+        } else {
+            delete_post_meta( $post_id, 'errors' );
+
+            // Only this fields can be updated
+            update_post_meta( $post_id, 'mode', $response->mode );
+            update_post_meta( $post_id, 'is_active', $response->is_active );
+
+            // This fields should be updated if emtpy
+            if ( ! get_post_meta( $post_id, 'username', true ) ) {
+                update_post_meta( $post_id, 'username', $response->username );
+            }
+            if ( ! get_post_meta( $post_id, 'email', true ) ) {
+                $user_args = $this->prepare_args( $post_id, 'user' );
+                $user      = WP_EoxCoreApi()->get_user_info( $user_args );
+                update_post_meta( $post_id, 'email', $user->email );
+            }
+
+            // Update Status
+            $this->update_post_status( 'eor-success', $post_id );
+        }
+    }
+
+
+    /**
+     * Create enrollment.
+     *
+     * @param int   $post_id The post ID.
+     * @param array $args The request parameters to be sent to the api.
+     */
+    function create_enrollment( $post_id, $args ) {
+
+        $response = WP_EoxCoreApi()->create_enrollment( $args );
+
+        if ( is_wp_error( $response ) ) {
+            update_post_meta( $post_id, 'errors', $response->get_error_message() );
+            $status = 'eor-error';
+        } else {
+            delete_post_meta( $post_id, 'errors' );
+            // This field should be updated if emtpy
+            if ( ! get_post_meta( $post_id, 'username', true ) ) {
+                update_post_meta( $post_id, 'username', $response->username );
+            }
+            $status = 'eor-success';
+        }
+
+        $this->update_post_status( $status, $post_id );
+    }
+
+    /**
+     * Create pre-enrollment.
+     *
+     * @param int   $post_id The post ID.
+     * @param array $args The request parameters to be sent to the api.
+     */
+    function create_pre_enrollment( $post_id, $args ) {
+        $response = WP_EoxCoreApi()->create_pre_enrollment( $args );
+
+        if ( is_wp_error( $response ) ) {
+            update_post_meta( $post_id, 'errors', $response->get_error_message() );
+            $status = 'eor-error';
+        } else {
+            update_post_meta( $post_id, 'errors', 'The provided user does not exist. A pre-enrollment with the provided email was created instead. ' );
+            $status = 'eor-success';
+        }
+        $this->update_post_status( $status, $post_id );
+    }
+
+    /**
+     * Update post status
+     *
+     * @param string $status The status of the request.
+     * @param int    $post_id The post ID.
+     */
+    function update_post_status( $status, $post_id ) {
+
+        $oer_course_id = get_post_meta( $post_id, 'course_id', true );
+        $oer_username  = get_post_meta( $post_id, 'username', true );
+        $oer_mode      = get_post_meta( $post_id, 'mode', true );
+
+        $post_update = array(
+            'ID'          => $post_id,
+            'post_status' => $status,
+            'post_title'  => $oer_course_id . ' | ' . $oer_username . ' | Mode: ' . $oer_mode,
+        );
+
+        $this->wp_update_post( $post_update );
+    }
+
+
+    /**
+     * Update enrollment.
+     *
+     * @param int   $post_id The post ID.
+     * @param array $args The request parameters to be sent to the api.
+     */
+    function update_enrollment( $post_id, $args ) {
+        $response = WP_EoxCoreApi()->update_enrollment( $args );
+        if ( is_wp_error( $response ) ) {
+            update_post_meta( $post_id, 'errors', $response->get_error_message() );
+            $this->update_post_status( 'eor-error', $post_id );
+        } else {
+            delete_post_meta( $post_id, 'errors' );
+            update_post_meta( $post_id, 'mode', $response->mode );
+            update_post_meta( $post_id, 'is_active', $response->is_active );
+            $this->update_post_status( 'eor-success', $post_id );
+        }
+    }
+
 
     /**
      * Filters the list of actions available on the list view below each object

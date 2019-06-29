@@ -23,6 +23,15 @@
   <!-- Exclude the code standard when installed locally. -->
   <exclude-pattern>/wpcs/*</exclude-pattern>
 
+  <!-- Exclude the Build directory. -->
+  <exclude-pattern>/build/*</exclude-pattern>
+
+  <!-- Temp exclude the Pro directory. -->
+  <exclude-pattern>/pro/*</exclude-pattern>
+
+  <!-- Temp exclude the Lite directory. -->
+  <exclude-pattern>/lite/*</exclude-pattern>
+
   <!-- Include the WordPress-Extra standard. -->
   <rule ref="WordPress-Extra">
     <!--
