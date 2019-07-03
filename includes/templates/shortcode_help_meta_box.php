@@ -35,29 +35,40 @@ color_class_<strong>invitation_only</strong>="my-custom-color"]</pre></p>
 		<li>button_class_enroll</li>
 		<li>container_class_enroll</li>
 		<li>color_class_enroll</li>
+		<li>link_enroll</li>
 
 		<li>label_go_to_course</li>
 		<li>button_class_go_to_course</li>
 		<li>container_class_go_to_course</li>
 		<li>color_class_go_to_course</li>
+		<li>link_go_to_course</li>
 
 		<li>label_course_has_not_started</li>
 		<li>button_class_course_has_not_started</li>
 		<li>container_class_course_has_not_started</li>
 		<li>color_class_course_has_not_started</li>
+		<li>link_course_has_not_started</li>
 
 		<li>label_invitation_only</li>
 		<li>button_class_invitation_only</li>
 		<li>container_class_invitation_only</li>
 		<li>color_class_invitation_only</li>
+		<li>link_invitation_only</li>
 
 		<li>label_enrollment_closed</li>
 		<li>button_class_enrollment_closed</li>
 		<li>container_class_enrollment_closed</li>
 		<li>color_class_enrollment_closed</li>
+		<li>link_enrollment_closed</li>
 
 		<li>hide_if</li>
 	</ul>
+<h4>Link override:</h4>
+		<p>It is possible to set a link for each state with the attribute <strong>link_&lt;state&gt;</strong> For example: if you want to set a landing page or e-commerce when the status is enroll, you can set it as <strong>link_enroll="https://myexample.com"</strong>
+		</p>
+
+		<p><pre>[edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun" link_enroll="https://myexample.com]</pre></p>
+
 <h4>Advanced usage:</h4>
 		<p>You may also use the attribute <strong>hide_if="not logged in"</strong> if you want to hide the button when the user is NOT logged in. Inversely you may use the attribute <strong>hide_if="logged in"</strong> if you want to hide the button when the user is logged in</p>
 		<p><pre>[edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun" hide_if="logged in"]</pre></p>

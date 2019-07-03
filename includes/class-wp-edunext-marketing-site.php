@@ -299,26 +299,32 @@ class WP_eduNEXT_Marketing_Site {
                 'button_class_enroll'                    => get_option( 'wpt_button_class_enroll' ),
                 'container_class_enroll'                 => get_option( 'wpt_container_class_enroll' ),
                 'color_class_enroll'                     => get_option( 'wpt_color_class_enroll' ),
+                'link_enroll'                            => '',
                 // ----------
                 'label_go_to_course'                     => get_option( 'wpt_label_go_to_course', 'Go to the course' ),
                 'button_class_go_to_course'              => get_option( 'wpt_button_class_go_to_course' ),
                 'container_class_go_to_course'           => get_option( 'wpt_container_class_go_to_course' ),
                 'color_class_go_to_course'               => get_option( 'wpt_color_class_go_to_course' ),
+                'link_go_to_course'                      => '',
                 // ----------
                 'label_course_has_not_started'           => get_option( 'wpt_label_course_has_not_started', 'The course has not yet started' ),
                 'button_class_course_has_not_started'    => get_option( 'wpt_button_class_course_has_not_started' ),
                 'container_class_course_has_not_started' => get_option( 'wpt_container_class_course_has_not_started' ),
                 'color_class_course_has_not_started'     => get_option( 'wpt_color_class_course_has_not_started' ),
+                'link_course_has_not_started'            => '',
                 // ----------
                 'label_invitation_only'                  => get_option( 'wpt_label_invitation_only', 'Invitation only' ),
                 'button_class_invitation_only'           => get_option( 'wpt_button_class_invitation_only' ),
                 'container_class_invitation_only'        => get_option( 'wpt_container_class_invitation_only' ),
                 'color_class_invitation_only'            => get_option( 'wpt_color_class_invitation_only' ),
+                'link_invitation_only'                   => '',
                 // ----------
                 'label_enrollment_closed'                => get_option( 'wpt_label_enrollment_closed', 'Registration is closed' ),
                 'button_class_enrollment_closed'         => get_option( 'wpt_button_class_enrollment_closed' ),
                 'container_class_enrollment_closed'      => get_option( 'wpt_container_class_enrollment_closed' ),
                 'color_class_enrollment_closed'          => get_option( 'wpt_color_class_enrollment_closed' ),
+                'link_enrollment_closed'                 => '',
+                // -----------
                 'hide_if'                                => '',
             ),
             $atts,

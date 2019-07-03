@@ -43,7 +43,7 @@ require_once 'includes/lib/class-wp-edunext-marketing-site-menu-items-attributes
  * @return object WP_eduNEXT_Marketing_Site
  */
 function WP_eduNEXT_Marketing_Site() {
-    $instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '1.3.0' );
+    $instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '2.0.0' );
 
     if ( is_null( $instance->settings ) ) {
         $instance->settings = WP_eduNEXT_Marketing_Site_Settings::instance( $instance );
