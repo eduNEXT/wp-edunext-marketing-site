@@ -24,3 +24,6 @@ get-version: ## Get current development environment version
 
 tidy: ## Remove build directories
 	python scripts/plugin.py -t
+
+clean-env: ## Clean development environment, delete symlinks that change in every version
+	python scripts/plugin.py -e

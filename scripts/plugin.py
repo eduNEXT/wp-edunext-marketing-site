@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import argparse
-from os import mkdir, path, symlink, mknod, remove, unlink, link
+from os import mkdir, path, symlink, mknod, remove, unlink, link, readlink
 from shutil import rmtree, copy, copytree, make_archive
 import glob
 import sys
@@ -15,6 +15,7 @@ Targets:
 - release: Create the new version of the plugin (bump version).
 - dev-version: Print current version of dev environment
 """
+CONFIG_FILE = r'scripts/config.ini'
 
 class Plugin():
     """
@@ -26,38 +27,36 @@ class Plugin():
         Read script settings from the config file
         """
         config = configparser.RawConfigParser(allow_no_value=True, inline_comment_prefixes="#")
-        config.read(r'scripts/config.ini')
+        config.read(CONFIG_FILE)
         self.VERSIONS = config['Versions'].keys()
         self.COMMON = config['Common']
-        self.PATHS = config['Paths']
-        self.INCLUDE = config['Include'].keys()
+        self.CONTENT = config['Content'].keys()
+        self.build_folder = self.COMMON['build_folder']
+        self.plugin_name = self.COMMON['basename']
+        self.path_includes = self.CONTENT
+        self.versions_folder = self.COMMON['versions_folder']
+        self.include_folder = self.COMMON['includes_folder']
 
     def tidy(self):
         """
         Remove build directories
         """
-        build_folder = self.COMMON['build_folder']
-        rmtree(build_folder, ignore_errors=True)
+        rmtree(self.build_folder, ignore_errors=True)
 
     def build(self):
         """
         Generate a zip file for each version of the plugin (pro and lite) ready to be deployed to WordPress.
         """
-        import pudb; pudb.set_trace()
-        build_folder = self.COMMON['build_folder']
-        plugin_name = self.COMMON['basename']
-        path_includes = self.INCLUDE
-        versions_folder = self.COMMON['versions_folder']
-        mkdir(build_folder)
+        mkdir(self.build_folder)
 
         for version in self.VERSIONS:
-            version_name = "{}-{}".format(plugin_name, version)
-            path_zip = path.join(build_folder, version_name)
+            version_name = "{}-{}".format(self.plugin_name, version)
+            path_zip = path.join(self.build_folder, version_name)
             version_path = path.abspath(path_zip)
             mkdir(version_path)
 
             # Include common files of the plugin
-            for dir in path_includes:
+            for dir in self.path_includes:
                 if path.isfile(dir):
                     copy(dir, version_path)
                 elif path.isdir(dir):
@@ -66,21 +65,23 @@ class Plugin():
                     for file in glob.glob(dir):
                         copy(file, version_path)
 
-            include_path = path.join(version_path, "includes")
+            include_path = path.join(version_path, self.include_folder)
 
             # Include specific version files
-            dirpath = "{}/{}/*.php".format(versions_folder,version)
+            dirpath = "{}/{}/*.php".format(self.versions_folder,version)
             for file in glob.glob(dirpath):
                 copy(file, include_path)
-            zip_name = path.join(build_folder, version_name)
+            zip_name = path.join(self.build_folder, version_name)
             make_archive(zip_name, "zip", path_zip)
 
-    def clean_links(self, folder_path):
-        """Clean symlinks that change in every version"""
+    def clean_env(self):
+        """
+        Clean development environment, delete symlinks that change in every version
+        """
         for version in self.VERSIONS:
-            dirpath = "{}/*.php".format(version)
+            dirpath = "{}/{}/*.php".format(self.versions_folder, version)
             for file in glob.glob(dirpath):
-                path_to_file = path.join(folder_path, path.basename(file))
+                path_to_file = path.join(self.include_folder, path.basename(file))
                 if path.islink(path_to_file):
                     unlink(path_to_file)
 
@@ -88,18 +89,28 @@ class Plugin():
         """
         Change development environment to pro or lite version.
         """
-        clean_links("includes")
-        dirpath = "{}/*.php".format(version)
+        version_path = path.join(self.versions_folder, version)
+        self.clean_env()
+
+        dirpath = "{}/*.php".format(version_path)
         for file in glob.glob(dirpath):
-            symlink('../'+file, path.join("includes", path.basename(file)))
+            symlink( '../{}'.format(file), path.join(self.include_folder, path.basename(file)))
 
     def get_version(self):
         """
         Return current development environment version
         """
-        for version in self.VERSIONS:
-            if path.isfile(".{}".format(version)):
-                return version
+        include_path = self.COMMON['includes_folder']
+        dirpath = "{}/*.php".format(include_path)
+
+        for file in glob.glob(dirpath):
+            if path.islink(file):
+                link_path = readlink(file)
+                for version in self.VERSIONS:
+                    if version in link_path:
+                        return version
+
+        return 'Unstable or empty development environment'
 
 if __name__== "__main__":
     plugin = Plugin()
@@ -109,6 +120,7 @@ parser.add_argument("-b", "--build", action="store_true", help="Generate a zip f
 parser.add_argument("-c", "--change-to", choices=plugin.VERSIONS, help="Change development environment to pro or lite version.")
 parser.add_argument("-d", "--dev-version", action="store_true", help="Print current version of dev environment.")
 parser.add_argument("-t", "--tidy", action="store_true", help="Remove build directories" )
+parser.add_argument("-e", "--clean-env", action="store_true", help="Clean development environment, delete symlinks that change in every version" )
 args = parser.parse_args()
 
 if args.build:
@@ -122,6 +134,9 @@ if args.change_to:
 
 if args.tidy:
     plugin.tidy()
+
+if args.clean_env:
+    plugin.clean_env()
 
 if len(sys.argv) == 1:
     parser.print_help()
