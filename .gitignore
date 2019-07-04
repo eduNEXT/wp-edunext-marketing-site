@@ -1,3 +1,18 @@
 svn/*
-*.phar
+
+# Build Files
 build/
+*.zip
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Linting
+*.phar
+wpcs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
