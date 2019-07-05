@@ -1,0 +1,1 @@
+../versions/pro/class-wp-edunext-eox-woocommerce-integration.php

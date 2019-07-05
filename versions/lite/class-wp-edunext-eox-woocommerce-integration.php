@@ -4,7 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-require_once 'vendor/parser.php';
 
 class WP_eduNEXT_Woocommerce_Integration {
 

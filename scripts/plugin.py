@@ -12,7 +12,6 @@ Build scripts to facilitate the development of the edunext-openedx-integrator pl
 Targets:
 - build: Generate a zip file for each version of the plugin (pro and lite) ready to be deployed to WordPress.
 - change-to: Change development environment to pro or lite version.
-- release: Create the new version of the plugin (bump version).
 - dev-version: Print current version of dev environment
 """
 CONFIG_FILE = r'scripts/config.ini'
@@ -32,10 +31,12 @@ class Plugin():
         self.COMMON = config['Common']
         self.CONTENT = config['Content'].keys()
         self.build_folder = self.COMMON['build_folder']
-        self.plugin_name = self.COMMON['basename']
+        self.folder_basename = self.COMMON['folder_basename']
+        self.plugin_name = self.COMMON['plugin_name']
         self.path_includes = self.CONTENT
         self.versions_folder = self.COMMON['versions_folder']
         self.include_folder = self.COMMON['includes_folder']
+        self.versioning_files = config['Versioning'].keys()
 
     def tidy(self):
         """
@@ -50,7 +51,7 @@ class Plugin():
         mkdir(self.build_folder)
 
         for version in self.VERSIONS:
-            version_name = "{}-{}".format(self.plugin_name, version)
+            version_name = "{}-{}".format(self.folder_basename, version)
             path_zip = path.join(self.build_folder, version_name)
             version_path = path.abspath(path_zip)
             mkdir(version_path)
@@ -71,6 +72,17 @@ class Plugin():
             dirpath = "{}/{}/*.php".format(self.versions_folder,version)
             for file in glob.glob(dirpath):
                 copy(file, include_path)
+
+            # Insert correct plugin name - version
+            for file in self.versioning_files:
+                file_path = path.join(version_path, file)
+                with open(file_path, "r+") as f:
+                    versioned_text = f.read()
+                    versioned_text = versioned_text.replace(self.plugin_name, '{} ({})'.format(self.plugin_name, version.upper()))
+                    f.seek(0)
+                    f.write(versioned_text)
+                    f.truncate()
+
             zip_name = path.join(self.build_folder, version_name)
             make_archive(zip_name, "zip", path_zip)
 

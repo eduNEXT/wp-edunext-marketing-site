@@ -204,11 +204,6 @@ class WP_Openedx_Enrollment {
             update_post_meta( $post_id, 'is_active', false );
         }
 
-        // Only update the post status if it has no custom status yet
-        if ( $post->post_status != 'eor-success' && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
-            $this->update_post_status( 'eor-pending', $post_id );
-        }
-
         // Handle the eox-core API actions
         if ( 'save_no_process' == $oer_action ) {
             update_post_meta( $post_id, 'edited', true );

@@ -26,12 +26,6 @@
   <!-- Exclude the Build directory. -->
   <exclude-pattern>/build/*</exclude-pattern>
 
-  <!-- Temp exclude the Pro directory. -->
-  <exclude-pattern>/pro/*</exclude-pattern>
-
-  <!-- Temp exclude the Lite directory. -->
-  <exclude-pattern>/lite/*</exclude-pattern>
-
   <!-- Include the WordPress-Extra standard. -->
   <rule ref="WordPress-Extra">
     <!--
@@ -39,6 +33,7 @@
     -->
     <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
     <exclude name="WordPress.PHP.YodaConditions"/>
+    <exclude name="Generic.Classes.DuplicateClassName.Found"/>
     <!--
     This following rules are only excluded so that we get the linter running.
     we need to get our game together and correct them.

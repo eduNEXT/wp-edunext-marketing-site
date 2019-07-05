@@ -1,4 +1,4 @@
-=== Open edX LMS and Wordpress integrator ===
+=== Open edX LMS and WordPress integrator ===
 Contributors: eduNEXT
 Tags: wordpress, Open edX, LMS
 Requires at least: 4.0
@@ -47,13 +47,13 @@ Some additional integrations are currently under development. If you require a d
 
 1. Go to the Plugins menu from the dashboard.
 2. Click on the "Add New" button on this page.
-3. Search for "Open edX LMS and Wordpress integrator" in the search bar provided.
+3. Search for "Open edX LMS and WordPress integrator" in the search bar provided.
 4. Click on "Install Now" once you have located the plugin.
 5. On successful installation click the "Activate Plugin" link to activate the plugin.
 
 = Manual Installation =
 
-1. Download the "Open edX LMS and Wordpress integrator" plugin from wordpress.org.
+1. Download the "Open edX LMS and WordPress integrator" plugin from wordpress.org.
 2. Now unzip and upload the folder using the FTP application of your choice.
 3. The plugin can then be activated by navigating to the Plugins menu in the admin dashboard.
 
