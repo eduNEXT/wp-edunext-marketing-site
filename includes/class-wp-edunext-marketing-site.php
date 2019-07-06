@@ -98,7 +98,7 @@ class WP_eduNEXT_Marketing_Site {
         $this->_version = $version;
         $this->_token   = 'wp-edunext-marketing-site';
 
-        // Load plugin environment variables
+        // Load plugin environment variables.
         $this->file       = $file;
         $this->dir        = dirname( $this->file );
         $this->assets_dir = trailingslashit( $this->dir ) . 'assets';
@@ -110,40 +110,40 @@ class WP_eduNEXT_Marketing_Site {
 
         register_activation_hook( $this->file, array( $this, 'install' ) );
 
-        // Load frontend JS & CSS
+        // Load frontend JS & CSS.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
 
-        // Load admin JS & CSS
+        // Load admin JS & CSS.
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
 
-        // Load shortcodes
+        // Load shortcodes.
         add_action( 'wp_enqueue_scripts', array( $this, 'enroll_integration_scripts' ), 10 );
         add_shortcode( 'edunext_enroll_button', array( $this, 'edunext_enroll_button' ) );
 
-        // Helpful tips for users using the shortcode
+        // Helpful tips for users using the shortcode.
         add_action( 'add_meta_boxes', array( $this, 'add_shortcode_help_meta_box' ) );
 
-        // Add meta box for menus
+        // Add meta box for menus.
         $this->menu = new WP_eduNEXT_Marketing_Site_Menu();
 
-        // Add attributes for menus items
+        // Add attributes for menus items.
         add_action( 'init', array( 'Edx_Walker_Nav_Menu_Edit', 'setup' ) );
 
-        // WooCommerce integration
+        // WooCommerce integration.
         if ( get_option( 'wpt_enable_woocommerce_integration' ) ) {
             $this->woocommerce = new WP_eduNEXT_Woocommerce_Integration( $this );
         }
 
-        // Add wp-admin
+        // Add wp-admin.
         if ( is_admin() ) {
-            // Load API for generic admin functions
+            // Load API for generic admin functions.
             $this->admin = new WP_eduNEXT_Marketing_Site_Admin_API();
             $this->openedx_enrollment->set_up_admin();
         }
 
-        // Handle localisation
+        // Handle localization.
         $this->load_plugin_textdomain();
         add_action( 'init', array( $this, 'load_localisation' ), 0 );
     } // End __construct ()
@@ -280,9 +280,9 @@ class WP_eduNEXT_Marketing_Site {
     public function edunext_enroll_button( $atts ) {
 
         // TODO: move this function to its own class under lib/..
-        // How to use: [edunext_enroll_button course_id="course-v1:edX+Demo+demo_course"]
+        // How to use: [edunext_enroll_button course_id="course-v1:edX+Demo+demo_course"].
 
-        // Attributes
+        // Attributes.
         static $unique_id = 1;
         $unique_id++;
         $short_id = 'EdnxEnrollButton' . $unique_id;

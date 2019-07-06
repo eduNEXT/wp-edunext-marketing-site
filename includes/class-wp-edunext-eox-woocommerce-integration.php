@@ -54,7 +54,7 @@ class WP_eduNEXT_Woocommerce_Integration {
         $actions_to_connect_array = get_option( 'wpt_woocommerce_action_to_connect' );
 
         foreach ( $actions_to_connect_array as $key => $action ) {
-            if ( $action == 'custom_string' ) {
+            if ( $action === 'custom_string' ) {
                 $action = get_option( 'wpt_custom_action_to_connect' );
             }
             add_action( $action, array( $this, 'process_woo_order' ), 20, 2 );
@@ -146,17 +146,17 @@ class WP_eduNEXT_Woocommerce_Integration {
      */
     public function process_woo_order( $order_or_status, $order_or_null = null ) {
 
-        // Get the parameters right coming from payment_complete or order_status
+        // Get the parameters right coming from payment_complete or order_status.
         $order_id = $order_or_status;
         if ( $order_or_null ) {
             $order_id = $order_or_null;
         }
         $order = new WC_Order( $order_id );
 
-        // We need to get the User info first
-        $billing_email = $order->get_billing_email();  // this is what comes from the form
-        $wp_user_email = $order->get_user()->email;  // this the wp-user that made the purchase
-        // $custom_field_email = $order->get_billing_email());  //  this comes from a custom field
+        // We need to get the User info first.
+        $billing_email = $order->get_billing_email();  // this is what comes from the form.
+        $wp_user_email = $order->get_user()->email;  // this the wp-user that made the purchase.
+        // $custom_field_email = $order->get_billing_email());  //  this comes from a custom field.
 
         foreach ( $order->get_items() as $key => $item ) {
 
@@ -178,29 +178,29 @@ class WP_eduNEXT_Woocommerce_Integration {
             $fulfillment_action = $product->get_attribute( 'fulfillment_action' );
             if ( empty( $fulfillment_action ) ) {
                 $fulfillment_action = get_option( 'wpt_oer_action_for_fulfillment' );
-                if ( $fulfillment_action == 'custom_fulfillment_function' ) {
+                if ( $fulfillment_action === 'custom_fulfillment_function' ) {
                     $fulfillment_action = get_option( 'wpt_custom_action_for_fulfillment' );
                 }
             }
 
-            // Time to create the OER POST
+            // Time to create the OER POST.
             $oer_action = 'custom_action';
-            if ( 'do_nothing' == $fulfillment_action ) {
+            if ( 'do_nothing' === $fulfillment_action ) {
                 $oer_action = '';
             }
-            if ( 'oer_process' == $fulfillment_action ) {
+            if ( 'oer_process' === $fulfillment_action ) {
                 $oer_action = 'oer_process';
             }
-            if ( 'oer_force' == $fulfillment_action ) {
+            if ( 'oer_force' === $fulfillment_action ) {
                 $oer_action = 'oer_force';
             }
-            if ( 'oer_no_pre' == $fulfillment_action ) {
+            if ( 'oer_no_pre' === $fulfillment_action ) {
                 $oer_action = 'oer_no_pre';
             }
-            if ( 'oer_no_pre_force' == $fulfillment_action ) {
+            if ( 'oer_no_pre_force' === $fulfillment_action ) {
                 $oer_action = 'oer_no_pre_force';
             }
-            if ( 'oer_sync' == $fulfillment_action ) {
+            if ( 'oer_sync' === $fulfillment_action ) {
                 $oer_action = 'oer_sync';
             }
 
@@ -214,7 +214,7 @@ class WP_eduNEXT_Woocommerce_Integration {
             );
             $post   = $this->parent->openedx_enrollment->insert_new( $oerarr, $oer_action );
 
-            if ( $oer_action == 'custom_action' ) {
+            if ( $oer_action === 'custom_action' ) {
                 // Call $fulfillment_action as a global passing the $oearr and the $post.
                 wp_die( 'Not implemented yet.' );
             }

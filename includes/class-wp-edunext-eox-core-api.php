@@ -17,6 +17,8 @@ class WP_EoxCoreApi {
 
     /**
      * Default values used to create a new edxapp user
+     *
+     * @var array
      */
     private $user_defaults = array(
         'email'         => '',
@@ -29,6 +31,8 @@ class WP_EoxCoreApi {
 
     /**
      * Default values used to create a new enrollment
+     *
+     * @var array
      */
     private $enroll_defaults = array(
         'username'  => '',
@@ -38,6 +42,8 @@ class WP_EoxCoreApi {
 
     /**
      * Default values used to create a new pre-enrollment
+     *
+     * @var array
      */
     private $pre_enroll_defaults = array(
         'email'     => '',
@@ -192,9 +198,9 @@ class WP_EoxCoreApi {
             }
             $json_reponse = json_decode( $response['body'] );
             if ( ! isset( $json_reponse->error ) ) {
-                // Cache the last time it was succesfully checked
+                // Cache the last time it was succesfully checked.
                 update_option( 'last_checked_working', time() );
-                // Cached token its still valid, return it
+                // Cached token its still valid, return it.
                 return $token;
             }
         }
@@ -452,9 +458,6 @@ class WP_EoxCoreApi {
                                 'force' => true,
                             ]
                         );
-                        if ( is_wp_error( $response ) ) {
-                            error_log( $response->get_error_message() );
-                        }
                     }
                 }
             }
@@ -462,7 +465,7 @@ class WP_EoxCoreApi {
                 $course_items_count++;
             }
         }
-        if ( count( $items ) == $course_items_count ) {
+        if ( count( $items ) === $course_items_count ) {
             $order->update_status( 'completed' );
         }
     }

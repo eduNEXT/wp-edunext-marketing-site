@@ -57,17 +57,17 @@ class WP_eduNEXT_Marketing_Site_Post_Type {
             return;
         }
 
-        // Post type name and labels
+        // Post type name and labels.
         $this->post_type   = $post_type;
         $this->plural      = $plural;
         $this->single      = $single;
         $this->description = $description;
         $this->options     = $options;
 
-        // Register post type
+        // Register post type.
         add_action( 'init', array( $this, 'register_post_type' ) );
 
-        // Display custom update messages for posts edits
+        // Display custom update messages for posts edits.
         add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
         add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_updated_messages' ), 10, 2 );
     }

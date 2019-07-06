@@ -8,6 +8,8 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
     /**
      * Where notices to be shown to the user are stored
+     *
+     * @var array
      */
     private $notices       = array();
     private $error_notices = array();
@@ -24,49 +26,50 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
     /**
      * Generate HTML for displaying fields
      *
-     * @param  array   $field Field data.
+     * @param  array   $data Field data.
+     * @param  boolean $post Save field data.
      * @param  boolean $echo  Whether to echo the field HTML or return it.
      */
     public function display_field( $data = array(), $post = false, $echo = true ) {
 
-        // Get field info
+        // Get field info.
         if ( isset( $data['field'] ) ) {
             $field = $data['field'];
         } else {
             $field = $data;
         }
 
-        // Check for prefix on option name
+        // Check for prefix on option name.
         $option_name = '';
         if ( isset( $data['prefix'] ) ) {
             $option_name = $data['prefix'];
         }
 
-        // Get saved data
+        // Get saved data.
         $data = '';
         if ( $post ) {
 
-            // Get saved field data
+            // Get saved field data.
             $option_name .= $field['id'];
             $option       = get_post_meta( $post->ID, $field['id'], true );
 
-            // Get data to display in field
+            // Get data to display in field.
             if ( isset( $option ) ) {
                 $data = $option;
             }
         } else {
 
-            // Get saved option
+            // Get saved option.
             $option_name .= $field['id'];
             $option       = get_option( $option_name );
 
-            // Get data to display in field
+            // Get data to display in field.
             if ( isset( $option ) ) {
                 $data = $option;
             }
         }
 
-        // Show default data if no option saved and default is supplied
+        // Show default data if no option saved and default is supplied.
         if ( $data === false && isset( $field['default'] ) ) {
             $data = $field['default'];
         } elseif ( $data === false ) {
@@ -115,7 +118,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
             case 'checkbox':
                 $checked = '';
-                if ( $data && 'on' == $data ) {
+                if ( $data && 'on' === $data ) {
                     $checked = 'checked="checked"';
                 }
                 $html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . esc_attr( $field['type'] ) . '" name="' . esc_attr( $option_name ) . '" ' . $checked;
@@ -136,7 +139,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
             case 'radio':
                 foreach ( $field['options'] as $k => $v ) {
                     $checked = false;
-                    if ( $k == $data ) {
+                    if ( $k === $data ) {
                         $checked = true;
                     }
                     $html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
@@ -147,7 +150,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
                 $html .= '<select name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '">';
                 foreach ( $field['options'] as $k => $v ) {
                     $selected = false;
-                    if ( $k == $data ) {
+                    if ( $k === $data ) {
                         $selected = true;
                     }
                     $html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
@@ -305,12 +308,12 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
      */
     public function add_meta_box( $id = '', $title = '', $post_types = array(), $context = 'advanced', $priority = 'default', $callback_args = null ) {
 
-        // Get post type(s)
+        // Get post type(s).
         if ( ! is_array( $post_types ) ) {
             $post_types = array( $post_types );
         }
 
-        // Generate each metabox
+        // Generate each metabox.
         foreach ( $post_types as $post_type ) {
             add_meta_box( $id, $title, array( $this, 'meta_box_content' ), $post_type, $context, $priority, $callback_args );
         }
@@ -327,7 +330,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
         $fields = apply_filters( $post->post_type . '_custom_fields', array(), $post->post_type );
 
-        if ( ! is_array( $fields ) || 0 == count( $fields ) ) {
+        if ( ! is_array( $fields ) || 0 === count( $fields ) ) {
             return;
         }
 
@@ -361,7 +364,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
      */
     public function display_meta_box_field( $field = array(), $post ) {
 
-        if ( ! is_array( $field ) || 0 == count( $field ) ) {
+        if ( ! is_array( $field ) || 0 === count( $field ) ) {
             return;
         }
 
@@ -386,7 +389,7 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
 
         $fields = apply_filters( $post_type . '_custom_fields', array(), $post_type );
 
-        if ( ! is_array( $fields ) || 0 == count( $fields ) ) {
+        if ( ! is_array( $fields ) || 0 === count( $fields ) ) {
             return;
         }
 
@@ -408,7 +411,6 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
             'message' => $message,
         );
         if ( $type === 'error' ) {
-            error_log( $notice );
             array_push( $this->error_notices, $notice );
         } else {
             array_push( $this->notices, $notice );
