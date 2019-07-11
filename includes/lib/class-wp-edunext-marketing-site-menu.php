@@ -410,7 +410,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
         // Modify the $item directly for themes using $item->url.
         if ( isset( $data['username'] ) ) {
-                $item->title = $client_side_render === 'on' ? '__username__' : $data['username'];
+            $item->title    = $client_side_render === 'on' ? '__username__' : $data['username'];
+            $atts['hidden'] = 1;
         }
         $item->url = $base_url . '/' . $dashboard_location;
 
