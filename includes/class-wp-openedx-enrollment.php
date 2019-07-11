@@ -34,7 +34,7 @@ class WP_Openedx_Enrollment {
     public function __construct( $parent ) {
         $this->parent = $parent;
 
-        // Add the custom post type
+        // Add the custom post type.
         $enrollment_cpt_options = array(
             'public'            => false,
             'hierarchical'      => false,
@@ -46,7 +46,7 @@ class WP_Openedx_Enrollment {
         );
         $this->parent->register_post_type( 'openedx_enrollment', 'Open edX Enrollment Requests', 'Open edX Enrollment Request', '', $enrollment_cpt_options );
 
-        // Register the CPT actions
+        // Register the CPT actions.
         $this->register_save_hook();
 
         add_action( 'init', array( $this, 'register_status' ), 10, 3 );
@@ -129,7 +129,7 @@ class WP_Openedx_Enrollment {
      */
     function save_action( $post_id, $post, $update ) {
 
-        if ( $this->post_type != $post->post_type ) {
+        if ( $this->post_type !== $post->post_type ) {
             return;
         }
 
@@ -185,13 +185,13 @@ class WP_Openedx_Enrollment {
         $oer_mode         = $oerarr['oer_mode'];
         $oer_request_type = $oerarr['oer_request_type'];
 
-        // We need to have all 3 required params to continue
+        // We need to have all 3 required params to continue.
         $oer_user_reference = $oer_email || $oer_username;
         if ( ! $oer_course_id || ! $oer_user_reference || ! $oer_mode ) {
             return;
         }
 
-        // Update the $post metadata
+        // Update the $post metadata.
         update_post_meta( $post_id, 'course_id', $oer_course_id );
         update_post_meta( $post_id, 'email', $oer_email );
         update_post_meta( $post_id, 'username', $oer_username );
@@ -204,32 +204,32 @@ class WP_Openedx_Enrollment {
             update_post_meta( $post_id, 'is_active', false );
         }
 
-        // Only update the post status if it has no custom status yet
-        if ( $post->post_status != 'eor-success' && $post->post_status != 'eor-pending' && $post->post_status != 'eor-error' ) {
+        // Only update the post status if it has no custom status yet.
+        if ( $post->post_status !== 'eor-success' && $post->post_status !== 'eor-pending' && $post->post_status !== 'eor-error' ) {
             $this->update_post_status( 'eor-pending', $post_id );
         }
 
-        // Handle the eox-core API actions
-        if ( 'save_no_process' == $oer_action ) {
+        // Handle the eox-core API actions.
+        if ( 'save_no_process' === $oer_action ) {
             update_post_meta( $post_id, 'edited', true );
         }
-        if ( 'oer_process' == $oer_action ) {
+        if ( 'oer_process' === $oer_action ) {
             $this->process_request( $post_id, false );
             update_post_meta( $post_id, 'edited', false );
         }
-        if ( 'oer_force' == $oer_action ) {
+        if ( 'oer_force' === $oer_action ) {
             $this->process_request( $post_id, true );
             update_post_meta( $post_id, 'edited', false );
         }
-        if ( 'oer_no_pre' == $oer_action ) {
+        if ( 'oer_no_pre' === $oer_action ) {
             $this->process_request( $post_id, false, false );
             update_post_meta( $post_id, 'edited', false );
         }
-        if ( 'oer_no_pre_force' == $oer_action ) {
+        if ( 'oer_no_pre_force' === $oer_action ) {
             $this->process_request( $post_id, true, false );
             update_post_meta( $post_id, 'edited', false );
         }
-        if ( 'oer_sync' == $oer_action ) {
+        if ( 'oer_sync' === $oer_action ) {
             $this->sync_request( $post_id );
             update_post_meta( $post_id, 'edited', false );
         }
@@ -246,14 +246,14 @@ class WP_Openedx_Enrollment {
         $user_args = $this->prepare_args( $post_id, 'user' );
         $user      = WP_EoxCoreApi()->get_user_info( $user_args );
 
-        // If the user doesn't exist create pre-enrollment with the email provided
+        // If the user doesn't exist create pre-enrollment with the email provided.
         if ( is_wp_error( $user ) && $do_pre_enroll ) {
             if ( ! empty( $user_args['email'] ) ) {
                 $pre_enrollment_args = $this->prepare_args( $post_id, 'pre-enrollment' );
                 $this->create_pre_enrollment( $post_id, $pre_enrollment_args );
                 return;
             } else {
-                // TODO Polish error message display
+                // TODO Polish error message display.
                 update_post_meta( $post_id, 'errors', 'A valid username or email is needed.' );
                 $this->wp_update_post( $post_update );
                 $this->update_post_status( 'eor-error', $post_id );
@@ -264,12 +264,12 @@ class WP_Openedx_Enrollment {
         $enrollment_args['force'] = $force;
 
         // When we reach this line we already have the user as a response from the API.
-        // Better use that username in case anything from before does not match
+        // Better use that username in case anything from before does not match.
         $enrollment_args['username'] = $user->username;
 
         $enrollment = WP_EoxCoreApi()->get_enrollment( $enrollment_args );
 
-        // If the enrollment already exists update it
+        // If the enrollment already exists update it.
         if ( is_wp_error( $enrollment ) ) {
             $this->create_enrollment( $post_id, $enrollment_args );
         } else {
@@ -331,17 +331,17 @@ class WP_Openedx_Enrollment {
         if ( is_wp_error( $response ) ) {
             update_post_meta( $post_id, 'errors', $response->get_error_message() );
 
-            // Update Status
+            // Update Status.
             $this->update_post_status( 'eor-error', $post_id );
 
         } else {
             delete_post_meta( $post_id, 'errors' );
 
-            // Only this fields can be updated
+            // Only this fields can be updated.
             update_post_meta( $post_id, 'mode', $response->mode );
             update_post_meta( $post_id, 'is_active', $response->is_active );
 
-            // This fields should be updated if emtpy
+            // This fields should be updated if empty.
             if ( ! get_post_meta( $post_id, 'username', true ) ) {
                 update_post_meta( $post_id, 'username', $response->username );
             }
@@ -351,7 +351,7 @@ class WP_Openedx_Enrollment {
                 update_post_meta( $post_id, 'email', $user->email );
             }
 
-            // Update Status
+            // Update Status.
             $this->update_post_status( 'eor-success', $post_id );
         }
     }
@@ -372,7 +372,7 @@ class WP_Openedx_Enrollment {
             $status = 'eor-error';
         } else {
             delete_post_meta( $post_id, 'errors' );
-            // This field should be updated if emtpy
+            // This field should be updated if empty.
             if ( ! get_post_meta( $post_id, 'username', true ) ) {
                 update_post_meta( $post_id, 'username', $response->username );
             }
@@ -479,13 +479,13 @@ class WP_Openedx_Enrollment {
     function fill_custom_columns_in_list_view( $column_name, $post_id ) {
         switch ( $column_name ) {
             case 'oer_status':
-                if ( get_post( $post_id )->post_status == 'eor-success' ) {
+                if ( get_post( $post_id )->post_status === 'eor-success' ) {
                     echo '<b style="color:green;">Success</b>';
                 }
-                if ( get_post( $post_id )->post_status == 'eor-error' ) {
+                if ( get_post( $post_id )->post_status === 'eor-error' ) {
                     echo '<b style="color:red;">Error</b>';
                 }
-                if ( get_post( $post_id )->post_status == 'eor-pending' ) {
+                if ( get_post( $post_id )->post_status === 'eor-pending' ) {
                     echo '<b style="color:orange;">Pending</b>';
                 }
                 break;
@@ -510,11 +510,11 @@ class WP_Openedx_Enrollment {
      */
     function set_up_admin() {
 
-        // Edit view
+        // Edit view.
         add_action( 'edit_form_after_title', array( $this, 'render_enrollment_info_form' ) );
         add_action( 'add_meta_boxes', array( $this, 'replace_admin_meta_boxes' ) );
 
-        // List view
+        // List view.
         add_filter( 'post_row_actions', array( $this, 'remove_table_row_actions' ) );
         add_filter( 'manage_posts_custom_column', array( $this, 'fill_custom_columns_in_list_view' ), 10, 3 );
         add_filter( 'manage_openedx_enrollment_posts_columns', array( $this, 'add_columns_to_list_view' ) );
@@ -567,7 +567,7 @@ class WP_Openedx_Enrollment {
      */
     public function render_enrollment_info_form( $post ) {
 
-        if ( $this->post_type != $post->post_type ) {
+        if ( $this->post_type !== $post->post_type ) {
             return;
         }
         $post_id = $post->ID;
@@ -631,37 +631,37 @@ class WP_Openedx_Enrollment {
                         <select id="openedx_enrollment_mode" name="oer_mode">
                             <option value="honor" 
                             <?php
-                            if ( $mode == 'honor' ) {
+                            if ( $mode === 'honor' ) {
                                 echo( 'selected="selected"' );}
                             ?>
                             ><?php esc_html_e( 'Honor', 'wp-edunext-marketing-site' ); ?></option>
                             <option value="audit" 
                             <?php
-                            if ( $mode == 'audit' ) {
+                            if ( $mode === 'audit' ) {
                                 echo( 'selected="selected"' );}
                             ?>
                             ><?php esc_html_e( 'Audit', 'wp-edunext-marketing-site' ); ?></option>
                             <option value="verified" 
                             <?php
-                            if ( $mode == 'verified' ) {
+                            if ( $mode === 'verified' ) {
                                 echo( 'selected="selected"' );}
                             ?>
                             ><?php esc_html_e( 'Verified', 'wp-edunext-marketing-site' ); ?></option>
                             <option value="credit" 
                             <?php
-                            if ( $mode == 'credit' ) {
+                            if ( $mode === 'credit' ) {
                                 echo( 'selected="selected"' );}
                             ?>
                             ><?php esc_html_e( 'Credit', 'wp-edunext-marketing-site' ); ?></option>
                             <option value="professional" 
                             <?php
-                            if ( $mode == 'professional' ) {
+                            if ( $mode === 'professional' ) {
                                 echo( 'selected="selected"' );}
                             ?>
                             ><?php esc_html_e( 'Professional', 'wp-edunext-marketing-site' ); ?></option>
                             <option value="no-id-professional" 
                             <?php
-                            if ( $mode == 'no-id-professional' ) {
+                            if ( $mode === 'no-id-professional' ) {
                                 echo( 'selected="selected"' );}
                             ?>
                             ><?php esc_html_e( 'No ID Professional', 'wp-edunext-marketing-site' ); ?></option>

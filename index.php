@@ -1,3 +1,8 @@
 <?php
+/**
+ * Silence is golden
+ *
+ * @package WordPress
+ */
 
-// Silence is golden
+// .

@@ -14,7 +14,7 @@ class Edx_Walker_Nav_Menu_Edit extends Walker_Nav_Menu_Edit {
     function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
         $item_output = '';
         parent::start_el( $item_output, $item, $depth, $args );
-        // Inject $new_fields before: <div class="menu-item-actions description-wide submitbox">
+        // Inject $new_fields before: <div class="menu-item-actions description-wide submitbox">.
         if ( $new_fields = Edx_Nav_Menu_Item_Custom_Fields::get_field( $item, $depth, $args ) ) {
             $label       = '<p class="edx-hide-if">Hide if Open edX user is:</p>';
             $new_html    = '<div class="clear">' . $label . $new_fields . '</div>';
@@ -105,7 +105,7 @@ class Edx_Nav_Menu_Item_Custom_Fields {
                 return 'Edx_Walker_Nav_Menu_Edit';
             }
         );
-        // add_filter( 'edx_nav_menu_item_additional_fields', array( __CLASS__, '_add_fields' ), 10, 5 );
+        // add_filter( 'edx_nav_menu_item_additional_fields', array( __CLASS__, '_add_fields' ), 10, 5 ); .
         add_action( 'save_post', array( __CLASS__, '_save_post' ), 10, 2 );
     }
 
@@ -135,7 +135,7 @@ class Edx_Nav_Menu_Item_Custom_Fields {
                 if ( $meta === $field['value'] ) {
                     $field['checked'] = 'checked';
                 }
-                // $field['checked'] = $meta;
+                // $field['checked'] = $meta; .
             } else {
                 $field['value'] = $meta;
             }
@@ -163,11 +163,11 @@ class Edx_Nav_Menu_Item_Custom_Fields {
      */
     static function _save_post( $post_id, $post ) {
         if ( $post->post_type !== 'nav_menu_item' ) {
-            return $post_id; // prevent weird things from happening
+            return $post_id; // prevent weird things from happening.
         }
         foreach ( self::$options['fields'] as $field_schema ) {
             $form_field_name = 'menu-item-' . $field_schema['name'];
-            // @todo FALSE should always be used as the default $value, otherwise we wouldn't be able to clear checkboxes
+            // @todo FALSE should always be used as the default $value, otherwise we wouldn't be able to clear checkboxes .
             if ( isset( $_POST[ $form_field_name ][ $post_id ] ) ) {
                 $key   = self::get_menu_item_postmeta_key( $field_schema['name'] );
                 $value = stripslashes( $_POST[ $form_field_name ][ $post_id ] );

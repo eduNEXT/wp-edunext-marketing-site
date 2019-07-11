@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * Plugin Name: Open edX LMS and WordPress integrator
  * Version: 2.0
  * Description: Set up your WordPress site as the front end site or marketing site for your online learning initiative powered by the open edX platform.
@@ -21,14 +20,14 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Load plugin class files
+// Load plugin class files.
 require_once 'includes/class-wp-edunext-marketing-site.php';
 require_once 'includes/class-wp-edunext-marketing-site-settings.php';
 require_once 'includes/class-wp-edunext-eox-core-api.php';
 require_once 'includes/class-wp-edunext-eox-woocommerce-integration.php';
 require_once 'includes/class-wp-openedx-enrollment.php';
 
-// Load plugin libraries
+// Load plugin libraries.
 require_once 'includes/lib/class-wp-edunext-marketing-site-admin-api.php';
 require_once 'includes/lib/class-wp-edunext-marketing-site-post-type.php';
 require_once 'includes/lib/class-wp-edunext-marketing-site-taxonomy.php';

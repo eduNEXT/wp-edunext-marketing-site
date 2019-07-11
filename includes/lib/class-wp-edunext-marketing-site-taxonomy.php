@@ -57,7 +57,7 @@ class WP_eduNEXT_Marketing_Site_Taxonomy {
             return;
         }
 
-        // Post type name and labels
+        // Post type name and labels.
         $this->taxonomy = $taxonomy;
         $this->plural   = $plural;
         $this->single   = $single;
@@ -67,7 +67,7 @@ class WP_eduNEXT_Marketing_Site_Taxonomy {
         $this->post_types    = $post_types;
         $this->taxonomy_args = $tax_args;
 
-        // Register taxonomy
+        // Register taxonomy.
         add_action( 'init', array( $this, 'register_taxonomy' ) );
     }
 

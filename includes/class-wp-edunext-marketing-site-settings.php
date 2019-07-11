@@ -56,22 +56,22 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
         $this->base = 'wpt_';
 
-        // Initialise settings
+        // Initialize settings.
         add_action( 'init', array( $this, 'init_settings' ), 11 );
 
-        // Register plugin settings
+        // Register plugin settings.
         add_action( 'admin_init', array( $this, 'register_settings' ) );
 
-        // Add settings page to menu
+        // Add settings page to menu.
         add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
         add_action( 'admin_head', array( $this, 'menu_highlight' ) );
 
-        // Add settings link to plugins page
+        // Add settings link to plugins page.
         add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ), array( $this, 'add_settings_link' ) );
     }
 
     /**
-     * Initialise settings
+     * Initialize settings
      *
      * @return void
      */
@@ -104,7 +104,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
     public function menu_highlight() {
         global $parent_file, $submenu_file, $post_type;
 
-        if ( $parent_file == $this->parent->_token . '_settings' ) {
+        if ( $parent_file === $this->parent->_token . '_settings' ) {
             if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
                 $tab         .= $_GET['tab'];
                 $submenu_file = 'admin.php?page=' . $parent_file . '&tab=' . $tab;
@@ -119,13 +119,13 @@ class WP_eduNEXT_Marketing_Site_Settings {
      */
     public function settings_assets() {
 
-        // We're including the farbtastic script & styles here because they're needed for the colour picker
-        // If you're not including a colour picker field then you can leave these calls out as well as the farbtastic dependency for the wpt-admin-js script below
+        // We're including the farbtastic script & styles here because they're needed for the colour picker.
+        // If you're not including a colour picker field then you can leave these calls out as well as the farbtastic dependency for the wpt-admin-js script below.
         wp_enqueue_style( 'farbtastic' );
         wp_enqueue_script( 'farbtastic' );
 
-        // We're including the WP media scripts here because they're needed for the image upload field
-        // If you're not including an image upload then you can leave this function call out
+        // We're including the WP media scripts here because they're needed for the image upload field.
+        // If you're not including an image upload then you can leave this function call out.
         wp_enqueue_media();
         $this->parent->enqueue_commons_script();
     }
@@ -240,7 +240,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
         $settings['enrollment'] = array(
             'title'  => __( 'Course buttons', 'wp-edunext-marketing-site' ),
             'fields' => array(
-                // Button Generic
+                // Button Generic.
                 array(
                     'id'          => 'header_generic',
                     'label'       => __( 'Default settings for ALL buttons', 'wp-edunext-marketing-site' ),
@@ -281,7 +281,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'default'     => '',
                     'placeholder' => '',
                 ),
-                // #1 Enroll to course button
+                // #1 Enroll to course button.
                 array(
                     'id'          => 'header_enroll',
                     'label'       => __( 'ENROLL BUTTON', 'wp-edunext-marketing-site' ),
@@ -339,7 +339,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'default'     => '',
                     'placeholder' => '',
                 ),
-                // #2 Button Go To Course
+                // #2 Button Go To Course.
                 array(
                     'id'          => 'header_go_to_course',
                     'label'       => __( 'GO TO COURSE BUTTON', 'wp-edunext-marketing-site' ),
@@ -388,7 +388,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'default'     => '',
                     'placeholder' => '',
                 ),
-                // #3 Button Course Has Not started
+                // #3 Button Course Has Not started.
                 array(
                     'id'          => 'header_course_has_not_started',
                     'label'       => __( 'COURSE IS CLOSED BUTTON', 'wp-edunext-marketing-site' ),
@@ -446,7 +446,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'default'     => '',
                     'placeholder' => '',
                 ),
-                // #4 Button Invitation Only
+                // #4 Button Invitation Only.
                 array(
                     'id'          => 'header_invitation_only',
                     'label'       => __( 'INVITATION ONLY BUTTON', 'wp-edunext-marketing-site' ),
@@ -495,7 +495,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'default'     => '',
                     'placeholder' => '',
                 ),
-                // #5 Button Enrollment Closed
+                // #5 Button Enrollment Closed.
                 array(
                     'id'          => 'header_enrollment_closed',
                     'label'       => __( 'ENROLLMENT CLOSED BUTTON', 'wp-edunext-marketing-site' ),
@@ -640,7 +640,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
     public function register_settings() {
         if ( is_array( $this->settings ) ) {
 
-            // Check posted/selected tab
+            // Check posted/selected tab.
             $current_section = '';
             if ( isset( $_POST['tab'] ) && $_POST['tab'] ) {
                 $current_section = $_POST['tab'];
@@ -652,27 +652,27 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
             foreach ( $this->settings as $section => $data ) {
 
-                if ( $current_section && $current_section != $section ) {
+                if ( $current_section && $current_section !== $section ) {
                     continue;
                 }
 
-                // Add section to page
+                // Add section to page.
                 $this->active_tab = $section;
                 add_settings_section( $section, '', array( $this, 'settings_section' ), $this->parent->_token . '_settings' );
 
                 foreach ( $data['fields'] as $field ) {
 
-                    // Validation callback for field
+                    // Validation callback for field.
                     $validation = '';
                     if ( isset( $field['callback'] ) ) {
                         $validation = $field['callback'];
                     }
 
-                    // Register field
+                    // Register field.
                     $option_name = $this->base . $field['id'];
                     register_setting( $this->parent->_token . '_settings', $option_name, $validation );
 
-                    // Add field to page
+                    // Add field to page.
                     add_settings_field(
                         $field['id'],
                         $field['label'],
@@ -705,7 +705,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
      */
     public function settings_page() {
 
-        // Build page HTML
+        // Build page HTML.
         $html  = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
         $html .= '<h2>' . __( 'Open edX - WordPress Integrator | by ', 'wp-edunext-marketing-site' ) . '<a href="https://www.edunext.co?utm_source=WP&utm_medium=web&utm_campaign=integrator" target="_blank"><img style="margin-bottom: -7px;" src="https://d1uwn6yupg8lfo.cloudfront.net/logos/logo-small.png" alt="' . __( 'eduNEXT - World class Open edX services provider | www.edunext.co' ) . '"></a></h2>' . "\n";
 
@@ -714,7 +714,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
             $tab .= $_GET['tab'];
         }
 
-        // Show page tabs
+        // Show page tabs.
         if ( is_array( $this->settings ) && 1 < count( $this->settings ) ) {
 
             $html .= '<h2 class="nav-tab-wrapper">' . "\n";
@@ -722,25 +722,25 @@ class WP_eduNEXT_Marketing_Site_Settings {
             $c = 0;
             foreach ( $this->settings as $section => $data ) {
 
-                // Set tab class
+                // Set tab class.
                 $class = 'nav-tab';
                 if ( ! isset( $_GET['tab'] ) ) {
-                    if ( 0 == $c ) {
+                    if ( 0 === $c ) {
                         $class .= ' nav-tab-active';
                     }
                 } else {
-                    if ( isset( $_GET['tab'] ) && $section == $_GET['tab'] ) {
+                    if ( isset( $_GET['tab'] ) && $section === $_GET['tab'] ) {
                         $class .= ' nav-tab-active';
                     }
                 }
 
-                // Set tab link
+                // Set tab link.
                 $tab_link = add_query_arg( array( 'tab' => $section ) );
                 if ( isset( $_GET['settings-updated'] ) ) {
                     $tab_link = remove_query_arg( 'settings-updated', $tab_link );
                 }
 
-                // Output tab
+                // Output tab.
                 $html .= '<a href="' . $tab_link . '" class="' . esc_attr( $class ) . '">' . esc_html( $data['title'] ) . '</a>' . "\n";
 
                 ++$c;
@@ -752,11 +752,11 @@ class WP_eduNEXT_Marketing_Site_Settings {
         $html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
 
         ob_start();
-        // Get settings page header
+        // Get settings page header.
         $this->parent->admin->render_settings_page_header( $this->active_tab );
         $this->parent->admin->show_advance_settings_toggle();
 
-        // Add the WP settings section
+        // Add the WP settings section.
         settings_fields( $this->parent->_token . '_settings' );
         do_settings_sections( $this->parent->_token . '_settings' );
         do_action( $this->active_tab . '_after_settings_page_html' );
