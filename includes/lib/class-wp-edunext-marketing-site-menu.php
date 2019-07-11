@@ -408,13 +408,13 @@ class WP_eduNEXT_Marketing_Site_Menu {
         $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
         $client_side_render = get_option( 'wpt_client_menu_render' );
 
-        // Modify the $item directly for themes using $item->url
+        // Modify the $item directly for themes using $item->url.
         if ( isset( $data['username'] ) ) {
-                $item->title = $client_side_render == 'on' ? '__username__' : $data['username'];
+                $item->title = $client_side_render === 'on' ? '__username__' : $data['username'];
         }
         $item->url = $base_url . '/' . $dashboard_location;
 
-        // Change the attrs for regular WordPress
+        // Change the attrs for regular WordPress.
         $atts['href'] = $base_url . '/' . $dashboard_location;
         return $atts;
     }
@@ -429,7 +429,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
         $client_side_render = get_option( 'wpt_client_menu_render' );
 
-        if ( $client_side_render == 'on' ) {
+        if ( $client_side_render === 'on' ) {
             // Modify the $item directly for themes using $item->url.
             $item->url = '__resume_block__';
             // Change the attrs for regular WordPress.
@@ -453,19 +453,11 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_dashboard_openedx( $atts, $item, $args, $data ) {
         $base_url           = get_option( 'wpt_lms_base_url' );
         $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
-        $client_side_render = get_option( 'wpt_client_menu_render' );
 
-        if ( $client_side_render == 'on' ) {
-            // Modify the $item directly for themes using $item->url.
-            $item->url = '__resume_block__';
-            // Change the attrs for regular WordPress.
-            $atts['href'] = '__resume_block__';
-        } else {
-            // Modify the $item directly for themes using $item->url.
-            $item->url = $base_url . '/' . $dashboard_location;
-            // Change the attrs for regular WordPress.
-            $atts['href'] = $base_url . '/' . $dashboard_location;
-        }
+        // Modify the $item directly for themes using $item->url.
+        $item->url = $base_url . '/' . $dashboard_location;
+        // Change the attrs for regular WordPress.
+        $atts['href'] = $base_url . '/' . $dashboard_location;
         return $atts;
     }
 
@@ -478,7 +470,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_profile_openedx( $atts, $item, $args, $data ) {
         $client_side_render = get_option( 'wpt_client_menu_render' );
 
-        if ( $client_side_render == 'on' ) {
+        if ( $client_side_render === 'on' ) {
             // Modify the $item directly for themes using $item->url.
             $item->url = '__learner_profile__';
             // Change the attrs for regular WordPress.
@@ -502,15 +494,15 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_account_openedx( $atts, $item, $args, $data ) {
         $client_side_render = get_option( 'wpt_client_menu_render' );
 
-        if ( $client_side_render == 'on' ) {
-            // Modify the $item directly for themes using $item->url
+        if ( $client_side_render === 'on' ) {
+            // Modify the $item directly for themes using $item->url.
             $item->url = '__account_settings__';
-            // Change the attrs for regular WordPress
+            // Change the attrs for regular WordPress.
             $atts['href'] = '__account_settings__';
         } elseif ( isset( $data['header_urls'] ) && isset( $data['header_urls']['account_settings'] ) ) {
-            // Modify the $item directly for themes using $item->url
+            // Modify the $item directly for themes using $item->url.
             $item->url = $data['header_urls']['account_settings'];
-            // Change the attrs for regular WordPress
+            // Change the attrs for regular WordPress.
             $atts['href'] = $data['header_urls']['account_settings'];
         }
 
@@ -526,13 +518,13 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_signout_openedx( $atts, $item, $args, $data ) {
         $client_side_render = get_option( 'wpt_client_menu_render' );
 
-        if ( $client_side_render == 'on' ) {
-            // Modify the $item directly for themes using $item->url
+        if ( $client_side_render === 'on' ) {
+            // Modify the $item directly for themes using $item->url.
             $item->url = '__logout__';
-            // Change the attrs for regular WordPress
+            // Change the attrs for regular WordPress.
             $atts['href'] = '__logout__';
         } elseif ( isset( $data['header_urls'] ) && isset( $data['header_urls']['logout'] ) ) {
-                // Modify the $item directly for themes using $item->url
+                // Modify the $item directly for themes using $item->url.
                 $item->url = $data['header_urls']['logout'];
                 // Change the attrs for regular WordPress.
                 $atts['href'] = $data['header_urls']['logout'];
