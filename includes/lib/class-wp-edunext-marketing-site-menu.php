@@ -188,7 +188,13 @@ class WP_eduNEXT_Marketing_Site_Menu {
          * @return  void
          */
     function process_menu_object( $item, $is_user_logged_in = false ) {
-            // Items with OR clauses need to decide their path.
+        // Items with OR clauses need to decide their path.
+        $client_side_render = get_option( 'wpt_client_menu_render' );
+
+        if ($client_side_render === 'on') {
+            return;
+        }
+
         if ( $item->object === 'login_or_menu_openedx' ) {
                 $title = preg_split( '/\//', $item->title );
             if ( $is_user_logged_in ) {
@@ -210,9 +216,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
             }
         }
 
-            // We also call the function here for themes that don't respect the nav_menu_link_attributes filter.
-            $cookie_data = $this->get_openedx_info_cookie_data();
-            call_user_func( array( $this, 'handle_' . $item->object ), [], $item, [], $cookie_data );
+        // We also call the function here for themes that don't respect the nav_menu_link_attributes filter.
+        $cookie_data = $this->get_openedx_info_cookie_data();
+        call_user_func( array( $this, 'handle_' . $item->object ), [], $item, [], $cookie_data );
     }
 
 
@@ -223,11 +229,12 @@ class WP_eduNEXT_Marketing_Site_Menu {
          */
     function edunext_filter_invalid_items( $items, $menu, $args ) {
 
-        if ( is_admin() ) {
+        $client_side_render = get_option( 'wpt_client_menu_render' );
+        if ( is_admin() || $client_side_render === 'on' ) {
             return $items;
         }
 
-            $is_user_logged_in = $this->get_openedx_loggedin();
+        $is_user_logged_in = $this->get_openedx_loggedin();
 
         foreach ( $items as $key => $item ) {
             if ( $item->type === 'wp-edunext-marketing-site' ) {
@@ -253,7 +260,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
                     unset( $items[ $key ] );
             }
         }
-            return $items;
+        return $items;
     }
 
 
@@ -540,7 +547,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
          * @return string              the permalink url
          */
     public function edunext_permalink_management( $url, $post, $leavename = false ) {
-        if ( $post->type === 'wp-edunext-marketing-site' ) {
+        $client_side_render = get_option( 'wpt_client_menu_render' );
+
+        if ( $client_side_render !== 'on' && $post->type === 'wp-edunext-marketing-site' ) {
                 $is_user_logged_in = $this->get_openedx_loggedin();
                 $this->process_menu_object( $post, $is_user_logged_in );
                 return $post->url;
