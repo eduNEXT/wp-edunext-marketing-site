@@ -42,6 +42,8 @@ class WP_eduNEXT_Woocommerce_Integration {
 
         $this->register_woocommerce_actions_and_callback();
 
+        $this->poc_alter_the_cart();
+
     }
 
     /**
@@ -61,6 +63,38 @@ class WP_eduNEXT_Woocommerce_Integration {
         }
     }
 
+    /**
+     * Intervention #1 to the cart-checkout flow
+     *
+     * @return void
+     */
+    public function poc_alter_the_cart() {
+
+        add_action( 'woocommerce_after_cart', array( $this, 'action_poc_alter_the_cart' ), 20, 2 );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_poc_alter_the_cart' ), 10 );
+
+    }
+
+    /**
+     * Intervention #1 to the cart-checkout flow
+     *
+     * @return void
+     */
+    public function action_poc_alter_the_cart() {
+        echo "<h2>this alters the cart right at the end</h2>";
+        wp_enqueue_script( 'poc_alter_the_cart' );
+    }
+
+    /**
+     * Intervention #1 to the cart-checkout flow
+     *
+     * @access  public
+     * @since   1.0.0
+     * @return  void
+     */
+    public function enqueue_poc_alter_the_cart( $hook = '' ) {
+        wp_register_script( 'poc_alter_the_cart', esc_url( $this->parent->assets_url ) . 'js/wcWorkflow' . '.js', array( 'jquery' ), $this->parent->_version );
+    }
 
     /**
      * Callback to pre-fill.
