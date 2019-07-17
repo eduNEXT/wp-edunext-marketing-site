@@ -162,8 +162,28 @@ class WP_eduNEXT_Woocommerce_Integration {
 
             $product = $item->get_product();
 
-            $course_id = $product->get_attribute( 'course_id' );
-            $bundle_id = $product->get_attribute( 'bundle_id' );
+            $course_id          = $product->get_attribute( 'course_id' );
+            $bundle_id          = $product->get_attribute( 'bundle_id' );
+            $fulfillment_action = $product->get_attribute( 'fulfillment_action' );
+
+            // If the product is a variation and the attributes are still empty
+            // then we try to get them from the parent.
+            if ( $product->get_type() === 'variation' ) {
+                $_pf            = new WC_Product_Factory();
+                $parent_product = $_pf->get_product( $product->get_parent_id() );
+
+                if ( empty( $course_id ) ) {
+                    $course_id = $parent_product->get_attribute( 'course_id' );
+                }
+
+                if ( empty( $bundle_id ) ) {
+                    $bundle_id = $parent_product->get_attribute( 'bundle_id' );
+                }
+
+                if ( empty( $fulfillment_action ) ) {
+                    $fulfillment_action = $parent_product->get_attribute( 'fulfillment_action' );
+                }
+            }
 
             if ( ! $course_id && ! $bundle_id ) {
                 // This product does not require any work from us.
@@ -175,7 +195,6 @@ class WP_eduNEXT_Woocommerce_Integration {
                 $course_mode = 'audit';
             }
 
-            $fulfillment_action = $product->get_attribute( 'fulfillment_action' );
             if ( empty( $fulfillment_action ) ) {
                 $fulfillment_action = get_option( 'wpt_oer_action_for_fulfillment' );
                 if ( $fulfillment_action === 'custom_fulfillment_function' ) {
