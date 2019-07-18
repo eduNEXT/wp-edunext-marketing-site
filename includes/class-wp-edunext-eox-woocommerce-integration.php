@@ -75,6 +75,7 @@ class WP_eduNEXT_Woocommerce_Integration {
         }
         if ( get_option( 'wpt_enable_wc_checkout_loggedin_intervention' ) ) {
             add_action( 'woocommerce_after_checkout_form', array( $this, 'action_assert_logged_openedx_checkout' ), 20, 2 );
+            add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_custom_checkout_openedx_hidden_fields' ), 20, 2 );
         }
         wp_register_script( 'wc-workflow', esc_url( $this->parent->assets_url ) . 'js/wcWorkflow' . $this->parent->script_suffix . '.js', array( 'jquery' ), $this->parent->_version );
     }
@@ -111,12 +112,23 @@ class WP_eduNEXT_Woocommerce_Integration {
             'wc-workflow',
             'ENEXT_SRV',
             array(
-                'run_functions'      => array( 'assertOpenEdxLoggedIn' ),
+                'run_functions'      => array( 'assertOpenEdxLoggedIn', 'addUsernameToCheckout' ),
                 'lms_base_url'       => get_option( 'wpt_lms_base_url' ),
                 'lms_wp_return_path' => get_option( 'wpt_lms_wp_return_path_checkout', '/checkout' ),
                 'lms_login_path'     => get_option( 'wpt_advanced_login_location' ),
             )
         );
+    }
+
+    /**
+     * Stores the custom hidden fields that are added to the checkout form via JS.
+     *
+     * @return void
+     */
+    public function save_custom_checkout_openedx_hidden_fields( $order_id ) {
+        if ( ! empty( $_POST['wpt_oer_username'] ) ) {
+            update_post_meta( $order_id, 'oer_username', sanitize_text_field( $_POST['wpt_oer_username'] ) );
+        }
     }
 
     /**
@@ -213,7 +225,7 @@ class WP_eduNEXT_Woocommerce_Integration {
         // We need to get the User info first.
         $billing_email = $order->get_billing_email();  // this is what comes from the form.
         $wp_user_email = $order->get_user()->email;  // this the wp-user that made the purchase.
-        // $custom_field_email = $order->get_billing_email());  //  this comes from a custom field.
+        $openedx_username = get_post_meta( $order_id, 'oer_username', true );  // this is the result of calling the user/v1/me API
 
         foreach ( $order->get_items() as $key => $item ) {
 
@@ -285,7 +297,7 @@ class WP_eduNEXT_Woocommerce_Integration {
                 'bundle_id'        => sanitize_text_field( $bundle_id ),
                 'oer_mode'         => sanitize_text_field( $course_mode ),
                 'oer_email'        => sanitize_text_field( $billing_email ),
-                'oer_username'     => null,
+                'oer_username'     => sanitize_text_field( $openedx_username ),
                 'oer_request_type' => 'enroll',
             );
             $post   = $this->parent->openedx_enrollment->insert_new( $oerarr, $oer_action );
