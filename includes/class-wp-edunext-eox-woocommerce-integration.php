@@ -42,6 +42,8 @@ class WP_eduNEXT_Woocommerce_Integration {
 
         $this->register_woocommerce_actions_and_callback();
 
+        $this->alter_the_wc_flow_using_js();
+
     }
 
     /**
@@ -61,6 +63,61 @@ class WP_eduNEXT_Woocommerce_Integration {
         }
     }
 
+    /**
+     * Registers the necessary interventions to the woocommerce cart and checkout pages to guarantee a better
+     * openedx course sale.
+     *
+     * @return void
+     */
+    public function alter_the_wc_flow_using_js() {
+        if ( get_option( 'wpt_enable_wc_cart_loggedin_intervention' ) ) {
+            add_action( 'woocommerce_after_cart', array( $this, 'action_openedx_flow_cart_intervention' ), 20, 2 );
+        }
+        if ( get_option( 'wpt_enable_wc_checkout_loggedin_intervention' ) ) {
+            add_action( 'woocommerce_after_checkout_form', array( $this, 'action_assert_logged_openedx_checkout' ), 20, 2 );
+        }
+        wp_register_script( 'wc-workflow', esc_url( $this->parent->assets_url ) . 'js/wcWorkflow' . $this->parent->script_suffix . '.js', array( 'jquery' ), $this->parent->_version );
+    }
+
+    /**
+     * Loads a javascript function on the cart page that validates the session on the openedx service.
+     * If it does not find a valid session redirects the page to the configured login page with a custom next param.
+     *
+     * @return void
+     */
+    public function action_openedx_flow_cart_intervention() {
+        wp_enqueue_script( 'wc-workflow' );
+        wp_localize_script(
+            'wc-workflow',
+            'ENEXT_SRV',
+            array(
+                'run_functions'      => array( 'assertOpenEdxLoggedIn' ),
+                'lms_base_url'       => get_option( 'wpt_lms_base_url' ),
+                'lms_wp_return_path' => get_option( 'wpt_lms_wp_return_path_cart', '/cart' ),
+                'lms_login_path'     => get_option( 'wpt_advanced_login_location' ),
+            )
+        );
+    }
+
+    /**
+     * Loads a javascript function on the checkout page that validates the session on the openedx service.
+     * If it does not find a valid session redirects the page to the configured login page with a custom next param.
+     *
+     * @return void
+     */
+    public function action_assert_logged_openedx_checkout() {
+        wp_enqueue_script( 'wc-workflow' );
+        wp_localize_script(
+            'wc-workflow',
+            'ENEXT_SRV',
+            array(
+                'run_functions'      => array( 'assertOpenEdxLoggedIn' ),
+                'lms_base_url'       => get_option( 'wpt_lms_base_url' ),
+                'lms_wp_return_path' => get_option( 'wpt_lms_wp_return_path_checkout', '/checkout' ),
+                'lms_login_path'     => get_option( 'wpt_advanced_login_location' ),
+            )
+        );
+    }
 
     /**
      * Callback to pre-fill.
