@@ -223,9 +223,9 @@ class WP_eduNEXT_Woocommerce_Integration {
         $order = new WC_Order( $order_id );
 
         // We need to get the User info first.
-        $billing_email = $order->get_billing_email();  // this is what comes from the form.
-        $wp_user_email = $order->get_user()->email;  // this the wp-user that made the purchase.
-        $openedx_username = get_post_meta( $order_id, 'oer_username', true );  // this is the result of calling the user/v1/me API
+        $billing_email    = $order->get_billing_email();  // this is what comes from the form.
+        $wp_user_email    = $order->get_user()->email;  // this the wp-user that made the purchase.
+        $openedx_username = get_post_meta( $order_id, 'oer_username', true );  // this is the result of calling the user/v1/me API.
 
         foreach ( $order->get_items() as $key => $item ) {
 
