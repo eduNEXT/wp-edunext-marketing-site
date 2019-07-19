@@ -158,6 +158,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
                 'signout_openedx'       => __( 'Sign Out', 'wp-edunext-marketing-site' ),
             );
 
+            add_action( 'wp_get_nav_menu_items', array( $this, 'load_settings_client_side' ), 10, 3 );
     }
 
 
@@ -548,7 +549,6 @@ class WP_eduNEXT_Marketing_Site_Menu {
          */
     public function edunext_permalink_management( $url, $post, $leavename = false ) {
         $client_side_render = get_option( 'wpt_client_menu_render' );
-
         if ( $client_side_render !== 'on' && $post->type === 'wp-edunext-marketing-site' ) {
                 $is_user_logged_in = $this->get_openedx_loggedin();
                 $this->process_menu_object( $post, $is_user_logged_in );
@@ -557,5 +557,29 @@ class WP_eduNEXT_Marketing_Site_Menu {
             return $url;
     }
 
+    /**
+     * Load label and url settings of the menu when
+     * the client-side render is activated.
+     *
+     * @return items
+     */
+    public function load_settings_client_side($items, $menu, $args) {
+
+        if ( get_option( 'wpt_client_menu_render' )) {
+            wp_enqueue_script( WP_eduNEXT_Marketing_Site()->_token . '-frontend' );
+            wp_localize_script(
+                WP_eduNEXT_Marketing_Site()->_token . '-frontend',
+                'ENEXT_SRV_CS',
+                array(
+                    'user_info_cookie_name'      => get_option( 'wpt_user_info_cookie_name' ),
+                    'is_loggedin_cookie_name'    => get_option( 'wpt_is_logged_in_cookie_name' ),
+                    'hide_if_logged_in'      => Edx_Walker_Nav_Menu_Edit::$hide_if_logged_in,
+                    'hide_if_not_logged_in'       => Edx_Walker_Nav_Menu_Edit::$hide_if_not_logged_in,
+                )
+            );
+        }
+
+        return $items;
+    }
 
 }
