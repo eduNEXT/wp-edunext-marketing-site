@@ -643,8 +643,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
                 ),
                 array(
                     'id'               => 'enable_wc_checkout_loggedin_intervention',
-                    'label'            => __( 'Assert users are logged in to see the checkout page', 'wp-edunext-marketing-site' ),
-                    'description'      => __( 'Allows you to make sure that users have a valid session when they access the woocommerce checkout form.', 'wp-edunext-marketing-site' ),
+                    'label'            => __( 'Get username information from openedx into the checkout page', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'Make sure that users have a valid session when they access the woocommerce checkout form. The username for said session is then used for the order fulfillment.', 'wp-edunext-marketing-site' ),
                     'type'             => 'checkbox',
                     'default'          => false,
                     'placeholder'      => '',
