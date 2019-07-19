@@ -566,6 +566,10 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function load_settings_client_side($items, $menu, $args) {
 
         if ( get_option( 'wpt_client_menu_render' )) {
+            $base_url       = get_option( 'wpt_lms_base_url' );
+            $login_location = get_option( 'wpt_advanced_login_location' );
+            $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
+
             wp_enqueue_script( WP_eduNEXT_Marketing_Site()->_token . '-frontend' );
             wp_localize_script(
                 WP_eduNEXT_Marketing_Site()->_token . '-frontend',
@@ -575,6 +579,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
                     'is_loggedin_cookie_name'    => get_option( 'wpt_is_logged_in_cookie_name' ),
                     'hide_if_logged_in'      => Edx_Walker_Nav_Menu_Edit::$hide_if_logged_in,
                     'hide_if_not_logged_in'       => Edx_Walker_Nav_Menu_Edit::$hide_if_not_logged_in,
+                    'dashboard_url' => $base_url . '/' . $dashboard_location,
+                    'login_url' => $base_url . '/' . $login_location,
                 )
             );
         }
