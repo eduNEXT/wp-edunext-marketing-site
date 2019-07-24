@@ -192,7 +192,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
         // Items with OR clauses need to decide their path.
         $client_side_render = get_option( 'wpt_client_menu_render' );
 
-        if ($client_side_render === 'on') {
+        if ( $client_side_render === 'on' ) {
             return;
         }
 
@@ -417,7 +417,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
         // Modify the $item directly for themes using $item->url.
         if ( isset( $data['username'] ) ) {
-            $item->title    =  $data['username'];
+            $item->title = $data['username'];
         }
         $item->url = $base_url . '/' . $dashboard_location;
 
@@ -434,11 +434,11 @@ class WP_eduNEXT_Marketing_Site_Menu {
          */
     public function handle_resume_openedx( $atts, $item, $args, $data ) {
 
-       if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['resume_block'] ) ) {
-            // Modify the $item directly for themes using $item->url.
-            $item->url = $data['header_urls']['resume_block'];
-            // Change the attrs for regular WordPress.
-            $atts['href'] = $data['header_urls']['resume_block'];
+        if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['resume_block'] ) ) {
+                // Modify the $item directly for themes using $item->url.
+                $item->url = $data['header_urls']['resume_block'];
+                // Change the attrs for regular WordPress.
+                $atts['href'] = $data['header_urls']['resume_block'];
         }
 
         return $atts;
@@ -468,7 +468,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
          * @return object              attributes for an anchor tag
          */
     public function handle_profile_openedx( $atts, $item, $args, $data ) {
-       if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['learner_profile'] ) ) {
+        if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['learner_profile'] ) ) {
             // Modify the $item directly for themes using $item->url.
             $item->url = $data['header_urls']['learner_profile'];
             // Change the attrs for regular WordPress.
@@ -533,11 +533,11 @@ class WP_eduNEXT_Marketing_Site_Menu {
      *
      * @return items
      */
-    public function load_settings_client_side($items, $menu, $args) {
+    public function load_settings_client_side( $items, $menu, $args ) {
 
-        if ( get_option( 'wpt_client_menu_render' )) {
-            $base_url       = get_option( 'wpt_lms_base_url' );
-            $login_location = get_option( 'wpt_advanced_login_location' );
+        if ( get_option( 'wpt_client_menu_render' ) ) {
+            $base_url           = get_option( 'wpt_lms_base_url' );
+            $login_location     = get_option( 'wpt_advanced_login_location' );
             $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
 
             wp_enqueue_script( WP_eduNEXT_Marketing_Site()->_token . '-frontend' );
@@ -545,12 +545,12 @@ class WP_eduNEXT_Marketing_Site_Menu {
                 WP_eduNEXT_Marketing_Site()->_token . '-frontend',
                 'ENEXT_SRV_CS',
                 array(
-                    'user_info_cookie_name'      => get_option( 'wpt_user_info_cookie_name' ),
-                    'is_loggedin_cookie_name'    => get_option( 'wpt_is_logged_in_cookie_name' ),
-                    'hide_if_logged_in'      => Edx_Walker_Nav_Menu_Edit::$hide_if_logged_in,
-                    'hide_if_not_logged_in'       => Edx_Walker_Nav_Menu_Edit::$hide_if_not_logged_in,
-                    'dashboard_url' => $base_url . '/' . $dashboard_location,
-                    'login_url' => $base_url . '/' . $login_location,
+                    'user_info_cookie_name'   => get_option( 'wpt_user_info_cookie_name' ),
+                    'is_loggedin_cookie_name' => get_option( 'wpt_is_logged_in_cookie_name' ),
+                    'hide_if_logged_in'       => Edx_Walker_Nav_Menu_Edit::$hide_if_logged_in,
+                    'hide_if_not_logged_in'   => Edx_Walker_Nav_Menu_Edit::$hide_if_not_logged_in,
+                    'dashboard_url'           => $base_url . '/' . $dashboard_location,
+                    'login_url'               => $base_url . '/' . $login_location,
                 )
             );
         }
