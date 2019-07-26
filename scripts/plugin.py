@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import argparse
-from os import mkdir, path, symlink, mknod, remove, unlink, link, readlink
+from os import mkdir, path, symlink, mknod, remove, unlink, link, readlink, getcwd
 from shutil import rmtree, copy, copytree, make_archive
 import glob
 import sys
@@ -69,9 +69,13 @@ class Plugin():
             include_path = path.join(version_path, self.include_folder)
 
             # Include specific version files
-            dirpath = "{}/{}/*.php".format(self.versions_folder,version)
-            for file in glob.glob(dirpath):
-                copy(file, include_path)
+            dirpath = "{}/{}/**/*.php".format(self.versions_folder,version)
+            for file in glob.glob(dirpath, recursive=True):
+                file_path = path.join(self.versions_folder, version)
+                file_path = file.split(file_path)[1][1:]
+                folder_path = path.dirname(file_path)
+                target = path.join(include_path, folder_path)
+                copy(file, target)
 
             # Insert correct plugin name - version
             for file in self.versioning_files:
@@ -91,11 +95,13 @@ class Plugin():
         Clean development environment, delete symlinks that change in every version
         """
         for version in self.VERSIONS:
-            dirpath = "{}/{}/*.php".format(self.versions_folder, version)
-            for file in glob.glob(dirpath):
-                path_to_file = path.join(self.include_folder, path.basename(file))
-                if path.islink(path_to_file):
-                    unlink(path_to_file)
+            version_path = path.join(self.versions_folder, version)
+            dirpath = "{}/**/*.php".format(version_path)
+            for file in glob.glob(dirpath, recursive=True):
+                file_path = file.split(version_path)[1][1:]
+                target = path.join(self.include_folder, file_path)
+                if path.islink(target):
+                    unlink(target)
 
     def change_to(self, version):
         """
@@ -103,10 +109,25 @@ class Plugin():
         """
         version_path = path.join(self.versions_folder, version)
         self.clean_env()
+        dirpath = "{}/**/*.php".format(version_path)
+        for file in glob.glob(dirpath, recursive=True):
+            depth = self.get_depth(version_path, file)
+            source = '{}{}'.format('../'*(depth), file)
+            file_path = file.split(version_path)[1][1:]
+            target = path.join(self.include_folder, file_path)
+            symlink(source, target)
 
-        dirpath = "{}/*.php".format(version_path)
-        for file in glob.glob(dirpath):
-            symlink( '../{}'.format(file), path.join(self.include_folder, path.basename(file)))
+    def get_depth(self, root_folder, file):
+        """
+        Get the depth (levels) beetween the root_folder and the file
+        """
+        depth = 1
+        parent = path.dirname(file)
+        while parent != root_folder:
+            depth += 1
+            parent = path.dirname(parent)
+
+        return depth
 
     def get_version(self):
         """
@@ -139,7 +160,7 @@ if args.build:
     plugin.build()
 
 if args.dev_version:
-    print plugin.get_version()
+    print(plugin.get_version())
 
 if args.change_to:
     plugin.change_to(args.change_to)

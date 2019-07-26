@@ -28,13 +28,11 @@ dir
 
 Read more in:
 ```bash
-make
-python plugin.py --help
+make help
 ```
 Example:
 ```bash
 make build
-python plugin.py -b
 ```
 
 ## INSTALL
@@ -42,7 +40,7 @@ python plugin.py -b
 Inside a virtualenv, run:
 
 ```bash
-pip install -r scripts/requirements.txt
+pip3 install -r scripts/requirements.txt
 ```
 
 ## CONFIG
