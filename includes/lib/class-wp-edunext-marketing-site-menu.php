@@ -424,7 +424,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
         $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
 
         if ( $this->client_side_render() ) {
-            $item->title = '__USERNAME__';
+            $item->title = '#__USERNAME__';
         }
         else {
             if ( isset( $data['username'] ) ) {
@@ -448,8 +448,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_resume_openedx( $atts, $item, $args, $data ) {
 
         if ( $this->client_side_render() ) {
-            $item->url = '__RESUME_BLOCK__';
-            $atts['href'] = '__RESUME_BLOCK__';
+            $item->url = '#__RESUME_BLOCK__';
+            $atts['href'] = '#__RESUME_BLOCK__';
         }
         else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['resume_block'] ) ) {
@@ -488,8 +488,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_profile_openedx( $atts, $item, $args, $data ) {
 
         if ( $this->client_side_render() ) {
-            $item->url = '__LEARNER_PROFILE__';
-            $atts['href'] = '__LEARNER_PROFILE__';
+            $item->url = '#__LEARNER_PROFILE__';
+            $atts['href'] = '#__LEARNER_PROFILE__';
         }
         else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['learner_profile'] ) ) {
@@ -511,8 +511,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
      */
     public function handle_account_openedx( $atts, $item, $args, $data ) {
         if ( $this->client_side_render() ) {
-            $item->url = '__ACCOUNT_SETTINGS__';
-            $atts['href'] = '__ACCOUNT_SETTINGS__';
+            $item->url = '#__ACCOUNT_SETTINGS__';
+            $atts['href'] = '#__ACCOUNT_SETTINGS__';
         }
         else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['account_settings'] ) ) {
@@ -533,8 +533,8 @@ class WP_eduNEXT_Marketing_Site_Menu {
      */
     public function handle_signout_openedx( $atts, $item, $args, $data ) {
         if ( $this->client_side_render() ) {
-            $item->url = '__LOGOUT__';
-            $atts['href'] = '__LOGOUT__';
+            $item->url = '#__LOGOUT__';
+            $atts['href'] = '#__LOGOUT__';
         }
         else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['logout'] ) ) {
@@ -549,21 +549,32 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
 
     /**
-     *
+     * Create a link that can be a regular login link or a dropdown menu with the username.
      *
      * @return object              attributes for an anchor tag
      */
     public function handle_login_or_menu_openedx( $atts, $item, $args, $data ) {
-        $title = preg_split( '/\//', $item->title );
         if ( $this->client_side_render() ) {
+            $title = preg_split( '/\//', $item->title );
             $given_title = isset( $title[0] ) ? $title[0] : __( 'Login', 'wp-edunext-marketing-site' );
-            $item->title = $given_title . '/__USERNAME__';
+            $item->title = '{{'. $given_title . '/#__USERNAME__}}';
         }
         return $atts;
     }
 
 
-// login_or_dash_openedx
+    /**
+     * Create a link that can be a regular login link or a dropdown menu that says Dashboard
+     *
+     * @return object              attributes for an anchor tag
+     */
+    public function handle_login_or_dash_openedx( $atts, $item, $args, $data ) {
+        if ( $this->client_side_render() ) {
+            $item->title = '{{' . $item->title . '}}';
+        }
+        return $atts;
+    }
+
 
     /**
      * Making permalinks also respond to the integrator functions.
