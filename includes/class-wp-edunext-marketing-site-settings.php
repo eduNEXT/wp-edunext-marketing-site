@@ -201,6 +201,15 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'placeholder'      => '',
                     'advanced_setting' => true,
                 ),
+                array(
+                    'id'               => 'enable_session_existence_sync',
+                    'label'            => __( 'Log out of WP when openedx is not logged in', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'This will force the users to login on openedx to mantain a valid session on WordPress.', 'wp-edunext-marketing-site' ),
+                    'type'             => 'checkbox',
+                    'default'          => false,
+                    'placeholder'      => '',
+                    'advanced_setting' => false,
+                ),
             ),
         );
 
