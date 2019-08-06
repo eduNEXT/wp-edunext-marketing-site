@@ -154,7 +154,7 @@ class WP_EoxCoreApi {
     public function refresh_eox_token() {
         $token = $this->get_access_token( true );
 
-        $this->add_notice( 'notice-success', 'A new token ' .substr($token, 0, 6) . '****** was created on ' . date(DATE_ATOM, time() )  );
+        $this->add_notice( 'notice-success', 'A new token ' . substr( $token, 0, 6 ) . '****** was created on ' . date( DATE_ATOM, time() ) );
         $this->show_notices();
         wp_die();
     }
@@ -192,9 +192,8 @@ class WP_EoxCoreApi {
      * Produce an authentication token for the eox api using oauth 2.0
      */
     public function get_access_token( $refresh = false ) {
-        $base_url = get_option( 'wpt_lms_base_url', '' );
-        $cache_key = 'wpt_eox_token_' . substr( hash('sha256', $base_url), 0, 10);
-
+        $base_url     = get_option( 'wpt_lms_base_url', '' );
+        $cache_key    = 'wpt_eox_token_' . substr( hash( 'sha256', $base_url ), 0, 10 );
         $token        = get_option( $cache_key, '' );
         $last_checked = get_option( 'last_checked_working', 0 );
         $five_min_ago = time() - 60 * 5;
