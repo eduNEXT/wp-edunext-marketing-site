@@ -30,7 +30,6 @@ class WP_EoxCoreApi {
     function __construct() {
         if ( is_admin() ) {
             add_filter( 'wp-edunext-marketing-site_settings_fields', array( $this, 'add_admin_settings' ) );
-            add_action( 'eoxapi_after_settings_page_html', array( $this, 'eoxapi_settings_custom_html' ) );
         }
     }
 
@@ -44,13 +43,6 @@ class WP_EoxCoreApi {
             'fields'      => array(),
         );
         return $settings;
-    }
-
-    /**
-     * Renders the custom form in the admin page
-     */
-    public function eoxapi_settings_custom_html() {
-        include 'templates/exoapi_settings_custom_html.php';
     }
 
 }

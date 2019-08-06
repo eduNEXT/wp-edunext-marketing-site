@@ -25,6 +25,20 @@ class WP_eduNEXT_Woocommerce_Integration {
      */
     public function __construct( $parent ) {
         $this->parent = $parent;
+        add_action( 'woocommerce_after_settings_page_html', array( $this, 'overlay' ) );
+
+    }
+
+    /**
+     * Display overlay
+     *
+     * @return void
+     */
+    function overlay() {
+        $template = __DIR__ . '/templates/overlay_html.php';
+        if ( file_exists( $template ) ) {
+            include $template;
+        }
     }
 
 }

@@ -101,7 +101,7 @@ class WP_EoxCoreApi {
      * Renders the custom form in the admin page
      */
     public function eoxapi_settings_custom_html() {
-        include 'templates/exoapi_settings_custom_html.php';
+        include __DIR__ . '/templates/exoapi_settings_custom_html.php';
     }
 
     public function handle_ajax_json_input( $input ) {
