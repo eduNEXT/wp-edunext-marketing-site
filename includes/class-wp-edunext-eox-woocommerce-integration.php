@@ -54,6 +54,9 @@ class WP_eduNEXT_Woocommerce_Integration {
     public function register_woocommerce_actions_and_callback() {
 
         $actions_to_connect_array = get_option( 'wpt_woocommerce_action_to_connect' );
+        if ( ! $actions_to_connect_array ) {
+            return;
+        }
 
         foreach ( $actions_to_connect_array as $key => $action ) {
             if ( $action === 'custom_string' ) {

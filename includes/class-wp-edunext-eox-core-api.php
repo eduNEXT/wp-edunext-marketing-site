@@ -349,15 +349,18 @@ class WP_EoxCoreApi {
                 return $response;
             }
             $errors = $this->get_response_errors( $response, $ref );
-            foreach ( $errors as $err ) {
-                $this->add_notice( 'error', $err );
-            }
             if ( empty( $errors ) ) {
                 $this->add_notice( 'notice-success', $success_message . ' <i>(' . $ref . ')</i>' );
                 return json_decode( $response['body'] );
-            } else {
-                return new WP_Error( 'eox-api-error', implode( ', ', $errors ) );
             }
+            if ( is_array( $errors ) || is_object( $errors ) ) {
+                foreach ( $errors as $err ) {
+                    $this->add_notice( 'error', $err );
+                }
+            }
+
+            return new WP_Error( 'eox-api-error', implode( ', ', $errors ) );
+
         } else {
             return $token;
         }
