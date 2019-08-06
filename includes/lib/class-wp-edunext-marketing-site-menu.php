@@ -425,8 +425,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
 
         if ( $this->client_side_render() ) {
             $item->title = '#__USERNAME__';
-        }
-        else {
+        } else {
             if ( isset( $data['username'] ) ) {
                 $item->title = $data['username'];
             }
@@ -448,10 +447,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_resume_openedx( $atts, $item, $args, $data ) {
 
         if ( $this->client_side_render() ) {
-            $item->url = '#__RESUME_BLOCK__';
+            $item->url    = '#__RESUME_BLOCK__';
             $atts['href'] = '#__RESUME_BLOCK__';
-        }
-        else {
+        } else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['resume_block'] ) ) {
                     // Modify the $item directly for themes using $item->url.
                     $item->url = $data['header_urls']['resume_block'];
@@ -488,10 +486,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
     public function handle_profile_openedx( $atts, $item, $args, $data ) {
 
         if ( $this->client_side_render() ) {
-            $item->url = '#__LEARNER_PROFILE__';
+            $item->url    = '#__LEARNER_PROFILE__';
             $atts['href'] = '#__LEARNER_PROFILE__';
-        }
-        else {
+        } else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['learner_profile'] ) ) {
                 // Modify the $item directly for themes using $item->url.
                 $item->url = $data['header_urls']['learner_profile'];
@@ -511,10 +508,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
      */
     public function handle_account_openedx( $atts, $item, $args, $data ) {
         if ( $this->client_side_render() ) {
-            $item->url = '#__ACCOUNT_SETTINGS__';
+            $item->url    = '#__ACCOUNT_SETTINGS__';
             $atts['href'] = '#__ACCOUNT_SETTINGS__';
-        }
-        else {
+        } else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['account_settings'] ) ) {
                 // Modify the $item directly for themes using $item->url.
                 $item->url = $data['header_urls']['account_settings'];
@@ -533,10 +529,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
      */
     public function handle_signout_openedx( $atts, $item, $args, $data ) {
         if ( $this->client_side_render() ) {
-            $item->url = '#__LOGOUT__';
+            $item->url    = '#__LOGOUT__';
             $atts['href'] = '#__LOGOUT__';
-        }
-        else {
+        } else {
             if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['logout'] ) ) {
                     // Modify the $item directly for themes using $item->url.
                     $item->url = $data['header_urls']['logout'];
@@ -555,9 +550,9 @@ class WP_eduNEXT_Marketing_Site_Menu {
      */
     public function handle_login_or_menu_openedx( $atts, $item, $args, $data ) {
         if ( $this->client_side_render() ) {
-            $title = preg_split( '/\//', $item->title );
+            $title       = preg_split( '/\//', $item->title );
             $given_title = isset( $title[0] ) ? $title[0] : __( 'Login', 'wp-edunext-marketing-site' );
-            $item->title = '{{'. $given_title . '/#__USERNAME__}}';
+            $item->title = '{{' . $given_title . '/#__USERNAME__}}';
         }
         return $atts;
     }
@@ -616,7 +611,7 @@ class WP_eduNEXT_Marketing_Site_Menu {
                     'hide_if_not_logged_in'   => Edx_Walker_Nav_Menu_Edit::$hide_if_not_logged_in,
                     'dashboard_url'           => $base_url . '/' . $dashboard_location,
                     'login_url'               => $base_url . '/' . $login_location,
-                    'register_url'               => $base_url . '/' . $register_location,
+                    'register_url'            => $base_url . '/' . $register_location,
                 )
             );
         }
