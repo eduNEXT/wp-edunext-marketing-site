@@ -234,6 +234,14 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'placeholder'      => '',
                     'advanced_setting' => true,
                 ),
+                array(
+                    'id'          => 'client_menu_render',
+                    'label'       => __( 'Client-side menu rendering', 'wp-edunext-marketing-site' ),
+                    'description' => __( 'Renders the menu on the client-side instead of server-side to avoid cache ghosts.' ),
+                    'type'        => 'checkbox',
+                    'default'     => false,
+                    'placeholder' => '',
+                ),
             ),
         );
 

@@ -120,23 +120,23 @@ class WP_Base_Custom_Link_Object {
 
 class WP_eduNEXT_Marketing_Site_Menu {
 
-        /**
-         * Possible link values
-         *
-         * @var     array of strings
-         * @access  public
-         * @since   1.1.0
-         */
+    /**
+     * Possible link values
+     *
+     * @var     array of strings
+     * @access  public
+     * @since   1.1.0
+     */
     public $button_types;
 
 
-        /**
-         * Constructor function.
-         *
-         * @access  public
-         * @since   1.1.0
-         * @return  void
-         */
+    /**
+     * Constructor function.
+     *
+     * @access  public
+     * @since   1.1.0
+     * @return  void
+     */
     public function __construct() {
             add_action( 'admin_head-nav-menus.php', array( $this, 'edunext_add_menu_metabox' ), 10 );
             add_filter( 'nav_menu_link_attributes', array( $this, 'edunext_nav_menu_filter' ), 10, 3 );
@@ -158,14 +158,15 @@ class WP_eduNEXT_Marketing_Site_Menu {
                 'signout_openedx'       => __( 'Sign Out', 'wp-edunext-marketing-site' ),
             );
 
+            add_action( 'wp_get_nav_menu_items', array( $this, 'load_settings_client_side' ), 10, 3 );
     }
 
 
-        /**
-         * Modify the items to hold more descriptive types and labels
-         *
-         * @return object              WP_Menu_Item
-         */
+    /**
+     * Modify the items to hold more descriptive types and labels
+     *
+     * @return object              WP_Menu_Item
+     */
     public function edunext_menu_set_types( $menu_item ) {
 
         if ( in_array( 'open-edx-link', $menu_item->classes ) ) {
@@ -182,52 +183,67 @@ class WP_eduNEXT_Marketing_Site_Menu {
     }
 
 
-        /**
-         * Custom logic to determine the urls and functions of the integration menu items.
-         *
-         * @return  void
-         */
+    /**
+     * Answers the question should the menu be rendered on the js.
+     *
+     * @return bool
+     */
+    public function client_side_render() {
+        $client_side_render = get_option( 'wpt_client_menu_render' );
+        if ( $client_side_render === 'on' ) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Custom logic to determine the urls and functions of the integration menu items.
+     *
+     * @return  void
+     */
     function process_menu_object( $item, $is_user_logged_in = false ) {
-            // Items with OR clauses need to decide their path.
+        // Items with OR clauses need to decide their path.
         if ( $item->object === 'login_or_menu_openedx' ) {
-                $title = preg_split( '/\//', $item->title );
+            $title = preg_split( '/\//', $item->title );
             if ( $is_user_logged_in ) {
                 $item->object = 'menu_openedx';
                 $item->title  = isset( $title[1] ) ? $title[1] : __( 'Dashboard', 'wp-edunext-marketing-site' );
             } else {
-                    $item->object = 'login_openedx';
-                    $item->title  = isset( $title[0] ) ? $title[0] : __( 'Login', 'wp-edunext-marketing-site' );
+                $item->object = 'login_openedx';
+                $item->title  = isset( $title[0] ) ? $title[0] : __( 'Login', 'wp-edunext-marketing-site' );
             }
         }
         if ( $item->object === 'login_or_dash_openedx' ) {
-                $title = preg_split( '/\//', $item->title );
+            $title = preg_split( '/\//', $item->title );
             if ( $is_user_logged_in ) {
-                    $item->object = 'dashboard_openedx';
-                    $item->title  = isset( $title[1] ) ? $title[1] : __( 'Dashboard', 'wp-edunext-marketing-site' );
+                $item->object = 'dashboard_openedx';
+                $item->title  = isset( $title[1] ) ? $title[1] : __( 'Dashboard', 'wp-edunext-marketing-site' );
             } else {
-                    $item->object = 'login_openedx';
-                    $item->title  = isset( $title[0] ) ? $title[0] : __( 'Login', 'wp-edunext-marketing-site' );
+                $item->object = 'login_openedx';
+                $item->title  = isset( $title[0] ) ? $title[0] : __( 'Login', 'wp-edunext-marketing-site' );
             }
         }
 
-            // We also call the function here for themes that don't respect the nav_menu_link_attributes filter.
-            $cookie_data = $this->get_openedx_info_cookie_data();
-            call_user_func( array( $this, 'handle_' . $item->object ), [], $item, [], $cookie_data );
+        // We also call the function here for themes that don't respect the nav_menu_link_attributes filter.
+        $cookie_data = $this->get_openedx_info_cookie_data();
+        call_user_func( array( $this, 'handle_' . $item->object ), [], $item, [], $cookie_data );
     }
 
 
-        /**
-         * Work on the final list of menu items
-         *
-         * @return array
-         */
+    /**
+     * Work on the final list of menu items
+     *
+     * @return array
+     */
     function edunext_filter_invalid_items( $items, $menu, $args ) {
 
-        if ( is_admin() ) {
+        $client_side_render = $this->client_side_render();
+        if ( is_admin() || $client_side_render ) {
             return $items;
         }
 
-            $is_user_logged_in = $this->get_openedx_loggedin();
+        $is_user_logged_in = $this->get_openedx_loggedin();
 
         foreach ( $items as $key => $item ) {
             if ( $item->type === 'wp-edunext-marketing-site' ) {
@@ -253,29 +269,29 @@ class WP_eduNEXT_Marketing_Site_Menu {
                     unset( $items[ $key ] );
             }
         }
-            return $items;
+        return $items;
     }
 
 
-        /**
-         * Register new metabox for the menu items
-         *
-         * @return void
-         */
+    /**
+     * Register new metabox for the menu items
+     *
+     * @return void
+     */
     public function edunext_add_menu_metabox() {
             add_meta_box( 'edunext_menu_items', __( 'Open edX WP Integrator', 'wp-edunext-marketing-site' ), array( $this, 'edunext_nav_menu_metabox' ), 'nav-menus', 'side', 'default' );
     }
 
 
-        /**
-         * Create the metabox at the menu side panel
-         *
-         * This function works thanks to cartpauj at https://caseproof.com
-         * Who in turn cites Grégory Viguier from https://screenfeed.fr as the author of the original code.
-         * Thanks to both of you! <3
-         *
-         * @return void
-         */
+    /**
+     * Create the metabox at the menu side panel
+     *
+     * This function works thanks to cartpauj at https://caseproof.com
+     * Who in turn cites Grégory Viguier from https://screenfeed.fr as the author of the original code.
+     * Thanks to both of you! <3
+     *
+     * @return void
+     */
     public function edunext_nav_menu_metabox( $object ) {
             global $nav_menu_selected_id;
 
@@ -308,11 +324,11 @@ class WP_eduNEXT_Marketing_Site_Menu {
     }
 
 
-        /**
-         * Read the configured cookie and find the user data from it
-         *
-         * @return array           Associative array holding the cookie data
-         */
+    /**
+     * Read the configured cookie and find the user data from it
+     *
+     * @return array           Associative array holding the cookie data
+     */
     public function get_openedx_info_cookie_data() {
             $user_info_cookie = get_option( 'wpt_user_info_cookie_name' );
             $cookie_data      = [];
@@ -330,11 +346,11 @@ class WP_eduNEXT_Marketing_Site_Menu {
     }
 
 
-        /**
-         * Read the configured cookie and find if the user is logged in
-         *
-         * @return bool
-         */
+    /**
+     * Read the configured cookie and find if the user is logged in
+     *
+     * @return bool
+     */
     public function get_openedx_loggedin() {
             $is_user_logged_in   = false;
             $is_logged_in_cookie = get_option( 'wpt_is_logged_in_cookie_name' );
@@ -346,27 +362,27 @@ class WP_eduNEXT_Marketing_Site_Menu {
             return $is_user_logged_in;
     }
 
-        /**
-         * Create the correct links when called from the site
-         *
-         * @return object           attributes of the current menu item
-         */
+    /**
+     * Create the correct links when called from the site
+     *
+     * @return object           attributes of the current menu item
+     */
     public function edunext_nav_menu_filter( $atts, $item, $args ) {
 
-            // If the link is not one of ours, then just leave.
+        // If the link is not one of ours, then just leave.
         if ( $item->type === 'wp-edunext-marketing-site' ) {
-                $cookie_data = $this->get_openedx_info_cookie_data();
-                return call_user_func( array( $this, 'handle_' . $item->object ), $atts, $item, $args, $cookie_data );
+            $cookie_data = $this->get_openedx_info_cookie_data();
+            return call_user_func( array( $this, 'handle_' . $item->object ), $atts, $item, $args, $cookie_data );
         }
 
-            return $atts;
+        return $atts;
     }
 
-        /**
-         * Create a link to the lms login page
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to the lms login page
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_login_openedx( $atts, $item, $args, $data ) {
             $base_url       = get_option( 'wpt_lms_base_url' );
             $login_location = get_option( 'wpt_advanced_login_location' );
@@ -380,11 +396,11 @@ class WP_eduNEXT_Marketing_Site_Menu {
     }
 
 
-        /**
-         * Create a link to the lms register page
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to the lms register page
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_register_openedx( $atts, $item, $args, $data ) {
             $base_url              = get_option( 'wpt_lms_base_url' );
             $registration_location = get_option( 'wpt_advanced_registration_location' );
@@ -398,116 +414,171 @@ class WP_eduNEXT_Marketing_Site_Menu {
     }
 
 
-        /**
-         * Create a link to the dashboard page with the username as title
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to the dashboard page with the username as title
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_menu_openedx( $atts, $item, $args, $data ) {
-            $base_url           = get_option( 'wpt_lms_base_url' );
-            $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
+        $base_url           = get_option( 'wpt_lms_base_url' );
+        $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
 
-            // Modify the $item directly for themes using $item->url.
-        if ( isset( $data['username'] ) ) {
+        if ( $this->client_side_render() ) {
+            $item->title = '#__USERNAME__';
+        } else {
+            if ( isset( $data['username'] ) ) {
                 $item->title = $data['username'];
+            }
         }
-            $item->url = $base_url . '/' . $dashboard_location;
 
-            // Change the attrs for regular WordPress.
-            $atts['href'] = $base_url . '/' . $dashboard_location;
-            return $atts;
+        $item->url = $base_url . '/' . $dashboard_location;
+
+        // Change the attrs for regular WordPress.
+        $atts['href'] = $base_url . '/' . $dashboard_location;
+        return $atts;
     }
 
 
-        /**
-         * Create a link to resume block written in the cookie
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to resume block written in the cookie
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_resume_openedx( $atts, $item, $args, $data ) {
-        if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['resume_block'] ) ) {
-                // Modify the $item directly for themes using $item->url.
-                $item->url = $data['header_urls']['resume_block'];
-                // Change the attrs for regular WordPress.
-                $atts['href'] = $data['header_urls']['resume_block'];
+
+        if ( $this->client_side_render() ) {
+            $item->url    = '#__RESUME_BLOCK__';
+            $atts['href'] = '#__RESUME_BLOCK__';
+        } else {
+            if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['resume_block'] ) ) {
+                    // Modify the $item directly for themes using $item->url.
+                    $item->url = $data['header_urls']['resume_block'];
+                    // Change the attrs for regular WordPress.
+                    $atts['href'] = $data['header_urls']['resume_block'];
+            }
         }
-            return $atts;
+        return $atts;
     }
 
 
-        /**
-         * Create a link to the resume block written in the cookie
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to the resume block written in the cookie
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_dashboard_openedx( $atts, $item, $args, $data ) {
-            $base_url           = get_option( 'wpt_lms_base_url' );
-            $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
+        $base_url           = get_option( 'wpt_lms_base_url' );
+        $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
 
-            // Modify the $item directly for themes using $item->url.
-            $item->url = $base_url . '/' . $dashboard_location;
-
-            // Change the attrs for regular WordPress.
-            $atts['href'] = $base_url . '/' . $dashboard_location;
-            return $atts;
+        // Modify the $item directly for themes using $item->url.
+        $item->url = $base_url . '/' . $dashboard_location;
+        // Change the attrs for regular WordPress.
+        $atts['href'] = $base_url . '/' . $dashboard_location;
+        return $atts;
     }
 
 
-        /**
-         * Create a link to the profile page written in the cookie
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to the profile page written in the cookie
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_profile_openedx( $atts, $item, $args, $data ) {
-        if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['learner_profile'] ) ) {
+
+        if ( $this->client_side_render() ) {
+            $item->url    = '#__LEARNER_PROFILE__';
+            $atts['href'] = '#__LEARNER_PROFILE__';
+        } else {
+            if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['learner_profile'] ) ) {
                 // Modify the $item directly for themes using $item->url.
                 $item->url = $data['header_urls']['learner_profile'];
                 // Change the attrs for regular WordPress.
                 $atts['href'] = $data['header_urls']['learner_profile'];
+            }
         }
-            return $atts;
+
+        return $atts;
     }
 
 
-        /**
-         * Create a link to the account settings page written in the cookie
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to the account settings page written in the cookie
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_account_openedx( $atts, $item, $args, $data ) {
-        if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['account_settings'] ) ) {
+        if ( $this->client_side_render() ) {
+            $item->url    = '#__ACCOUNT_SETTINGS__';
+            $atts['href'] = '#__ACCOUNT_SETTINGS__';
+        } else {
+            if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['account_settings'] ) ) {
                 // Modify the $item directly for themes using $item->url.
                 $item->url = $data['header_urls']['account_settings'];
                 // Change the attrs for regular WordPress.
                 $atts['href'] = $data['header_urls']['account_settings'];
+            }
         }
-            return $atts;
+        return $atts;
     }
 
 
-        /**
-         * Create a link to the signout page written in the cookie
-         *
-         * @return object              attributes for an anchor tag
-         */
+    /**
+     * Create a link to the signout page written in the cookie
+     *
+     * @return object              attributes for an anchor tag
+     */
     public function handle_signout_openedx( $atts, $item, $args, $data ) {
-        if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['logout'] ) ) {
-                // Modify the $item directly for themes using $item->url.
-                $item->url = $data['header_urls']['logout'];
-                // Change the attrs for regular WordPress.
-                $atts['href'] = $data['header_urls']['logout'];
+        if ( $this->client_side_render() ) {
+            $item->url    = '#__LOGOUT__';
+            $atts['href'] = '#__LOGOUT__';
+        } else {
+            if ( isset( $data['header_urls'] ) && isset( $data['header_urls']['logout'] ) ) {
+                    // Modify the $item directly for themes using $item->url.
+                    $item->url = $data['header_urls']['logout'];
+                    // Change the attrs for regular WordPress.
+                    $atts['href'] = $data['header_urls']['logout'];
+            }
         }
-            return $atts;
+        return $atts;
     }
 
 
-        /**
-         * Making permalinks also respond to the integrator functions.
-         *
-         * @return string              the permalink url
-         */
+    /**
+     * Create a link that can be a regular login link or a dropdown menu with the username.
+     *
+     * @return object              attributes for an anchor tag
+     */
+    public function handle_login_or_menu_openedx( $atts, $item, $args, $data ) {
+        if ( $this->client_side_render() ) {
+            $title       = preg_split( '/\//', $item->title );
+            $given_title = isset( $title[0] ) ? $title[0] : __( 'Login', 'wp-edunext-marketing-site' );
+            $item->title = '{{' . $given_title . '/#__USERNAME__}}';
+        }
+        return $atts;
+    }
+
+
+    /**
+     * Create a link that can be a regular login link or a dropdown menu that says Dashboard
+     *
+     * @return object              attributes for an anchor tag
+     */
+    public function handle_login_or_dash_openedx( $atts, $item, $args, $data ) {
+        if ( $this->client_side_render() ) {
+            $item->title = '{{' . $item->title . '}}';
+        }
+        return $atts;
+    }
+
+
+    /**
+     * Making permalinks also respond to the integrator functions.
+     *
+     * @return string              the permalink url
+     */
     public function edunext_permalink_management( $url, $post, $leavename = false ) {
-        if ( $post->type === 'wp-edunext-marketing-site' ) {
+        $client_side_render = $this->client_side_render();
+        if ( ! $client_side_render && $post->type === 'wp-edunext-marketing-site' ) {
                 $is_user_logged_in = $this->get_openedx_loggedin();
                 $this->process_menu_object( $post, $is_user_logged_in );
                 return $post->url;
@@ -515,5 +586,37 @@ class WP_eduNEXT_Marketing_Site_Menu {
             return $url;
     }
 
+    /**
+     * Load label and url settings of the menu when
+     * the client-side render is activated.
+     *
+     * @return items
+     */
+    public function load_settings_client_side( $items, $menu, $args ) {
+
+        if ( $this->client_side_render() ) {
+            $base_url           = get_option( 'wpt_lms_base_url' );
+            $login_location     = get_option( 'wpt_advanced_login_location' );
+            $register_location  = get_option( 'wpt_advanced_registration_location' );
+            $dashboard_location = get_option( 'wpt_advanced_dashboard_location' );
+
+            wp_enqueue_script( WP_eduNEXT_Marketing_Site()->_token . '-frontend' );
+            wp_localize_script(
+                WP_eduNEXT_Marketing_Site()->_token . '-frontend',
+                'ENEXT_SRV_CS',
+                array(
+                    'user_info_cookie_name'   => get_option( 'wpt_user_info_cookie_name' ),
+                    'is_loggedin_cookie_name' => get_option( 'wpt_is_logged_in_cookie_name' ),
+                    'hide_if_logged_in'       => Edx_Walker_Nav_Menu_Edit::$hide_if_logged_in,
+                    'hide_if_not_logged_in'   => Edx_Walker_Nav_Menu_Edit::$hide_if_not_logged_in,
+                    'dashboard_url'           => $base_url . '/' . $dashboard_location,
+                    'login_url'               => $base_url . '/' . $login_location,
+                    'register_url'            => $base_url . '/' . $register_location,
+                )
+            );
+        }
+
+        return $items;
+    }
 
 }
