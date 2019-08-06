@@ -78,6 +78,7 @@ class WP_EoxCoreApi {
             add_filter( 'wp-edunext-marketing-site_settings_fields', array( $this, 'add_admin_settings' ) );
             add_action( 'eoxapi_after_settings_page_html', array( $this, 'eoxapi_settings_custom_html' ) );
             add_action( 'wp_ajax_save_users_ajax', array( $this, 'save_users_ajax' ) );
+            add_action( 'wp_ajax_refresh_token', array( $this, 'refresh_eox_token' ) );
             add_action( 'wp_ajax_get_users_ajax', array( $this, 'get_users_ajax' ) );
             add_action( 'wp_ajax_get_userinfo_ajax', array( $this, 'get_userinfo_ajax' ) );
             add_action( 'wp_ajax_save_enrollments_ajax', array( $this, 'save_enrollments_ajax' ) );
@@ -148,6 +149,17 @@ class WP_EoxCoreApi {
     }
 
     /**
+     * Called with AJAX function to refresh the stored token
+     */
+    public function refresh_eox_token() {
+        $token = $this->get_access_token( true );
+
+        $this->add_notice( 'notice-success', 'A new token ' . substr( $token, 0, 6 ) . '****** was created on ' . date( DATE_ATOM, time() ) );
+        $this->show_notices();
+        wp_die();
+    }
+
+    /**
      * Called with AJAX function to POST to users API
      */
     public function get_users_ajax() {
@@ -179,14 +191,15 @@ class WP_EoxCoreApi {
     /**
      * Produce an authentication token for the eox api using oauth 2.0
      */
-    public function get_access_token() {
-        $token        = get_option( 'wpt_eox_token', '' );
+    public function get_access_token( $refresh = false ) {
+        $base_url     = get_option( 'wpt_lms_base_url', '' );
+        $cache_key    = 'wpt_eox_token_' . substr( hash( 'sha256', $base_url ), 0, 10 );
+        $token        = get_option( $cache_key, '' );
         $last_checked = get_option( 'last_checked_working', 0 );
         $five_min_ago = time() - 60 * 5;
         if ( $last_checked > $five_min_ago ) {
             return $token;
         }
-        $base_url = get_option( 'wpt_lms_base_url', '' );
         if ( $token !== '' ) {
             $url      = $base_url . '/oauth2/access_token/' . $token . '/';
             $response = wp_remote_get( $url );
@@ -223,7 +236,7 @@ class WP_EoxCoreApi {
             return new WP_Error( 'broke', __( "Couldn't call the API to get a new", 'eox-core-api' ), $response );
         }
         $token = $json_reponse->access_token;
-        update_option( 'wpt_eox_token', $token );
+        update_option( $cache_key, $token );
         return $token;
     }
 
