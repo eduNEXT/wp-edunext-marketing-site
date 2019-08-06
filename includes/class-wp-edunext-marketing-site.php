@@ -277,9 +277,9 @@ class WP_eduNEXT_Marketing_Site {
             'user_info_cookie_name'      => get_option( 'wpt_user_info_cookie_name' ),
             'is_loggedin_cookie_name'    => get_option( 'wpt_is_logged_in_cookie_name' ),
             'lms_base_url'               => get_option( 'wpt_lms_base_url' ),
-            'enrollment_api_location'    => get_option( 'wpt_enrollment_api_location', '/api/enrollment/v1/' ),
-            'user_enrollment_url'        => get_option( 'wpt_user_enrollment_url', '/register?course_id=%course_id%&enrollment_action=enroll' ),
-            'course_has_not_started_url' => get_option( 'wpt_course_has_not_started_url', '/dashboard' ),
+            'enrollment_api_location'    => get_option( 'wpt_enrollment_api_location' ),
+            'user_enrollment_url'        => get_option( 'wpt_user_enrollment_url' ),
+            'course_has_not_started_url' => get_option( 'wpt_course_has_not_started_url' ),
             'wp_logout_url'              => false,
         );
         if ( get_option( 'wpt_enable_session_existence_sync' ) && ! is_admin() ) {
