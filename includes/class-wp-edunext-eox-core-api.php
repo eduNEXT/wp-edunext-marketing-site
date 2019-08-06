@@ -78,6 +78,7 @@ class WP_EoxCoreApi {
             add_filter( 'wp-edunext-marketing-site_settings_fields', array( $this, 'add_admin_settings' ) );
             add_action( 'eoxapi_after_settings_page_html', array( $this, 'eoxapi_settings_custom_html' ) );
             add_action( 'wp_ajax_save_users_ajax', array( $this, 'save_users_ajax' ) );
+            add_action( 'wp_ajax_refresh_token', array( $this, 'refresh_eox_token' ) );
             add_action( 'wp_ajax_get_users_ajax', array( $this, 'get_users_ajax' ) );
             add_action( 'wp_ajax_get_userinfo_ajax', array( $this, 'get_userinfo_ajax' ) );
             add_action( 'wp_ajax_save_enrollments_ajax', array( $this, 'save_enrollments_ajax' ) );
@@ -143,6 +144,18 @@ class WP_EoxCoreApi {
                 $this->create_user( $user );
             }
         }
+        $this->show_notices();
+        wp_die();
+    }
+
+    /**
+     * Called with AJAX function to refresh the stored token
+     */
+    public function refresh_eox_token() {
+        update_option( 'wpt_eox_token', '' );
+        $token = $this->get_access_token();
+
+        $this->add_notice( 'notice-success', 'A new token ' .substr($token, 0, 6) . '****** was created on ' . date(DATE_ATOM, time() )  );
         $this->show_notices();
         wp_die();
     }

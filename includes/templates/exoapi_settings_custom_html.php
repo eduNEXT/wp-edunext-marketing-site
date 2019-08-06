@@ -140,3 +140,29 @@ jQuery(function ($) {
     $('#eox-select-api').change();
 })
 </script>
+
+
+<div class="eoxapis-container">
+    <h2>Token information</h2>
+    <p><b>token: </b>
+    <?php
+    $token = get_option( 'wpt_eox_token', '' );
+    $lenght = strlen($token);
+    echo substr($token, 0, $lenght / 5) . '*******' . substr($token, $lenght * 4 / 5, $lenght) ;
+    ?> <a id="token-refresh" href="#">Refresh</a> </p>
+    <p><b>last check: </b><?php echo date(DATE_ATOM, get_option( 'last_checked_working', 0 ) ); ?></p>
+</div>
+<script>
+jQuery(function ($) {
+    $('#token-refresh').click(function (e) {
+        var data = {
+            'action': 'refresh_token',
+            '_ajax_nonce': "<?php echo wp_create_nonce( 'eoxapi' ); ?>"
+        };
+        jQuery.post(ajaxurl, data, function(html) {
+            $('.notice').remove();
+            $('#wp-edunext-marketing-site_settings > h2').first().after(html);
+        });
+    });
+})
+</script>
