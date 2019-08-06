@@ -79,6 +79,15 @@ class WP_eduNEXT_Marketing_Site {
     public $assets_url;
 
     /**
+     * Flag to mark the script as enqueued already.
+     *
+     * @var     boolean
+     * @access  public
+     * @since   2.0.0
+     */
+    public $commons_enqueued = false;
+
+    /**
      * Suffix for Javascripts.
      *
      * @var     string
@@ -134,6 +143,11 @@ class WP_eduNEXT_Marketing_Site {
         // WooCommerce integration.
         if ( get_option( 'wpt_enable_woocommerce_integration' ) ) {
             $this->woocommerce = new WP_eduNEXT_Woocommerce_Integration( $this );
+        }
+
+        // The option to remove WP sessions if no openedx session exists.
+        if ( get_option( 'wpt_enable_session_existence_sync' ) ) {
+            add_action( 'init', array( $this, 'enqueue_commons_script' ) );
         }
 
         // Add wp-admin.
@@ -254,20 +268,29 @@ class WP_eduNEXT_Marketing_Site {
      * @return  void
      */
     public function enqueue_commons_script( $value = '' ) {
+        if ( $this->$commons_enqueued ) {
+            return;
+        }
         wp_register_script( 'edunext_commons', esc_url( $this->assets_url ) . 'js/commons' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
+        $options = array(
+            'user_info_cookie_name'      => get_option( 'wpt_user_info_cookie_name' ),
+            'is_loggedin_cookie_name'    => get_option( 'wpt_is_logged_in_cookie_name' ),
+            'lms_base_url'               => get_option( 'wpt_lms_base_url' ),
+            'enrollment_api_location'    => get_option( 'wpt_enrollment_api_location' ),
+            'user_enrollment_url'        => get_option( 'wpt_user_enrollment_url' ),
+            'course_has_not_started_url' => get_option( 'wpt_course_has_not_started_url' ),
+            'wp_logout_url'              => false,
+        );
+        if ( get_option( 'wpt_enable_session_existence_sync' ) && ! is_admin() ) {
+            $options['wp_logout_url'] = wp_logout_url();
+        }
         wp_localize_script(
             'edunext_commons',
             'ENEXT_SRV',
-            array(
-                'user_info_cookie_name'      => get_option( 'wpt_user_info_cookie_name' ),
-                'is_loggedin_cookie_name'    => get_option( 'wpt_is_logged_in_cookie_name' ),
-                'lms_base_url'               => get_option( 'wpt_lms_base_url' ),
-                'enrollment_api_location'    => get_option( 'wpt_enrollment_api_location', '/api/enrollment/v1/' ),
-                'user_enrollment_url'        => get_option( 'wpt_user_enrollment_url', '/register?course_id=%course_id%&enrollment_action=enroll' ),
-                'course_has_not_started_url' => get_option( 'wpt_course_has_not_started_url', '/dashboard' ),
-            )
+            $options
         );
         wp_enqueue_script( 'edunext_commons' );
+        $this->$commons_enqueued = true;
     }
     /**
      * Load shortcodes.

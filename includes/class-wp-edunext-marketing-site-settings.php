@@ -198,8 +198,17 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'description'      => __( 'This is an advanced feature only supported for eduNEXT customers. Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
                     'type'             => 'text',
                     'default'          => '/api/enrollment/v1/',
-                    'placeholder'      => '',
+                    'placeholder'      => '/api/enrollment/v1/',
                     'advanced_setting' => true,
+                ),
+                array(
+                    'id'               => 'enable_session_existence_sync',
+                    'label'            => __( 'Log out of WP when openedx is not logged in', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'This will force the users to login on openedx to mantain a valid session on WordPress.', 'wp-edunext-marketing-site' ),
+                    'type'             => 'checkbox',
+                    'default'          => false,
+                    'placeholder'      => '',
+                    'advanced_setting' => false,
                 ),
             ),
         );
@@ -333,7 +342,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                 array(
                     'id'               => 'user_enrollment_url',
                     'label'            => __( 'URL for the enrollment endpoint', 'wp-edunext-marketing-site' ),
-                    'description'      => __( 'This is an advanced featured for eduNEXT customers. Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'This is an advanced featured for eduNEXT customers. Normally you don\'t need to change it. Defaults to: /register?course_id=%course_id%&enrollment_action=enroll.', 'wp-edunext-marketing-site' ),
                     'type'             => 'text',
                     'default'          => '/register?course_id=%course_id%&enrollment_action=enroll',
                     'placeholder'      => '',
@@ -443,7 +452,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'description'      => __( 'URL to direct used to direct users to when course has not yet started. Normally you don\'t need to change it.', 'wp-edunext-marketing-site' ),
                     'type'             => 'text',
                     'default'          => '/dashboard',
-                    'placeholder'      => __( '', 'wp-edunext-marketing-site' ),
+                    'placeholder'      => __( '/dashboard', 'wp-edunext-marketing-site' ),
                     'advanced_setting' => true,
                 ),
                 array(
