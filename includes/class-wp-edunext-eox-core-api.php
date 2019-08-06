@@ -353,7 +353,7 @@ class WP_EoxCoreApi {
                 $this->add_notice( 'notice-success', $success_message . ' <i>(' . $ref . ')</i>' );
                 return json_decode( $response['body'] );
             }
-            if (is_array($errors) || is_object($errors)) {
+            if ( is_array( $errors ) || is_object( $errors ) ) {
                 foreach ( $errors as $err ) {
                     $this->add_notice( 'error', $err );
                 }
