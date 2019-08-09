@@ -192,15 +192,19 @@ class WP_EoxCoreApi {
      * Produce an authentication token for the eox api using oauth 2.0
      */
     public function get_access_token( $refresh = false ) {
-        $base_url     = get_option( 'wpt_lms_base_url', '' );
-        $cache_key    = 'wpt_eox_token_' . substr( hash( 'sha256', $base_url ), 0, 10 );
-        $token        = get_option( $cache_key, '' );
-        $last_checked = get_option( 'last_checked_working', 0 );
-        $five_min_ago = time() - 60 * 5;
-        if ( $last_checked > $five_min_ago ) {
-            return $token;
+        $base_url  = get_option( 'wpt_lms_base_url', '' );
+        $hash      = substr( hash( 'sha256', $base_url ), 0, 10 );
+        $cache_key = 'wpt_eox_token_' . $hash;
+        if ( $refresh ) {
+            update_option( $cache_key, '' );
         }
+        $token = get_option( $cache_key, '' );
         if ( $token !== '' ) {
+            $last_checked = get_option( 'token_last_checked_working', 0 );
+            $five_min_ago = time() - 60 * 5;
+            if ( $last_checked > $five_min_ago ) {
+                return $token;
+            }
             $url      = $base_url . '/oauth2/access_token/' . $token . '/';
             $response = wp_remote_get( $url );
             if ( is_wp_error( $response ) ) {
@@ -212,7 +216,7 @@ class WP_EoxCoreApi {
             $json_reponse = json_decode( $response['body'] );
             if ( ! isset( $json_reponse->error ) ) {
                 // Cache the last time it was succesfully checked.
-                update_option( 'last_checked_working', time() );
+                update_option( 'token_last_checked_working', time() );
                 // Cached token its still valid, return it.
                 return $token;
             }
