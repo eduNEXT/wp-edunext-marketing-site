@@ -23,6 +23,9 @@
   <!-- Exclude the code standard when installed locally. -->
   <exclude-pattern>/wpcs/*</exclude-pattern>
 
+  <!-- Exclude the Build directory. -->
+  <exclude-pattern>/build/*</exclude-pattern>
+
   <!-- Include the WordPress-Extra standard. -->
   <rule ref="WordPress-Extra">
     <!--
@@ -30,6 +33,7 @@
     -->
     <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
     <exclude name="WordPress.PHP.YodaConditions"/>
+    <exclude name="Generic.Classes.DuplicateClassName.Found"/>
     <!--
     This following rules are only excluded so that we get the linter running.
     we need to get our game together and correct them.

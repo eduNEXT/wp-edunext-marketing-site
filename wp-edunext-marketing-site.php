@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Open edX LMS and WordPress integrator
- * Version: 2.0
+ * Version: 2.1.1
  * Description: Set up your WordPress site as the front end site or marketing site for your online learning initiative powered by the open edX platform.
  * Author: eduNEXT
  * Author URI: https://edunext.co/
@@ -42,7 +42,7 @@ require_once 'includes/lib/class-wp-edunext-marketing-site-menu-items-attributes
  * @return object WP_eduNEXT_Marketing_Site
  */
 function WP_eduNEXT_Marketing_Site() {
-    $instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '2.0.0' );
+    $instance = WP_eduNEXT_Marketing_Site::instance( __FILE__, '2.1.1' );
 
     if ( is_null( $instance->settings ) ) {
         $instance->settings = WP_eduNEXT_Marketing_Site_Settings::instance( $instance );

@@ -106,7 +106,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
 
         if ( $parent_file === $this->parent->_token . '_settings' ) {
             if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
-                $tab         .= $_GET['tab'];
+                $tab          = $_GET['tab'];
                 $submenu_file = 'admin.php?page=' . $parent_file . '&tab=' . $tab;
             }
         }
@@ -745,8 +745,10 @@ class WP_eduNEXT_Marketing_Site_Settings {
     }
 
     public function settings_section( $section ) {
-        $html = '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n";
-        echo $html;
+        if ( isset( $this->settings[ $section['id'] ]['description'] ) ) {
+            $html = '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n";
+            echo $html;
+        }
     }
 
     /**

@@ -202,7 +202,8 @@ class WP_eduNEXT_Marketing_Site_Admin_API {
         }
 
         switch ( $field['type'] ) {
-
+            case 'empty':
+                break;
             case 'checkbox_multi':
             case 'radio':
             case 'select_multi':

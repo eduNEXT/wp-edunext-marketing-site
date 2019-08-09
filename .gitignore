@@ -1,2 +1,22 @@
 svn/*
+
+# Build Files
+build/
+*.zip
+
+# Python scripts virtualenv
+venv/
+venv3/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Linting
 *.phar
+wpcs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
