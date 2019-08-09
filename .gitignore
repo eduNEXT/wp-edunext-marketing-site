@@ -4,6 +4,10 @@ svn/*
 build/
 *.zip
 
+# Python scripts virtualenv
+venv/
+venv3/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

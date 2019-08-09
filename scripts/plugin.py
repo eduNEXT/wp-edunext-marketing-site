@@ -4,6 +4,7 @@ import argparse
 from os import mkdir, path, symlink, mknod, remove, unlink, link, readlink, getcwd
 from shutil import rmtree, copy, copytree, make_archive
 import glob
+import re
 import sys
 import configparser
 """"
@@ -77,6 +78,7 @@ class Plugin():
                 target = path.join(include_path, folder_path)
                 copy(file, target)
 
+            semver = "0.0.0"
             # Insert correct plugin name - version
             for file in self.versioning_files:
                 file_path = path.join(version_path, file)
@@ -87,7 +89,12 @@ class Plugin():
                     f.write(versioned_text)
                     f.truncate()
 
-            zip_name = path.join(self.build_folder, version_name)
+                    # Find the version written at the plugin definition
+                    match = re.search(r'Version: ([\d\.]+)', versioned_text)
+                    if match:
+                        semver = match.group(1)
+
+            zip_name = path.join(self.build_folder, "{}-{}".format(version_name, semver))
             make_archive(zip_name, "zip", path_zip)
 
     def clean_env(self):
