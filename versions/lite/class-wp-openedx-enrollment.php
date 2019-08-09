@@ -47,6 +47,8 @@ class WP_Openedx_Enrollment {
         $this->parent->register_post_type( 'openedx_enrollment', 'Open edX Enrollment Requests', 'Open edX Enrollment Request', '', $enrollment_cpt_options );
 
         add_action( 'init', array( $this, 'register_status' ), 10, 3 );
+        add_action( 'woocommerce_after_settings_page_html', array( $this, 'overlay' ) );
+        add_action( 'manage_openedx_enrollment_posts_columns', array( $this, 'overlay' ) );
     }
 
     /**
@@ -132,7 +134,6 @@ class WP_Openedx_Enrollment {
 
         // List view.
         add_filter( 'manage_openedx_enrollment_posts_columns', array( $this, 'add_columns_to_list_view' ) );
-        add_filter( 'manage_openedx_enrollment_posts_columns', array( $this, 'overlay' ) );
     }
 
     /**

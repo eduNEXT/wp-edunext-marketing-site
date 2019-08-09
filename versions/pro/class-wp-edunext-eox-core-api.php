@@ -92,7 +92,13 @@ class WP_EoxCoreApi {
         $settings['eoxapi'] = array(
             'title'       => __( 'EOX API', 'wp-edunext-marketing-site' ),
             'description' => __( '', 'wp-edunext-marketing-site' ),
-            'fields'      => array(),
+            'fields'      => array(
+                array(
+                    'id'    => 'dummy option',
+                    'label' => '',
+                    'type'  => 'empty',
+                ),
+            ),
         );
         return $settings;
     }

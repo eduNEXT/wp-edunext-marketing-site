@@ -268,7 +268,7 @@ class WP_eduNEXT_Marketing_Site {
      * @return  void
      */
     public function enqueue_commons_script( $value = '' ) {
-        if ( $this->$commons_enqueued ) {
+        if ( $this->commons_enqueued ) {
             return;
         }
         wp_register_script( 'edunext_commons', esc_url( $this->assets_url ) . 'js/commons' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
@@ -290,7 +290,7 @@ class WP_eduNEXT_Marketing_Site {
             $options
         );
         wp_enqueue_script( 'edunext_commons' );
-        $this->$commons_enqueued = true;
+        $this->commons_enqueued = true;
     }
     /**
      * Load shortcodes.
