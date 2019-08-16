@@ -110,14 +110,21 @@ class WP_eduNEXT_Woocommerce_Integration {
      */
     public function action_assert_logged_openedx_checkout() {
         wp_enqueue_script( 'wc-workflow' );
+        $functions_array = array( 'assertOpenEdxLoggedInWithData', 'addInfoToCheckout' );
+
+        if ( get_option( 'wpt_enable_wc_checkout_client_prefill' ) ) {
+            array_push($functions_array, 'prefillVisibleFields');
+        }
+
         wp_localize_script(
             'wc-workflow',
             'ENEXT_SRV',
             array(
-                'run_functions'      => array( 'assertOpenEdxLoggedInWithData', 'addInfoToCheckout' ),
+                'run_functions'      => $functions_array,
                 'lms_base_url'       => get_option( 'wpt_lms_base_url' ),
                 'lms_wp_return_path' => get_option( 'wpt_lms_wp_return_path_checkout', '/checkout' ),
                 'lms_login_path'     => get_option( 'wpt_advanced_login_location' ),
+                'prefill_mappings'   => get_option( 'wpt_enable_wc_checkout_client_prefill_mappings' ),
             )
         );
     }

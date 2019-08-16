@@ -675,6 +675,24 @@ class WP_eduNEXT_Marketing_Site_Settings {
                     'default'     => '/checkout',
                     'placeholder' => '/cart',
                 ),
+                array(
+                    'id'               => 'enable_wc_checkout_client_prefill',
+                    'label'            => __( 'Enable Checkout client-side fields pre-filling', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'Enables the pre-filling of the checkout form fields by the calls to the Open edX accounts API. Requires the users to have a valid opened session.', 'wp-edunext-marketing-site' ),
+                    'type'             => 'checkbox',
+                    'default'          => false,
+                    'placeholder'      => '',
+                    'advanced_setting' => true,
+                ),
+                array(
+                    'id'               => 'enable_wc_checkout_client_prefill_mappings',
+                    'label'            => __( 'User Profile fields mapping for client-side pre-filling', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'Mapping of user fields for pre-filling, from the accounts api in Open edX to the to Woocommerce chekout form fields.', 'wp-edunext-marketing-site', 'wp-edunext-marketing-site' ),
+                    'type'             => 'textarea',
+                    'default'          => '{"billing_email": "email" , "billing_first_name": "name"}',
+                    'placeholder'      => '{"billing_email": "email" , "billing_first_name": "name", ...}',
+                    'advanced_setting' => true,
+                ),
             ),
         );
 
