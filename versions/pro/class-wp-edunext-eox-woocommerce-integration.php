@@ -114,7 +114,7 @@ class WP_eduNEXT_Woocommerce_Integration {
             'wc-workflow',
             'ENEXT_SRV',
             array(
-                'run_functions'      => array( 'assertOpenEdxLoggedIn', 'addUsernameToCheckout' ),
+                'run_functions'      => array( 'assertOpenEdxLoggedInWithData', 'addInfoToCheckout' ),
                 'lms_base_url'       => get_option( 'wpt_lms_base_url' ),
                 'lms_wp_return_path' => get_option( 'wpt_lms_wp_return_path_checkout', '/checkout' ),
                 'lms_login_path'     => get_option( 'wpt_advanced_login_location' ),
@@ -130,6 +130,12 @@ class WP_eduNEXT_Woocommerce_Integration {
     public function save_custom_checkout_openedx_hidden_fields( $order_id ) {
         if ( ! empty( $_POST['wpt_oer_username'] ) ) {
             update_post_meta( $order_id, 'oer_username', sanitize_text_field( $_POST['wpt_oer_username'] ) );
+        }
+        if ( ! empty( $_POST['wpt_oer_name'] ) ) {
+            update_post_meta( $order_id, 'oer_name', sanitize_text_field( $_POST['wpt_oer_name'] ) );
+        }
+        if ( ! empty( $_POST['wpt_oer_email'] ) ) {
+            update_post_meta( $order_id, 'oer_email', sanitize_text_field( $_POST['wpt_oer_email'] ) );
         }
     }
 
