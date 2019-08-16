@@ -139,6 +139,7 @@ class WP_Openedx_Enrollment {
             'oer_username'     => sanitize_text_field( $_POST['oer_username'] ),
             'oer_mode'         => sanitize_text_field( $_POST['oer_mode'] ),
             'oer_request_type' => sanitize_text_field( $_POST['oer_request_type'] ),
+            'oer_order_id'     => sanitize_text_field( $_POST['oer_order_id'] ),
         );
 
         $oer_action = sanitize_text_field( $_POST['oer_action'] );
@@ -184,6 +185,7 @@ class WP_Openedx_Enrollment {
         $oer_username     = $oerarr['oer_username'];
         $oer_mode         = $oerarr['oer_mode'];
         $oer_request_type = $oerarr['oer_request_type'];
+        $oer_order_id     = $oerarr['oer_order_id'];
 
         // We need to have all 3 required params to continue.
         $oer_user_reference = $oer_email || $oer_username;
@@ -196,6 +198,7 @@ class WP_Openedx_Enrollment {
         update_post_meta( $post_id, 'email', $oer_email );
         update_post_meta( $post_id, 'username', $oer_username );
         update_post_meta( $post_id, 'mode', $oer_mode );
+        update_post_meta( $post_id, 'order_id', $oer_order_id );
 
         if ( $oer_request_type === 'enroll' ) {
             update_post_meta( $post_id, 'is_active', true );
@@ -577,6 +580,7 @@ class WP_Openedx_Enrollment {
         $username  = get_post_meta( $post_id, 'username', true );
         $mode      = get_post_meta( $post_id, 'mode', true );
         $is_active = get_post_meta( $post_id, 'is_active', true );
+        $order_id  = get_post_meta( $post_id, 'order_id', true );
 
         $new_oer = false;
         if ( ! $course_id && ! $email && ! $username ) {
@@ -673,13 +677,13 @@ class WP_Openedx_Enrollment {
                     <td>
 
                         <select id="openedx_enrollment_is_active" name="oer_request_type">
-                            <option value="enroll" 
+                            <option value="enroll"
                             <?php
                             if ( $is_active or $new_oer ) {
                                 echo( 'selected="selected"' );}
                             ?>
                             ><?php esc_html_e( 'Enroll', 'wp-edunext-marketing-site' ); ?></option>
-                            <option value="unenroll" 
+                            <option value="unenroll"
                             <?php
                             if ( ! $is_active and ! $new_oer ) {
                                 echo( 'selected="selected"' );}
@@ -687,6 +691,18 @@ class WP_Openedx_Enrollment {
                             ><?php esc_html_e( 'Un-enroll', 'wp-edunext-marketing-site' ); ?></option>
                         </select>
 
+                    </td>
+                </tr>
+                <tr>
+                    <td class="first"><label for="openedx_enrollment_order_id">WC Order ID</label></td>
+                    <td>
+                        <div style="width: 30%; display: inline-table;">
+                           <input type="text" id="openedx_enrollment_order_id" name="oer_order_id"
+                            value="<?php echo( $order_id ); ?>">
+                        </div>
+                        <div style="width: 30%; display: inline-table;">
+                            <?php edit_post_link('view', '<p>', '</p>', $order_id); ?>
+                        </div>
                     </td>
                 </tr>
 

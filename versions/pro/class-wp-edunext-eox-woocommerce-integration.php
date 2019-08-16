@@ -314,6 +314,7 @@ class WP_eduNEXT_Woocommerce_Integration {
                 'oer_email'        => sanitize_text_field( $billing_email ),
                 'oer_username'     => sanitize_text_field( $openedx_username ),
                 'oer_request_type' => 'enroll',
+                'oer_order_id'     => $order_id,
             );
             $post   = $this->parent->openedx_enrollment->insert_new( $oerarr, $oer_action );
 
