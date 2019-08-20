@@ -239,7 +239,6 @@ class WP_eduNEXT_Woocommerce_Integration {
 
         // We need to get the User info first.
         $billing_email    = $order->get_billing_email();  // this is what comes from the form.
-        $wp_user_email    = $order->get_user()->email;  // this the wp-user that made the purchase.
         $openedx_username = get_post_meta( $order_id, 'oer_username', true );  // this is the result of calling the user/v1/me API.
 
         foreach ( $order->get_items() as $key => $item ) {
@@ -322,6 +321,17 @@ class WP_eduNEXT_Woocommerce_Integration {
                 // Call $fulfillment_action as a global passing the $oearr and the $post.
                 wp_die( 'Not implemented yet.' );
             }
+
+            do_action( 'openedx_enrollment_request_fulfilled', $oerarr, $post, $oer_action, $product, $order_id );
+
+            /*
+            Inline example on how to use this action.
+
+            function function_of_customer( $oerarr, $oer_obj, $oer_action, $product, $order_id ) {
+                // Write your code here.
+            }
+            add_action( 'openedx_enrollment_request_fulfilled', 'function_of_customer', 10, 5 );
+            */
         }
     }
 }
