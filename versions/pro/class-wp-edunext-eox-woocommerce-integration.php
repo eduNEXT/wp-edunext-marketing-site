@@ -110,14 +110,21 @@ class WP_eduNEXT_Woocommerce_Integration {
      */
     public function action_assert_logged_openedx_checkout() {
         wp_enqueue_script( 'wc-workflow' );
+        $functions_array = array( 'assertOpenEdxLoggedInWithData', 'addInfoToCheckout' );
+
+        if ( get_option( 'wpt_enable_wc_checkout_client_prefill' ) ) {
+            array_push( $functions_array, 'prefillVisibleFields' );
+        }
+
         wp_localize_script(
             'wc-workflow',
             'ENEXT_SRV',
             array(
-                'run_functions'      => array( 'assertOpenEdxLoggedIn', 'addUsernameToCheckout' ),
+                'run_functions'      => $functions_array,
                 'lms_base_url'       => get_option( 'wpt_lms_base_url' ),
                 'lms_wp_return_path' => get_option( 'wpt_lms_wp_return_path_checkout', '/checkout' ),
                 'lms_login_path'     => get_option( 'wpt_advanced_login_location' ),
+                'prefill_mappings'   => get_option( 'wpt_enable_wc_checkout_client_prefill_mappings' ),
             )
         );
     }
@@ -130,6 +137,12 @@ class WP_eduNEXT_Woocommerce_Integration {
     public function save_custom_checkout_openedx_hidden_fields( $order_id ) {
         if ( ! empty( $_POST['wpt_oer_username'] ) ) {
             update_post_meta( $order_id, 'oer_username', sanitize_text_field( $_POST['wpt_oer_username'] ) );
+        }
+        if ( ! empty( $_POST['wpt_oer_name'] ) ) {
+            update_post_meta( $order_id, 'oer_name', sanitize_text_field( $_POST['wpt_oer_name'] ) );
+        }
+        if ( ! empty( $_POST['wpt_oer_email'] ) ) {
+            update_post_meta( $order_id, 'oer_email', sanitize_text_field( $_POST['wpt_oer_email'] ) );
         }
     }
 
@@ -301,6 +314,7 @@ class WP_eduNEXT_Woocommerce_Integration {
                 'oer_email'        => sanitize_text_field( $billing_email ),
                 'oer_username'     => sanitize_text_field( $openedx_username ),
                 'oer_request_type' => 'enroll',
+                'oer_order_id'     => $order_id,
             );
             $post   = $this->parent->openedx_enrollment->insert_new( $oerarr, $oer_action );
 

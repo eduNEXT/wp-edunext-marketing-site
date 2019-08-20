@@ -130,13 +130,13 @@ In the Post / Page editor you\'ll be able to find a help box with all configurat
 E.g: To change the label from "Enroll" which is the default, to "Enroll in the course now" you can use:
     [edunext_enroll_button course_id="course-v1:organization+coursenumber+courserun" label_enroll="Enroll in the course now"]
 
-== Screenshots ==       
-1. General Settings     
-2. Configuration of the User Menu       
-3. Addition of the User Menu        
-4. Configuration of the course buttons      
-5. Addition of course buttons       
-6. Woocommerce integration      
+== Screenshots ==
+1. General Settings
+2. Configuration of the User Menu
+3. Addition of the User Menu
+4. Configuration of the course buttons
+5. Addition of course buttons
+6. Woocommerce integration
 7. EOX - API backend
 
 == Changelog ==
@@ -167,7 +167,7 @@ E.g: To change the label from "Enroll" which is the default, to "Enroll in the c
 * 2018-01-20
 * Initial release
 
-== Translations ==      
-* English - default, always included        
+== Translations ==
+* English - default, always included
 
 Note: All the strings in this plugins are localized / translateable by default. In case you need assistance with a particular localization issue, or want to contribute with one traslation, please reach out to eduNEXT (https://edunext.co)
