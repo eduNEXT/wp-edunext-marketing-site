@@ -504,7 +504,7 @@ class WP_Openedx_Enrollment {
             case 'oer_order_id':
                 $order_id = get_post_meta( $post_id, 'order_id', true );
                 if ( $order_id ) {
-                    echo edit_post_link('# ' . $order_id, '<p>', '</p>', $order_id);
+                    echo edit_post_link( '# ' . $order_id, '<p>', '</p>', $order_id );
                 }
                 break;
             case 'oer_email':
@@ -711,11 +711,11 @@ class WP_Openedx_Enrollment {
                     <td class="first"><label for="openedx_enrollment_order_id">WC Order ID</label></td>
                     <td>
                         <div style="width: 30%; display: inline-table;">
-                           <input type="text" id="openedx_enrollment_order_id" name="oer_order_id"
+                            <input type="text" id="openedx_enrollment_order_id" name="oer_order_id"
                             value="<?php echo( $order_id ); ?>">
                         </div>
                         <div style="width: 30%; display: inline-table;">
-                            <?php edit_post_link('view', '<p>', '</p>', $order_id); ?>
+                            <?php edit_post_link( 'view', '<p>', '</p>', $order_id ); ?>
                         </div>
                     </td>
                 </tr>

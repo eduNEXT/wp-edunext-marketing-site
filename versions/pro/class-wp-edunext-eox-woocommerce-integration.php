@@ -113,7 +113,7 @@ class WP_eduNEXT_Woocommerce_Integration {
         $functions_array = array( 'assertOpenEdxLoggedInWithData', 'addInfoToCheckout' );
 
         if ( get_option( 'wpt_enable_wc_checkout_client_prefill' ) ) {
-            array_push($functions_array, 'prefillVisibleFields');
+            array_push( $functions_array, 'prefillVisibleFields' );
         }
 
         wp_localize_script(
