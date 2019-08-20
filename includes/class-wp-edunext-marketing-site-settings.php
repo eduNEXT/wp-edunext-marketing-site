@@ -203,8 +203,8 @@ class WP_eduNEXT_Marketing_Site_Settings {
                 ),
                 array(
                     'id'               => 'enable_session_existence_sync',
-                    'label'            => __( 'Log out of WP when openedx is not logged in', 'wp-edunext-marketing-site' ),
-                    'description'      => __( 'This will force the users to login on openedx to mantain a valid session on WordPress.', 'wp-edunext-marketing-site' ),
+                    'label'            => __( 'Log out of WP when Open edX is not logged in', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'This will force the users to login on Open edX to mantain a valid session on WordPress.', 'wp-edunext-marketing-site' ),
                     'type'             => 'checkbox',
                     'default'          => false,
                     'placeholder'      => '',
@@ -660,7 +660,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                 ),
                 array(
                     'id'               => 'enable_wc_checkout_loggedin_intervention',
-                    'label'            => __( 'Get username information from openedx into the checkout page', 'wp-edunext-marketing-site' ),
+                    'label'            => __( 'Get username information from Open edX into the checkout page', 'wp-edunext-marketing-site' ),
                     'description'      => __( 'Make sure that users have a valid session when they access the woocommerce checkout form. The username for said session is then used for the order fulfillment.', 'wp-edunext-marketing-site' ),
                     'type'             => 'checkbox',
                     'default'          => false,
@@ -678,7 +678,7 @@ class WP_eduNEXT_Marketing_Site_Settings {
                 array(
                     'id'               => 'enable_wc_checkout_client_prefill',
                     'label'            => __( 'Enable Checkout client-side fields pre-filling', 'wp-edunext-marketing-site' ),
-                    'description'      => __( 'Enables the pre-filling of the checkout form fields by the calls to the Open edX accounts API. Requires the users to have a valid opened session.', 'wp-edunext-marketing-site' ),
+                    'description'      => __( 'Enables the pre-filling of the checkout form fields by the calls to the Open edX accounts API. Requires the users to have a valid Open edX session.', 'wp-edunext-marketing-site' ),
                     'type'             => 'checkbox',
                     'default'          => false,
                     'placeholder'      => '',
