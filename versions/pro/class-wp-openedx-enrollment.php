@@ -470,7 +470,9 @@ class WP_Openedx_Enrollment {
         $column['oer_status']   = 'Status';
         $column['oer_type']     = 'Type';
         $column['date']         = 'Date created';
-        $column['oer_messages'] = 'Messages';
+        $column['oer_order_id'] = 'Order';
+        $column['oer_email']    = 'Email';
+        $column['oer_messages'] = 'Last Message';
         return $column;
     }
 
@@ -497,6 +499,18 @@ class WP_Openedx_Enrollment {
                     echo 'Enroll';
                 } else {
                     echo 'Unenroll';
+                }
+                break;
+            case 'oer_order_id':
+                $order_id = get_post_meta( $post_id, 'order_id', true );
+                if ( $order_id ) {
+                    echo edit_post_link('# ' . $order_id, '<p>', '</p>', $order_id);
+                }
+                break;
+            case 'oer_email':
+                $email = get_post_meta( $post_id, 'email', true );
+                if ( $email ) {
+                    echo $email;
                 }
                 break;
             case 'oer_messages':
