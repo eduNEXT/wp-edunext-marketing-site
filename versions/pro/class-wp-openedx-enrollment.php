@@ -398,7 +398,7 @@ class WP_Openedx_Enrollment {
             update_post_meta( $post_id, 'errors', $response->get_error_message() );
             $status = 'eor-error';
         } else {
-            update_post_meta( $post_id, 'errors', 'The provided user does not exist. A pre-enrollment with the provided email was created instead. ' );
+            update_post_meta( $post_id, 'errors', 'The provided user does not exist. A pre-enrollment for ' . $response->email . ' was created instead. ' );
             $status = 'eor-success';
         }
         $this->update_post_status( $status, $post_id );
@@ -445,6 +445,28 @@ class WP_Openedx_Enrollment {
         }
     }
 
+    /**
+     * Load shortcodes.
+     *
+     * @return  button The enroll button ready to be render
+     */
+    public function eor_order_info_shortcode( $atts ) {
+
+
+        // Attributes.
+        static $unique_id = 1;
+        $unique_id++;
+        $short_id = 'EdnxEnrollButton' . $unique_id;
+
+        $this->enqueue_commons_script();
+        wp_enqueue_script( 'edunext_enroll_button' );
+        wp_localize_script( 'edunext_enroll_button', $short_id, $atts );
+
+        $course_id = $atts['course_id'];
+
+        return "<div class=\"ednx-enroll-button-js\" style=\"display:none\" data-course-id=\"${course_id}\" data-settings=\"${short_id}\"><span>" . $course_id . '</span></div>';
+
+    }
 
     /**
      * Filters the list of actions available on the list view below each object
