@@ -26,6 +26,15 @@ class WP_eduNEXT_Woocommerce_Integration {
     public $parent = null;
 
     /**
+     * Flag to mark the shortcode script as enqueued already.
+     *
+     * @var     boolean
+     * @access  public
+     * @since   2.3.0
+     */
+    public $wc_workflow_enqueued = null;
+
+    /**
      * Constructor function.
      *
      * @access  public
@@ -43,6 +52,7 @@ class WP_eduNEXT_Woocommerce_Integration {
 
         $this->alter_the_wc_flow_using_js();
 
+        add_shortcode( 'edunext_account_info', array( $this, 'account_information_shortcode' ) );
     }
 
     /**
@@ -144,6 +154,35 @@ class WP_eduNEXT_Woocommerce_Integration {
         if ( ! empty( $_POST['wpt_oer_email'] ) ) {
             update_post_meta( $order_id, 'oer_email', sanitize_text_field( $_POST['wpt_oer_email'] ) );
         }
+    }
+
+    /**
+     * Adds a span in the page that will be replaced by data from the user/accounts api call.
+     *
+     * @return string
+     */
+    public function account_information_shortcode( $atts ) {
+        if ( ! $this->wc_workflow_enqueued ) {
+            wp_enqueue_script( 'wc-workflow' );
+            wp_localize_script(
+                'wc-workflow',
+                'ENEXT_SC',
+                array(
+                    'run_shortcode' => array( 'replaceShortcodeFields' ),
+                    'lms_base_url'  => get_option( 'wpt_lms_base_url' ),
+                )
+            );
+            $this->wc_workflow_enqueued = true;
+        }
+        $atts = shortcode_atts(
+            array(
+                'placeholder' => '{ field }',
+                'field'       => '',
+            ),
+            $atts,
+            'account_information_shortcode'
+        );
+        return '<span class="js-order-info-sc" data-field="' . $atts['field'] . '">' . $atts['placeholder'] . '</span>';
     }
 
     /**
