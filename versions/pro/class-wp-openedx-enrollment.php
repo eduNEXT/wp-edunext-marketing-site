@@ -258,7 +258,6 @@ class WP_Openedx_Enrollment {
             } else {
                 // TODO Polish error message display.
                 update_post_meta( $post_id, 'errors', 'A valid username or email is needed.' );
-                $this->wp_update_post( $post_update );
                 $this->update_post_status( 'eor-error', $post_id );
                 return;
             }
