@@ -279,6 +279,12 @@ class WP_eduNEXT_Woocommerce_Integration {
         // We need to get the User info first.
         $billing_email    = $order->get_billing_email();  // this is what comes from the form.
         $openedx_username = get_post_meta( $order_id, 'oer_username', true );  // this is the result of calling the user/v1/me API.
+        $openedx_email    = get_post_meta( $order_id, 'oer_email', true );  // this is the result of calling the user/v1/accounts API.
+
+        $oer_email = $openedx_email;
+        if ( ! $oer_email ) {
+            $oer_email = $billing_email;
+        }
 
         foreach ( $order->get_items() as $key => $item ) {
 
@@ -349,7 +355,7 @@ class WP_eduNEXT_Woocommerce_Integration {
                 'oer_course_id'    => sanitize_text_field( $course_id ),
                 'bundle_id'        => sanitize_text_field( $bundle_id ),
                 'oer_mode'         => sanitize_text_field( $course_mode ),
-                'oer_email'        => sanitize_text_field( $billing_email ),
+                'oer_email'        => sanitize_text_field( $oer_email ),
                 'oer_username'     => sanitize_text_field( $openedx_username ),
                 'oer_request_type' => 'enroll',
                 'oer_order_id'     => $order_id,
