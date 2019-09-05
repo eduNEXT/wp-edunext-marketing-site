@@ -19,7 +19,7 @@ change-to-pro: ## Change development environment to pro version.
 change-to-lite: ## Change development environment to lite version.
 	python scripts/plugin.py -c lite
 
-get-version: ## Get current development environment version
+dev-version: ## Get current development environment version
 	python scripts/plugin.py -d
 
 tidy: ## Remove build directories
