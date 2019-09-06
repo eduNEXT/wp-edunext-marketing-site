@@ -107,6 +107,12 @@ class Plugin():
                 "{}-{}".format(version_name, self.sem_version))
             make_archive(zip_name, "zip", path_zip)
 
+            zip_size = path.getsize('{}.zip'.format(zip_name))
+
+            if zip_size > 1000000:
+                print('WARNING: {} is over 1MB of size, '
+                    'current size {:,} MB'.format(zip_name, zip_size/1e6))
+
     def clean_env(self):
         """
         Clean development environment.
