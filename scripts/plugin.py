@@ -9,6 +9,7 @@ Targets:
   (pro and lite) ready to be deployed to WordPress.
 - change-to: Change development environment to pro or lite version.
 - dev-version: Print current version of dev environment
+- verify_sem_version: Verify the semantic version across versioned files
 """
 
 import argparse
@@ -47,6 +48,7 @@ class Plugin():
         self.versioning_files = config['Versioning'].keys()
         self.sem_version = self.common['sem_version']
         self.parser = None
+        self.release_folder = self.common['release_folder']
 
     def tidy(self):
         """
@@ -59,7 +61,6 @@ class Plugin():
         Generate a zip file for each version of the plugin
         (pro and lite) ready to be deployed to WordPress.
         """
-        self.verify_sem_version()
         mkdir(self.build_folder)
 
         for version in self.versions:
@@ -105,12 +106,6 @@ class Plugin():
                 self.build_folder,
                 "{}-{}".format(version_name, self.sem_version))
             make_archive(zip_name, "zip", path_zip)
-
-    def release(self):
-        """
-        Release a new version of the plugin to the WordPress repository.
-        """
-        pass
 
     def clean_env(self):
         """
@@ -204,7 +199,7 @@ class Plugin():
         if errors:
             self.parser.error('\n'.join(errors))
 
-        return True
+        return 'Semantic version number is correct across versioned files.'
 
 
 if __name__ == "__main__":
@@ -246,6 +241,12 @@ parser.add_argument(
     help='Clean development environment, '
          'delete symlinks that change in every version'
 )
+parser.add_argument(
+    "-s",
+    "--verify-sem-version",
+    action="store_true",
+    help='Verify the semantic version across versioned files'
+)
 args = parser.parse_args()
 
 if args.build:
@@ -262,6 +263,9 @@ if args.tidy:
 
 if args.clean_env:
     plugin.clean_env()
+
+if args.verify_sem_version:
+    print(plugin.verify_sem_version())
 
 if len(sys.argv) == 1:
     parser.print_help()

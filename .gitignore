@@ -1,8 +1,9 @@
 svn/*
 
-# Build Files
+# Build and Release Files
 build/
 *.zip
+release/
 
 # Python scripts virtualenv
 venv/
