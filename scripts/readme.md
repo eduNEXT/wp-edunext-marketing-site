@@ -129,3 +129,50 @@ There are some  aspects to be considered that will make your life easier as a de
 - To commit to the repository always be sure to be in the pro version in that way we avoid constant changes of symlinks to be taken as actual changes in code so we'll have a more consistent codebase.
 
 - If something looks iffy you can use the "make clean-env" to clean the dev environment and check only the common files that are present in all the versions, this empty env most likely won't work in the WordPress env, but it can be used with "git diff" to make sure you're editing the appropriate files for the version
+
+## DEBUGGER
+
+### INSTALLATION
+
+- In wp-config.php add this lines:
+
+    ``` PHP
+    // Turn debugging on
+    define('WP_DEBUG', true);
+
+    // Tell WordPress to log everything to /wp-content/debug.log
+    define('WP_DEBUG_LOG', true);
+
+    // Turn off the display of error messages on your site
+    define('WP_DEBUG_DISPLAY', false);
+
+    // Save MySQL queries
+    define( 'SAVEQUERIES', true );
+    ```
+
+    by default this line is set to false: 
+
+    ``` PHP
+    define('WP_DEBUG', false); <-----------
+    ```
+    Change it with the lines provided above.
+
+- Install the 'Query Monitor' plugin https://wordpress.org/plugins/query-monitor/
+
+### USE
+
+In  WordPress, you will see a new debug bar, in which you can see:
+- Page generation time
+- Peak PHP memory usage
+- Database query time
+- The total number of database queries made
+- Hooks and actions triggered
+- PHP errors
+- Debug messages etc..
+
+To debug your code, you can use the error_log() function passing a variable as a string or a message string so you can check  your code, this messages are stored in the debug.log in your site’s content directory and will be displayed in query monitor too.
+
+### Additional debug tools
+
+Enable Clickable Stack Traces and Function Names in Query Monitor
+https://querymonitor.com/blog/2019/02/clickable-stack-traces-and-function-names-in-query-monitor/
