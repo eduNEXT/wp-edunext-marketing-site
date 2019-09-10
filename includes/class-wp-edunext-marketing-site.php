@@ -279,6 +279,7 @@ class WP_eduNEXT_Marketing_Site {
             'enrollment_api_location'    => get_option( 'wpt_enrollment_api_location' ),
             'user_enrollment_url'        => get_option( 'wpt_user_enrollment_url' ),
             'course_has_not_started_url' => get_option( 'wpt_course_has_not_started_url' ),
+            'wp_user_logged_in'          => is_user_logged_in(),
             'wp_logout_url'              => false,
         );
         if ( get_option( 'wpt_enable_session_existence_sync' ) && ! is_admin() ) {
