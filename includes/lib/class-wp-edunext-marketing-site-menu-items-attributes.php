@@ -14,8 +14,10 @@ class Edx_Walker_Nav_Menu_Edit extends Walker_Nav_Menu_Edit {
     function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
         $item_output = '';
         parent::start_el( $item_output, $item, $depth, $args );
+
         // Inject $new_fields before: <div class="menu-item-actions description-wide submitbox">.
-        if ( $new_fields = Edx_Nav_Menu_Item_Custom_Fields::get_field( $item, $depth, $args ) ) {
+        $new_fields = Edx_Nav_Menu_Item_Custom_Fields::get_field( $item, $depth, $args );
+        if ( $new_fields ) {
             $label       = '<p class="edx-hide-if">Hide if Open edX user is:</p>';
             $new_html    = '<div class="clear">' . $label . $new_fields . '</div>';
             $item_output = preg_replace( '/(?=<div[^>]+class="[^"]*submitbox)/', $new_html, $item_output );

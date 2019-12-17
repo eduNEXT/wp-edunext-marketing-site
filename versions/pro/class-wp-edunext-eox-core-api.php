@@ -399,7 +399,7 @@ class WP_EoxCoreApi {
             $errors = array_merge( $errors, $this->handle_api_errors( $response_json, $ref ) );
         }
         if ( $response['response']['code'] === 202 ) {
-            $errors[] = 'Request accepted but not completely processed. Server returned status code 202. Response: ' . $response['body'] ;
+            $errors[] = 'Request accepted but not completely processed. Server returned status code 202. Response: ' . $response['body'];
         }
         return $errors;
     }
