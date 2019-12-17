@@ -315,7 +315,7 @@ class WP_eduNEXT_Woocommerce_Integration {
 
             if ( ! $course_id && ! $bundle_id ) {
                 // This product does not require any work from us.
-                break;
+                continue;
             }
 
             $course_mode = $product->get_attribute( 'course_mode' );
