@@ -201,7 +201,7 @@ class WP_eduNEXT_Woocommerce_Integration {
     public function prefill_with_eox_core_data( $value, $input ) {
 
         $current_user = wp_get_current_user();
-        $fields = json_decode( get_option( 'wpt_eox_client_wc_field_mappings', '' ), true );
+        $fields       = json_decode( get_option( 'wpt_eox_client_wc_field_mappings', '' ), true );
 
         if ( $current_user->ID !== 0 && empty( $value ) ) {
 
@@ -226,7 +226,6 @@ class WP_eduNEXT_Woocommerce_Integration {
                     }
                 }
             }
-
         }
 
         return $value;
