@@ -188,9 +188,9 @@ class WP_eduNEXT_Woocommerce_Integration {
     /**
      * Callback to pre-fill.
      * Turning on the wpt_enable_woocommerce_prefill_v1 advanced setting will cause that the checkout form uses
-     * this function to call the eox-core user API with the user's email. If it finds information that WordPress
-     * did not have before, then it will pre-fill it in the form.
-     * It is also possible to configure the mappings using an advanced field.
+     * this function to call the eox-core user API with the user's email to gather the user info. It will pre-fill
+     * the checkout form fields with the user info using a mapping 'checkout field -> Open edX user info'.
+     * The mapping must be provided in the plugin settings.
      *
      * @access public
      * @since  1.0.0
@@ -200,30 +200,11 @@ class WP_eduNEXT_Woocommerce_Integration {
      */
     public function prefill_with_eox_core_data( $value, $input ) {
 
-        $current_user        = wp_get_current_user();
-        $fields              = array(
-            /* $woocommerce_name => $edx_name */
-            'email'             => 'email',
-            'billing_country'   => 'country',
-            'billing_address_1' => 'mailing_address',
-        );
-        $extra_fields_mapped = array(
-            /* $woocommerce_name => $edx_name */
-            'billing_company'    => 'company',
-            'billing_state'      => 'state',
-            'billing_first_name' => 'first_name',
-            'billing_last_name'  => 'last_name',
-            'billing_city'       => 'city',
-            'billing_postcode'   => 'zip',
-        );
-
-        $mappings      = get_option( 'wpt_eox_client_wc_field_mappings', '' );
-        $json_mappings = json_decode( $mappings, true );
-        if ( $json_mappings ) {
-            $extra_fields_mapped = array_merge( $json_mappings, $extra_fields_mapped );
-        }
+        $current_user = wp_get_current_user();
+        $fields       = json_decode( get_option( 'wpt_eox_client_wc_field_mappings', '' ), true );
 
         if ( $current_user->ID !== 0 && empty( $value ) ) {
+
             if ( empty( $this->eox_user_info ) ) {
                 $this->eox_user_info = WP_EoxCoreApi()->get_user_info( [ 'email' => $current_user->user_email ] );
                 if ( is_wp_error( $this->eox_user_info ) ) {
@@ -239,24 +220,14 @@ class WP_eduNEXT_Woocommerce_Integration {
             }
 
             foreach ( $this->eox_user_info->extended_profile as $attr ) {
-                foreach ( $extra_fields_mapped as $woocommerce_name => $edx_name ) {
+                foreach ( $fields as $woocommerce_name => $edx_name ) {
                     if ( $attr->field_name === $edx_name && $input === $woocommerce_name ) {
                         $value = esc_attr( $attr->field_value );
                     }
                 }
             }
-
-            $processing_name_part = $input === 'billing_first_name' || $input === 'billing_last_name';
-
-            if ( $processing_name_part && empty( $value ) && ! empty( $this->eox_user_info->name ) ) {
-                $parser = new FullNameParser();
-                $parsed = $parser->parse_name( $this->eox_user_info->name );
-                $key    = $input === 'billing_first_name' ? 'fname' : 'lname';
-                if ( ! empty( $parsed[ $key ] ) ) {
-                    $value = $parsed[ $key ];
-                }
-            }
         }
+
         return $value;
     }
 
