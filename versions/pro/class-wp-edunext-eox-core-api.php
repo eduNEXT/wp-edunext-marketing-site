@@ -211,16 +211,22 @@ class WP_EoxCoreApi {
             if ( $last_checked > $five_min_ago ) {
                 return $token;
             }
-            $url      = $base_url . '/oauth2/access_token/' . $token . '/';
-            $response = wp_remote_get( $url );
+            $url      = $base_url . self::PATH_USERINFO_API . '/';
+            $headers  = array(
+                'Authorization' => 'Bearer ' . $token,
+            );
+            $request  = array(
+                'headers' => $headers,
+            );
+            $response = wp_remote_get( $url, $request );
             if ( is_wp_error( $response ) ) {
                 $error_message = $response->get_error_message();
                 $this->add_notice( 'error', $error_message );
                 $error = new WP_Error( 'broke', $error_message, $response );
                 return $error;
             }
-            $json_reponse = json_decode( $response['body'] );
-            if ( ! isset( $json_reponse->error ) ) {
+            $errors = $this->get_response_errors( $response, null );
+            if ( empty( $errors ) ) {
                 // Cache the last time it was succesfully checked.
                 update_option( 'token_last_checked_working', time() );
                 // Cached token its still valid, return it.
