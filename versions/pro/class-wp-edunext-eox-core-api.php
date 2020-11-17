@@ -435,7 +435,7 @@ class WP_EoxCoreApi {
         }
 
         if ( empty( array_filter( $errors ) ) ) {
-            $errors = $json;
+            $errors = (array) $json;
         }
         return $errors;
     }
